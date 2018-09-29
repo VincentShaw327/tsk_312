@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Button, Icon, Row, Col, Popover, message, Divider, Popconfirm } from 'antd';
+import {fetchWorkcenterList,} from 'actions/process'
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
 import { StandardQForm } from 'components/TForm';
@@ -8,10 +10,13 @@ import TWorkCenterDetail from './TWorkCenterDetail';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import auto01 from '../../images/assets/auto01.jpg'
 
-// 作用域
-let seft
-let creatKeyWord;
-
+@connect((state, props) => {
+    console.log('state',state)
+    return{
+        Breadcrumb:state.Breadcrumb,
+        workcenter: state.workcenter,
+    }
+},)
 export default class TWorkCenter extends Component {
 
     constructor( props ) {
@@ -33,13 +38,18 @@ export default class TWorkCenter extends Component {
             WorkCenterTypeList:[]
         }
         this.url = '/api/TProcess/workcenter';
-        seft = this;
     }
 
     componentWillMount() {
-        this.getWorkCenterType();
-        this.getWorkShopList();
-        this.getTableList();
+        // this.getWorkCenterType();
+        // this.getWorkShopList();
+        // this.getTableList();
+        // this.props.dispatch(fetchWorkcenterList({current:1}, (respose) => {}))
+    }
+
+    componentDidMount(){
+        this.props.dispatch(fetchWorkcenterList({current:1}, (respose) => {}))
+
     }
 
     getTableList( que ) {
@@ -73,6 +83,9 @@ export default class TWorkCenter extends Component {
                         Note: item.Note,
                         Desc: item.Desc,
                         UpdateDateTime: item.UpdateDateTime,
+                        Modifier:Mock.mock('@cname()'),
+                        Founder:Mock.mock('@cname()'),
+                        CreateTime:Random.datetime(),
                         Status: item.Status
                     } )
                 } )
@@ -235,25 +248,28 @@ export default class TWorkCenter extends Component {
     }
 
     render() {
+        const {Breadcrumb}=this.props;
         // let Feature=this.feature;
         const {
             showDetal,
             detailID,
             detailMessage,
             tableDataList,
-            loading,
+            // loading,
             WorkCenterTypeList,
             workshopList,
             current,
-            total,
+            // total,
             pageSize,
             updateFromItem,
             UModalShow
         } = this.state;
+        const {workcenterList,total,loading}=this.props.workcenter;
         const { detail } = this.props;
 
         let Data = {
-            list: tableDataList,
+            // list: tableDataList,
+            list: workcenterList,
             pagination: { total, current, pageSize }
         };
 
@@ -299,6 +315,15 @@ export default class TWorkCenter extends Component {
             }, {
                 title: '所属车间',
                 dataIndex: 'WorkshopName',
+                type: 'string'
+            },{
+                title: '创建人',
+                dataIndex: 'Founder',
+                type: 'string'
+            },
+            {
+                title: '创建时间',
+                dataIndex: 'CreateTime',
                 type: 'string'
             },
             /*{
@@ -557,7 +582,7 @@ export default class TWorkCenter extends Component {
                 action={showDetal?HeadAction:''}
                 content={showDetal?HeadContent:''}
                 wrapperClassName="pageContent"
-                BreadcrumbList={bcList11}>
+                BreadcrumbList={Breadcrumb.BCList}>
                     {/* <TWorkCenter/> */}
                     {showDetal?WorkCenterDetail:WorkCenterList}
             </PageHeaderLayout>

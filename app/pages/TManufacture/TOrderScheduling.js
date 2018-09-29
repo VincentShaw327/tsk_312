@@ -1,4 +1,7 @@
+
+
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import {
     Table,
     Button,
@@ -21,18 +24,27 @@ import {
     Popconfirm,
     Modal
 } from 'antd';
+import { fetchOrderList } from 'actions/manufacture';
+import {TPostData, urlBase,TAjax} from 'utils/TAjax';
+import {CModal} from 'components/TModal';
+import SimpleTable from 'components/TTable/SimpleTable';
+import {SimpleQForm,StandardQForm } from 'components/TForm';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
+import styles from './common.less';
+import TableExport from 'tableexport';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const ButtonGroup = Button.Group;
 const confirm = Modal.confirm;
-import {TPostData, urlBase,TAjax} from '../../utils/TAjax';
-import {CModal} from 'components/TModal';
-import SimpleTable from 'components/TTable/SimpleTable';
-import {SimpleQForm,StandardQForm } from 'components/TForm';
-import styles from './common.less';
-import TableExport from 'tableexport';
 
-let _this;
+
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        Breadcrumb:state.Breadcrumb,
+        productOrder: state.productOrder,
+    }
+}, )
 export default class TstateTimeOverview extends Component {
 
     constructor(props) {
@@ -75,38 +87,23 @@ export default class TstateTimeOverview extends Component {
             current:1,
             pageSize:10,
         }
-        _this=this;
         this.url = '/api/tmanufacture/manufacture';
     }
 
     componentWillMount() {
-        this.getProductOrder();
+        // this.getProductOrder();
         // this.getSubTableData();
-        this.getProModelList();
-        this.getWorkCenterList();
-        this.getWorkshopList();
-        // if(this.props.GlobalKeyword) this.state.keyWord=this.props.GlobalKeyword;
+        // this.getProModelList();
+        // this.getWorkCenterList();
+        // this.getWorkshopList();
 
+        this.props.dispatch( fetchOrderList( { current: 1 }, ( respose ) => {} ) )
     }
 
     componentDidMount() {}
 
-    update=()=>{
-        confirm({
-          title: '数据可能有刷新,是否刷新页面?',
-          // content: '更新提示',
-          onOk() {
-            console.log('OK');
-            _this.getProductOrder();
-          },
-          onCancel() {
-            console.log('Cancel');
-          },
-        });
-    }
-
     componentwillreceiveprops(){
-        console.log("receiveprops",this.props.GlobalKeyword)
+        // console.log("receiveprops",this.props.GlobalKeyword)
     }
 
     getProductOrder() {
@@ -125,13 +122,14 @@ export default class TstateTimeOverview extends Component {
             // KeyWord: GlobalKeyword?GlobalKeyword:keyWord
             KeyWord:keyWord
         }
-        TPostData( '/api/tmanufacture/manufacture', "ListProductOrder", dat,
+        TPostData( '/api/tmanufacture/manufacture/ListProductOrder', "ListProductOrder", dat,
             ( res ) => {
                 console.log( '查询到订单列表', res );
                 if(res.err==0){
                     var list = [],
                     Ui_list = res.obj.objectlist || [],
                     totalCount = res.obj.totalcount;
+                    console.log('totalCount',totalCount)
                     Ui_list.forEach( ( item, index ) => {
                         list.push( {
                             key: index,
@@ -463,7 +461,7 @@ export default class TstateTimeOverview extends Component {
             KeyWord: ""                // 模糊查询
         }
 
-        TAjax('post',this.url,"ListWorkOrder",dat,
+        /*TAjax('post',this.url+'/ListWorkOrder',"ListWorkOrder",dat,
             (res)=>{
                 console.log('1111',res);
                 let  Ui_list = res.obj.objectlist || [];
@@ -499,7 +497,7 @@ export default class TstateTimeOverview extends Component {
                 console.log('失败',res);
             },
             false
-        );
+        );*/
          return (<Table
                     columns={subcolumns}
                     dataSource={list}
@@ -757,7 +755,7 @@ export default class TstateTimeOverview extends Component {
     render() {
 
         const {
-            productOrderList,
+            // productOrderList,
             LotList,
             BSLotList,
             ProModelList,
@@ -776,10 +774,14 @@ export default class TstateTimeOverview extends Component {
             bordered,
             size,
             scroll,
-            loading,
-            current,total,pageSize,
+            // loading,
+            current,
+            // total,
+            pageSize,
             unscheduledNum
         } = this.state;
+        const { productOrderList, total, loading } = this.props.productOrder;
+        const {Breadcrumb}=this.props;
 
         // ProModelList.map((item,index)=>({key: index,value:item.UUID.toString(), text: item.Name}))
         const columns1 = [
@@ -1448,145 +1450,74 @@ export default class TstateTimeOverview extends Component {
             pagination:{total,current,pageSize}
         };
 
+        const bcList = [{
+            title:"首页",
+            href: '/',
+            }, {
+            title: '生产管理',
+            href: '/',
+            }, {
+            title: '任务排程',
+        }];
         return (
-            <div className="cardContent">
-                {/* <Card >
-                    <Row gutter={16}>
-                        <Col className="gutter-row" span={5}>
-                            <div className="gutter-box">
-                                <span style={{width: "35%"}}>搜索内容:</span>
-                                <Input style={{width: "65%"}} ref={(input) => {this.keyWordInput = input;}} placeholder="请输入搜索内容"/>
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={6}>
-                            <div className="gutter-box">
-                                <span style={{ width: "35%" }}>车间:</span>
-                                <Select defaultValue="-1" style={{ width: "65%" }} onChange={this.handleWSChange.bind(this)}>
-                                    <Option value="-1" key="all">全部</Option>
-                                    {
-                                        this.state.workshopList.map((item,index)=>{
-                                            return <Option key={index} value={item.value}>{item.text}</Option>
-                                        })
-                                    }
-                                </Select>
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={5}>
-                            <div className="gutter-box">
-                                <span style={{width: "40%"}}>产品:</span>
-                                <Select defaultValue="-1" style={{width: "60%"}} onChange={this.handleProChange.bind(this)}>
-                                    <Option value="-1" key="all">全部</Option>
-                                    {
-                                        this.state.ProModelSList.map((item, index) => {
-                                            return (<Option value={item.value} key={index}>{item.text}</Option>)
-                                        })
-                                    }
-                                </Select>
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={5}>
-                            <div className="gutter-box">
-                                <span style={{width: "40%"}}>订单状态:</span>
-                                <Select defaultValue="-1" style={{width: "60%"}} onChange={this.handleStatusChange.bind(this)}>
-                                    <Option value="-1" key="all">全部</Option>
-                                    <Option value="0" key="0">已取消</Option>
-                                    <Option value="1" key="1">未排产</Option>
-                                    <Option value="2" key="2">排产中</Option>
-                                    <Option value="3" key="3">已完成</Option>
-                                </Select>
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={3}>
-                            <div className="gutter-box">
-                                <Button onClick={this.getProductOrder.bind(this)} type="primary" icon="search">查询</Button>
-                            </div>
-                        </Col>
-                    </Row>
-                    {
-                        selectedRow.length
-                            ? <div>
-                                    <Divider>批量操作</Divider>
-                                    {
-                                        selectedRow.map((tag, index) => {
-                                            const tagElem = (
-                                                <Tag key={tag.UUID} closable="closable" afterClose={() => this.handleClose(tag)}>
-                                                    {tag.strID}
-                                                </Tag>
-                                            );
-                                            return tagElem;
-                                        })
-                                    }
-                                    <div style={{
-                                            marginTop: 20
-                                        }}>
-                                        <ButtonGroup>
-                                            <Button onClick={this.toggleBSModalShow.bind(this)} type="primary" size="small">
-                                                <Icon type="schedule"/>批量排程
-                                            </Button>
-                                            <Button type="primary" size="small" onClick={this.clearSelectedRow.bind(this)}>
-                                                <Icon type="delete"/>清除
-                                            </Button>
-                                        </ButtonGroup>
-                                    </div>
-                                </div>
-                            : ''
-                    }
-                </Card> */}
-                <StandardQForm
-                    FormItem={RFormItem}
-                    submit={this.handleQuery}
+            <PageHeaderLayout title="任务排程" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
+                <div className="cardContent">
+                    <StandardQForm
+                        FormItem={RFormItem}
+                        submit={this.handleQuery}
                     />
-                <div style={{margin: 20,overflow:'auto',zoom:1}}>
-                    <div style={{float:'right'}}>
-                        <Form layout="inline">
-                            <FormItem label="导出">
-                                <div className="exportMenuWrap" id="exportLotListMenu" style={{display:'flex'}}></div>
-                            </FormItem>
-                            <FormItem label="边框">
-                                <Switch checked={bordered} onChange={this.handleToggleBorder.bind(this)}/>
-                            </FormItem>
-                            <FormItem label="大小">
-                                <Radio.Group size="default" value={size} onChange={this.handleSizeChange.bind(this)}>
-                                    <Radio.Button value="default">大</Radio.Button>
-                                    <Radio.Button value="middle">中</Radio.Button>
-                                    <Radio.Button value="small">小</Radio.Button>
-                                </Radio.Group>
-                            </FormItem>
-                        </Form>
+                    <div style={{margin: 20,overflow:'auto',zoom:1}}>
+                        <div style={{float:'right'}}>
+                            <Form layout="inline">
+                                <FormItem label="导出">
+                                    <div className="exportMenuWrap" id="exportLotListMenu" style={{display:'flex'}}></div>
+                                </FormItem>
+                                <FormItem label="边框">
+                                    <Switch checked={bordered} onChange={this.handleToggleBorder.bind(this)}/>
+                                </FormItem>
+                                <FormItem label="大小">
+                                    <Radio.Group size="default" value={size} onChange={this.handleSizeChange.bind(this)}>
+                                        <Radio.Button value="default">大</Radio.Button>
+                                        <Radio.Button value="middle">中</Radio.Button>
+                                        <Radio.Button value="small">小</Radio.Button>
+                                    </Radio.Group>
+                                </FormItem>
+                            </Form>
+                        </div>
                     </div>
+                    <div id="lotListTableWrap">
+                        {/* <Table
+                            expandedRowRender={this.renderSubTable.bind(this)}
+                            rowSelection={rowSelection}
+                            dataSource={productOrderList}
+                            columns={columns}
+                            loading={this.state.loading}
+                            bordered={bordered}
+                            size={size}
+                            scroll={scroll}
+                            // pagination={pagination}
+                            // hideDefaultSelections={true}
+                            // size={this.state.tableSize}
+                            // scroll={{ x:1500 }}
+                            // onExpand={this.handleExpand}
+                        /> */}
+                        <SimpleTable
+                            expandedRowRender={this.renderSubTable}
+                            // rowSelection={rowSelection}
+                            // isHaveSelect={false}
+                            loading={loading}
+                            data={Data}
+                            columns={columns}
+                            bordered={bordered}
+                            size={size}
+                            onChange={this.handleTableChange}
+                        />
+                    </div>
+                    <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate.bind(this)} isShow={UModalShow} hideForm={this.toggleUModalShow.bind(this)}/>
+                    <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul.bind(this)} isShow={SModalShow} hideForm={this.toggleSModalShow.bind(this)}/>
+                    <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul.bind(this)} isShow={BSModalShow} hideForm={this.toggleBSModalShow.bind(this)}/>
                 </div>
-                <div id="lotListTableWrap">
-                    {/* <Table
-                        expandedRowRender={this.renderSubTable.bind(this)}
-                        rowSelection={rowSelection}
-                        dataSource={productOrderList}
-                        columns={columns}
-                        loading={this.state.loading}
-                        bordered={bordered}
-                        size={size}
-                        scroll={scroll}
-                        // pagination={pagination}
-                        // hideDefaultSelections={true}
-                        // size={this.state.tableSize}
-                        // scroll={{ x:1500 }}
-                        // onExpand={this.handleExpand}
-                    /> */}
-                    <SimpleTable
-                        expandedRowRender={this.renderSubTable}
-                        // rowSelection={rowSelection}
-                        // isHaveSelect={false}
-                        loading={loading}
-                        data={Data}
-                        columns={columns}
-                        bordered={bordered}
-                        size={size}
-                        onChange={this.handleTableChange}
-                    />
-                </div>
-                <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate.bind(this)} isShow={UModalShow} hideForm={this.toggleUModalShow.bind(this)}/>
-                <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul.bind(this)} isShow={SModalShow} hideForm={this.toggleSModalShow.bind(this)}/>
-                <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul.bind(this)} isShow={BSModalShow} hideForm={this.toggleBSModalShow.bind(this)}/>
-            </div>
+            </PageHeaderLayout>
         )
     }
 }

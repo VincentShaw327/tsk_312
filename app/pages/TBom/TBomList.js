@@ -6,12 +6,13 @@
 import React, { Component } from 'react';
 import { hashHistory, Link } from 'react-router';
 import { Button, Icon, Popover,message,Breadcrumb,Table,Card,Row,Col,Select,Input,Popconfirm  } from 'antd';
-import { TPostData } from '../../utils/TAjax';
+import { TPostData,urlBase } from '../../utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import TBomDetail from './TBomDetail';
 const Option = Select.Option;
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 export default class TBomList extends Component {
     constructor( props ) {
@@ -57,7 +58,7 @@ export default class TBomList extends Component {
                     Ui_list = res.obj.objectlist || [],
                     totalcount = res.obj.totalcount;
 
-                Ui_list.forEach( 
+                Ui_list.forEach(
                     ( item, index )=> {
                         list.push( {
                             key: index,
@@ -202,7 +203,7 @@ export default class TBomList extends Component {
             list:tableDataList,
             pagination:{total,current,pageSize}
         };
-        
+
         const Tcolumns= [
             {
                 title: '序号',
@@ -336,24 +337,10 @@ export default class TBomList extends Component {
             }
         ];
 
-        const BomDetail=(
-            <div>
-                <div>
-                    <Breadcrumb style={{display:"inline-block"}}>
-                        <Breadcrumb.Item>
-                            <a onClick={this.toggleRender.bind(this)} href="#">BOM管理</a>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>BOM单详情</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <span onClick={this.toggleRender.bind(this)} className="backup-button">
-                        <Icon type="rollback" />
-                    </span>
-                </div>
-                <TBomDetail UUID={detailID} detailMessage={detailMessage}/>
-            </div>
-        );
+        const BomDetail=(<TBomDetail UUID={detailID} detailMessage={detailMessage}/>);
+
         const BomListTable=(
-            <div>
+            <div className="cardContent">
                 <SimpleQForm
                     FormItem={RFormItem}
                     submit={this.handleQuery}
@@ -377,8 +364,63 @@ export default class TBomList extends Component {
                     hideModal={this.toggleUModalShow}
                 />
             </div>
-
         )
-        return showDetal?BomDetail:BomListTable;
+
+        const bcList = [{
+          title:"首页",
+          href: '/',
+          }, {
+          title: '车间管理',
+          href: '/',
+          }, {
+          title: '工作中心',
+          }];
+
+        const HeadAction=(
+                <Button onClick={this.toggleRender.bind(this)} type="primary" icon="rollback">返回</Button>
+            );
+
+        const HeadContent=(
+            <div style={{marginTop:15,height:80, border:'solid 0px #bbbbbb',borderRadius:6,paddingLeft:8}}>
+                <Row  type="flex" justify="start" align="middle">
+                    <Col span={8}>
+                        <div style={{
+                                fontSize:16,
+                                display:'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-evenly',
+                                height: 80}}>
+                            <p>名称：<span>{detailMessage.Name}</span></p>
+                            <p>编号：<span>{detailMessage.ID}</span></p>
+                            <p>版本：<span>{detailMessage.Version}</span></p>
+                        </div>
+                    </Col>
+                    <Col span={6}>
+                        <div style={{
+                                fontSize:16,
+                                display:'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-evenly',
+                                height: 80}}>
+                            <p>产品型号：{detailMessage.ProductModelName}</p>
+                            <p>产品序列号：{detailMessage.ProductModelSN}</p>
+                            <p>备注：{detailMessage.Note}</p>
+                        </div>
+                    </Col>
+                </Row>
+            </div>
+        );
+
+        return(
+            <PageHeaderLayout
+                title={showDetal?"BOM列表":"BOM详情"}
+                action={showDetal?HeadAction:''}
+                content={showDetal?HeadContent:''}
+                wrapperClassName="pageContent"
+                BreadcrumbList={bcList}
+                >
+                    {showDetal?BomDetail:BomListTable}
+            </PageHeaderLayout>
+        );
     }
 }

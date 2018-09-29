@@ -4,16 +4,24 @@
  *添加人:shaw
  **/
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router'
 import { Table, Menu, Icon, Badge, Dropdown,Popover,message,Divider,Popconfirm } from 'antd';
-import { TPostData,urlBase } from '../../utils/TAjax';
+import { fetchMoldModel } from 'actions/mold';
+import { TPostData,urlBase } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 
-let seft
-
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        Breadcrumb:state.Breadcrumb,
+        moldModel: state.moldModel,
+    }
+}, )
 export default class MouldModel extends Component {
 
     constructor(props) {
@@ -27,12 +35,12 @@ export default class MouldModel extends Component {
             UModalShow:false,
             loading:true,
         }
-        seft = this;
         this.url= '/api/TMold/mold_model';
     }
 
     componentWillMount(){
-        this.getTableList();
+        // this.getTableList();
+        this.props.dispatch( fetchMoldModel( { current: 1 }, ( respose ) => {} ) )
     }
 
     getTableList(que){
@@ -49,7 +57,7 @@ export default class MouldModel extends Component {
         TPostData( this.url, "ListActive", dat,
             (res) => {
                 var list = [];
-                console.log("查询到工作中心类别列表", res);
+                console.log("查询到模具型号列表", res);
                 var data_list = res.obj.objectlist || [];
                 var totalcount = res.obj.totalcount;
                 data_list.forEach((item, index)=> {
@@ -57,13 +65,14 @@ export default class MouldModel extends Component {
                         key: index,
                         UUID: item.UUID,
                         // ModelUUID:item.ModelUUID,
-                        strMoldModelID: item.ID,
-                        strMoldModelName: item.Name,
-                        strMoldModelSize: item.Size,
-                        strMoldModelDesc: item.Desc,
-                        strMoldModelNote: item.Note,
+                        TypeName:item.TypeName,
+                        MoldModelID: 'SC-00'+item.ID,
+                        MoldModelName: item.Name,
+                        MoldModelSize: item.Size,
+                        MoldModelDesc: item.Desc,
+                        MoldModelNote: item.Note,
                         UpdateDateTime:item.UpdateDateTime,
-                        strCavity:item.Cavity,
+                        Cavity:item.Cavity,
                         Image:item.Image
                     })
                 })
@@ -160,9 +169,21 @@ export default class MouldModel extends Component {
     }
 
     render() {
-        const {tableDataList,loading,current,total,pageSize,updateFromItem,UModalShow}=this.state;
+        const {
+            tableDataList,
+            // loading,
+            current,
+            // total,
+            pageSize,
+            updateFromItem,
+            UModalShow
+        } = this.state;
+        const {Breadcrumb}=this.props;
+        const { list, total, loading } = this.props.moldModel;
+
         let Data={
-            list:tableDataList,
+            // list:tableDataList,
+            list:list,
             pagination:{total,current,pageSize}
         };
 
@@ -190,26 +211,26 @@ export default class MouldModel extends Component {
                     )
               }
             }, {
-                title: '名称',
-                dataIndex: 'strMoldModelName',
+                title: '模具型号',
+                dataIndex: 'MoldModelName',
                 type: 'string'
             }, {
                 title: '编号',
-                dataIndex: 'strMoldModelID',
+                dataIndex: 'MoldModelID',
+                type: 'string'
+            },{
+                title: '模具类别',
+                dataIndex: 'TypeName',
                 type: 'string'
             }, {
                 title: '规格 （材料/尺寸(注塑：周期)/步距）',
-                dataIndex: 'strMoldModelSize',
+                dataIndex: 'MoldModelSize',
                 type: 'string'
             },{
                 title: '穴数',
-                dataIndex: 'strCavity',
+                dataIndex: 'Cavity',
                 type: 'string'
             },{
-                title: '备注',
-                dataIndex: 'strMoldModelNote',
-                type: 'string'
-            }, {
                 title: '修改时间',
                 dataIndex: 'UpdateDateTime',
                 type: 'string'
@@ -314,34 +335,45 @@ export default class MouldModel extends Component {
             }
         ];
 
+        const bcList = [{
+            title:"首页",
+            href: '/',
+            }, {
+            title: '生产资料',
+            href: '/',
+            }, {
+            title: '物料类别',
+        }];
 
         return (
-            <div className="cardContent">
-               {/* <Feature /> */}
-               {/* <SimpleQForm
-                    FormItem={RFormItem}
-                    submit={this.handleQuery}
+            <PageHeaderLayout title="模具型号" wrapperClassName="pageContent" BreadcrumbList={bcList}>
+                <div className="cardContent">
+                    {/* <Feature /> */}
+                    {/* <SimpleQForm
+                        FormItem={RFormItem}
+                        submit={this.handleQuery}
                     /> */}
-                <CreateModal
-                    FormItem={CFormItem}
-                    submit={this.handleCreat.bind(this)}
-                />
-                <SimpleTable
-                    size="middle"
-                    loading={loading}
-                    data={Data}
-                    columns={Tcolumns}
-                    isHaveSelect={false}
-                    onChange={this.handleTableChange}
-                />
-                <UpdateModal
-                    FormItem={UFormItem}
-                    updateItem={updateFromItem}
-                    submit={this.handleUpdate.bind(this)}
-                    showModal={UModalShow}
-                    hideModal={this.toggleUModalShow}
-                />
-            </div>
+                    <CreateModal
+                        FormItem={CFormItem}
+                        submit={this.handleCreat.bind(this)}
+                    />
+                    <SimpleTable
+                        size="middle"
+                        loading={loading}
+                        data={Data}
+                        columns={Tcolumns}
+                        isHaveSelect={false}
+                        onChange={this.handleTableChange}
+                    />
+                    <UpdateModal
+                        FormItem={UFormItem}
+                        updateItem={updateFromItem}
+                        submit={this.handleUpdate.bind(this)}
+                        showModal={UModalShow}
+                        hideModal={this.toggleUModalShow}
+                    />
+                </div>
+            </PageHeaderLayout>
         )
     }
 }

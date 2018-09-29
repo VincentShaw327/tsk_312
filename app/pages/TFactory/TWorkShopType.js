@@ -10,6 +10,7 @@ import { TPostData } from '../../utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 let seft;
 
@@ -473,33 +474,44 @@ export default class App extends Component {
             },
         ];
 
+        const bcList = [{
+            title:"首页",
+            href: '/',
+            }, {
+            title: '生产资料',
+            href: '/',
+            }, {
+            title: '物料类别',
+        }];
+
         return (
-            <div className="cardContent">
-                {/* <Feature /> */}
-                {/* <SimpleQForm
-                    FormItem={RFormItem}
-                    submit={this.handleQuery}
-                 /> */}
-                <CreateModal
-                    FormItem={CFormItem}
-                    submit={this.handleCreat.bind(this)}
-                />
-                <SimpleTable
-                  loading={loading}
-                  size="middle"
-                  data={Data}
-                  columns={Tcolumns}
-                  isHaveSelect={false}
-                  onChange={this.handleTableChange}
-                />
-                <UpdateModal
-                    FormItem={UFormItem}
-                    updateItem={updateFromItem}
-                    submit={this.handleUpdate.bind(this)}
-                    showModal={UModalShow}
-                    hideModal={this.toggleUModalShow}
-                />
-            </div>
+            <PageHeaderLayout title="车间类别" wrapperClassName="pageContent" BreadcrumbList={bcList}>
+                <div className="cardContent">
+                    {/* <SimpleQForm
+                        FormItem={RFormItem}
+                        submit={this.handleQuery}
+                    /> */}
+                    <CreateModal
+                        FormItem={CFormItem}
+                        submit={this.handleCreat.bind(this)}
+                    />
+                    <SimpleTable
+                        loading={loading}
+                        size="middle"
+                        data={Data}
+                        columns={Tcolumns}
+                        isHaveSelect={false}
+                        onChange={this.handleTableChange}
+                    />
+                    <UpdateModal
+                        FormItem={UFormItem}
+                        updateItem={updateFromItem}
+                        submit={this.handleUpdate.bind(this)}
+                        showModal={UModalShow}
+                        hideModal={this.toggleUModalShow}
+                    />
+                </div>
+            </PageHeaderLayout>
         )
     }
 }

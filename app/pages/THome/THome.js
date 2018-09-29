@@ -21,6 +21,7 @@ import {  yuan,
   WaterWave,
   TagCloud,
   TimelineChart, } from 'components/ant-design-pro/Charts';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 // import {NumberCard} from "../components/ChartCards";
 
@@ -351,58 +352,70 @@ export default class THome extends Component {
             }
         </div>)
 
+        const bcList = [ {
+            title: "首页",
+            href: '/',
+          }
+        ];
+          
         return (
-            // className="cardContent"
-            <div >
-                {/* <List
-                    grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 2,
-                        md: 2,
-                        lg: 4,
-                        xl: 4,
-                        xxl: 4
-                    }}
-                    dataSource={data}
-                    renderItem={item => (
-                    <List.Item>
-                        <Card bodyStyle={{
-                                // height: 150
-                            }}>
-                            <p>{item.title}</p>
-                            <div>
-                                {item.content && item.content()}
+            <PageHeaderLayout
+                title={"首页"}
+                // action={showDetal?HeadAction:''}
+                // content={showDetal?HeadContent:''}
+                wrapperClassName="pageContent"
+                BreadcrumbList={bcList}>
+                <div >
+                    {/* <List
+                        grid={{
+                            gutter: 16,
+                            xs: 1,
+                            sm: 2,
+                            md: 2,
+                            lg: 4,
+                            xl: 4,
+                            xxl: 4
+                        }}
+                        dataSource={data}
+                        renderItem={item => (
+                        <List.Item>
+                            <Card bodyStyle={{
+                                    // height: 150
+                                }}>
+                                <p>{item.title}</p>
+                                <div>
+                                    {item.content && item.content()}
+                                </div>
+                                <Divider/>
+                                <div>
+                                    {item.footer&&item.footer()}
+                                </div>
+                            </Card>
+                        </List.Item>)}/> */}
+                    {/* <Row>
+                        <Col  xl={6} lg={6} md={6} sm={24} xs={24}>
+                        </Col>
+                        <Col  xl={18} lg={18} md={18} sm={24} xs={24}>
+                            <div style={{border:'solid 1px #e6e5e2',borderRadus:8,padding:16}}>
+                                <Bar height={295} title="销售额趋势" data={salesData} />
                             </div>
-                            <Divider/>
-                            <div>
-                                {item.footer&&item.footer()}
-                            </div>
-                        </Card>
-                    </List.Item>)}/> */}
-                {/* <Row>
-                    <Col  xl={6} lg={6} md={6} sm={24} xs={24}>
-                    </Col>
-                    <Col  xl={18} lg={18} md={18} sm={24} xs={24}>
-                        <div style={{border:'solid 1px #e6e5e2',borderRadus:8,padding:16}}>
-                            <Bar height={295} title="销售额趋势" data={salesData} />
-                        </div>
-                    </Col>
-                </Row> */}
-                <Card style={{width: '100%'}}
-                    // title={ExtraContent}
-                    // extra={ExtraContent}
-                    // tabList={tabList}
-                    // onTabChange={(key) => { this.onTabChange(key, 'key'); }}
-                  >
-                    <Tabs tabBarExtraContent={ExtraContent} defaultActiveKey="1">
-                        <TabPane tab="订单量" key="1">
-                            {orderContent}
-                        </TabPane>
-                        <TabPane tab="返货量" key="2">Content of Tab Pane 2</TabPane>
-                    </Tabs>
-                </Card>
-            </div>
+                        </Col>
+                    </Row> */}
+                    <Card style={{width: '100%'}}
+                        // title={ExtraContent}
+                        // extra={ExtraContent}
+                        // tabList={tabList}
+                        // onTabChange={(key) => { this.onTabChange(key, 'key'); }}
+                      >
+                        <Tabs tabBarExtraContent={ExtraContent} defaultActiveKey="1">
+                            <TabPane tab="订单量" key="1">
+                                {orderContent}
+                            </TabPane>
+                            <TabPane tab="返货量" key="2">Content of Tab Pane 2</TabPane>
+                        </Tabs>
+                    </Card>
+                </div>
+            </PageHeaderLayout>
             )
     }
 }

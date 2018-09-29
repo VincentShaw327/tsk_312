@@ -4,14 +4,22 @@
  *添加人:shaw
  **/
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router'
 import { Table, Menu, Icon, Badge, Dropdown,message,Divider,Popconfirm } from 'antd';
-import { TPostData } from '../../utils/TAjax';
+import { fetchDeviceTypeList } from 'actions/device'
+import { TPostData } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
-
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        deviceType: state.deviceType,
+    }
+}, )
 export default class TDeviceType extends Component {
 
     constructor( props ) {
@@ -29,7 +37,8 @@ export default class TDeviceType extends Component {
     }
 
     componentWillMount(){
-        this.getTableList();
+        // this.getTableList();
+        this.props.dispatch( fetchDeviceTypeList( { current: 1 }, ( respose ) => {} ) )
     }
 
     getTableList(que){
@@ -150,9 +159,20 @@ export default class TDeviceType extends Component {
 
 
     render() {
-        const {wsTypeList,tableDataList,loading,current,total,pageSize,updateFromItem,UModalShow}=this.state;
+        const {
+            wsTypeList,
+            tableDataList,
+            // loading,
+            current,
+            // total,
+            pageSize,
+            updateFromItem,
+            UModalShow
+        } = this.state;
+        const { deviceTypeList, total, loading } = this.props.deviceType;
         let Data={
-            list:tableDataList,
+            list:deviceTypeList,
+            // list:tableDataList,
             pagination:{total,current,pageSize}
         };
 
@@ -182,15 +202,11 @@ export default class TDeviceType extends Component {
                 dataIndex: 'Desc',
                 type: 'string'
             },
-            {
+            /*{
                 title: '修改时间',
                 dataIndex: 'UpdateDateTime',
                 type: 'string',
-                /*type: 'sort',
-                sorter: ( a, b ) => {
-                    return CpTime( a, b )
-                }*/
-            },
+            },*/
             {
                 title: '操作',
                 dataIndex: 'uMachineUUID',
@@ -264,33 +280,43 @@ export default class TDeviceType extends Component {
             }
         ];
 
-
+        const bcList = [{
+            title:"首页",
+            href: '/',
+            }, {
+            title: '设备管理',
+            href: '/',
+            }, {
+            title: '设备类别',
+        }];
         return (
-            <div className="cardContent">
-                {/* <SimpleQForm
-                    FormItem={RFormItem}
-                    submit={this.handleQuery}
+            <PageHeaderLayout title="设备类别" wrapperClassName="pageContent" BreadcrumbList={bcList}>
+                <div className="cardContent">
+                    {/* <SimpleQForm
+                        FormItem={RFormItem}
+                        submit={this.handleQuery}
                     /> */}
-                <CreateModal
-                    FormItem={CFormItem}
-                    submit={this.handleCreat.bind(this)}
-                />
-                <SimpleTable
-                    size="middle"
-                    loading={loading}
-                    data={Data}
-                    columns={Tcolumns}
-                    isHaveSelect={false}
-                    onChange={this.handleTableChange}
-                />
-                <UpdateModal
-                    FormItem={UFormItem}
-                    updateItem={updateFromItem}
-                    submit={this.handleUpdate.bind(this)}
-                    showModal={UModalShow}
-                    hideModal={this.toggleUModalShow}
-                />
-            </div>
+                    <CreateModal
+                        FormItem={CFormItem}
+                        submit={this.handleCreat.bind(this)}
+                    />
+                    <SimpleTable
+                        size="middle"
+                        loading={loading}
+                        data={Data}
+                        columns={Tcolumns}
+                        isHaveSelect={false}
+                        onChange={this.handleTableChange}
+                    />
+                    <UpdateModal
+                        FormItem={UFormItem}
+                        updateItem={updateFromItem}
+                        submit={this.handleUpdate.bind(this)}
+                        showModal={UModalShow}
+                        hideModal={this.toggleUModalShow}
+                    />
+                </div>
+            </PageHeaderLayout>
         )
     }
 }

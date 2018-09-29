@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { message, Menu, Icon, Row, Col, Card, Table, Divider,
     Form,DatePicker,Button,Select} from 'antd';
 import { TPostData } from '../../utils/TAjax';
@@ -6,11 +7,19 @@ const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 const { MonthPicker, RangePicker } = DatePicker;
 import ReactEcharts from 'echarts-for-react';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 import { Gauge } from '../../components/ant-design-pro/Charts';
 import { NumGauge } from '../../components/Chart';
 const FormItem = Form.Item;
 import TableExport from 'tableexport';
 
+
+@connect( ( state, props ) => {
+    return {
+        workcenter: state.workcenter,
+        Breadcrumb:state.Breadcrumb,
+    }
+}, )
 export default class TOEEAnalysis extends Component {
     constructor( props, context ) {
         super( props )
@@ -137,6 +146,7 @@ export default class TOEEAnalysis extends Component {
     }
 
     render() {
+        const {Breadcrumb}=this.props;
         const OEEData=this.generate();
 
         const columns = [
@@ -287,102 +297,104 @@ export default class TOEEAnalysis extends Component {
 
 
         return (
-            <div className="cardContent">
-                <Card style={{marginBottom:20}}>
-                    <Row gutter={16}>
-                        <Col className="gutter-row" span={6}>
-                            <div className="gutter-box"><span style={{ width: "40%" }}>车间:</span>
-                                <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
-                                    <Option value="-1" key="all">全部</Option>
-                                    {
-                                        this.state.workshopList.map((item,index)=>{
-                                                return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
-                                        })
-                                    }
-                                </Select>
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={6}>
-                            <div className="gutter-box"><span style={{ width: "40%" }}>工作中心:</span>
-                                <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
-                                    <Option value="-1" key="all">全部</Option>
-                                    {
-                                        this.state.workCenterList.map((item,index)=>{
-                                                return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
-                                        })
-                                    }
-                                </Select>
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={6}>
-                            <div className="gutter-box"><span style={{ width: "40%" }}>日期:</span>
-                                <DatePicker style={{ width: "60%" }} />
-                            </div>
-                        </Col>
-                        <Col className="gutter-row" span={6}>
-                            <div className="gutter-box">
-                                <Button type="primary" icon="search">查询</Button>
-                            </div>
-                        </Col>
-                    </Row>
-                </Card>
-                <div style={{border:'solid 0px #d7d9d8', marginBottom:30}}>
-                    <Row>
-                        <Col span={6} style={{border:'solid 0px'}}>
-                            <NumGauge
-                                {...NGauge1}
-                            />
-                        </Col>
-                        <Col span={6}>
-                            <div style={{border:'solid 0px'}}>
+            <PageHeaderLayout title="OEE分析报表" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
+                <div className="cardContent">
+                    <Card style={{marginBottom:20}}>
+                        <Row gutter={16}>
+                            <Col className="gutter-row" span={6}>
+                                <div className="gutter-box"><span style={{ width: "40%" }}>车间:</span>
+                                    <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
+                                        <Option value="-1" key="all">全部</Option>
+                                        {
+                                            this.state.workshopList.map((item,index)=>{
+                                                    return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
+                                            })
+                                        }
+                                    </Select>
+                                </div>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <div className="gutter-box"><span style={{ width: "40%" }}>工作中心:</span>
+                                    <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
+                                        <Option value="-1" key="all">全部</Option>
+                                        {
+                                            this.state.workCenterList.map((item,index)=>{
+                                                    return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
+                                            })
+                                        }
+                                    </Select>
+                                </div>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <div className="gutter-box"><span style={{ width: "40%" }}>日期:</span>
+                                    <DatePicker style={{ width: "60%" }} />
+                                </div>
+                            </Col>
+                            <Col className="gutter-row" span={6}>
+                                <div className="gutter-box">
+                                    <Button type="primary" icon="search">查询</Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Card>
+                    <div style={{border:'solid 0px #d7d9d8', marginBottom:30}}>
+                        <Row>
+                            <Col span={6} style={{border:'solid 0px'}}>
                                 <NumGauge
-                                    {...NGauge2}
+                                    {...NGauge1}
                                 />
-                            </div>
-                        </Col>
-                        <Col span={6}>
-                            <NumGauge
-                                {...NGauge3}
-                            />
-                        </Col>
-                        <Col span={6}>
-                            <NumGauge
-                                {...NGauge4}
-                            />
-                            {
-                                /*
-                                <Gauge
-                                      title="核销率"
-                                      height={164}
-                                      percent={87}
+                            </Col>
+                            <Col span={6}>
+                                <div style={{border:'solid 0px'}}>
+                                    <NumGauge
+                                        {...NGauge2}
                                     />
-                                <ReactEcharts
-                                    option={chartFour}
-                                    // style={{height:200}}
-                                    className='react_for_echarts' /> */
-                            }
-                        </Col>
-                    </Row>
+                                </div>
+                            </Col>
+                            <Col span={6}>
+                                <NumGauge
+                                    {...NGauge3}
+                                />
+                            </Col>
+                            <Col span={6}>
+                                <NumGauge
+                                    {...NGauge4}
+                                />
+                                {
+                                    /*
+                                    <Gauge
+                                          title="核销率"
+                                          height={164}
+                                          percent={87}
+                                        />
+                                    <ReactEcharts
+                                        option={chartFour}
+                                        // style={{height:200}}
+                                        className='react_for_echarts' /> */
+                                }
+                            </Col>
+                        </Row>
+                    </div>
+                    <div  style={{margin:'20px 0',overflow:'hidden'}}>
+                        <Form className="ProReMenu" style={{float:'right'}} layout="inline">
+                            <FormItem  label="导出">
+                                <div
+                                    className="exportMenuWrap"
+                                    id="exportOEERep"
+                                    style={{display:'flex'}}/>
+                            </FormItem>
+                        </Form>
+                    </div>
+                    <div id="OEETable">
+                        <Table
+                            columns={columns}
+                            dataSource={OEEData}
+                            bordered={true}
+                            size="small"
+                          />
+                    </div>
                 </div>
-                <div  style={{margin:'20px 0',overflow:'hidden'}}>
-                    <Form className="ProReMenu" style={{float:'right'}} layout="inline">
-                        <FormItem  label="导出">
-                            <div
-                                className="exportMenuWrap"
-                                id="exportOEERep"
-                                style={{display:'flex'}}/>
-                        </FormItem>
-                    </Form>
-                </div>
-                <div id="OEETable">
-                    <Table
-                        columns={columns}
-                        dataSource={OEEData}
-                        bordered={true}
-                        size="small"
-                      />
-                </div>
-            </div>
+            </PageHeaderLayout>
         )
     }
 }

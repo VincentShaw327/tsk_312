@@ -4,10 +4,16 @@ import ReactDOM from 'react-dom';
 import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import { Router, Route } from 'react-router';
+import { Provider } from 'react-redux'
 import hashHistory from './history';
 import App1 from './base/TIndexPage';
+// import Routes from './routes'
+import Routes from './Routes/routes'
 import './index.less';
-// console.log("React========",React);
+import configure from './store/configureStore'
+
+const store = configure({ config: global.gconfig })
+
 // 登录*/
 const Login = ( location, cb ) => {
     require.ensure( [], ( require ) => {
@@ -34,6 +40,14 @@ function isLogin( nextState, replaceState ) {
 
 
 // 工作中心
+const TWorkCenter = ( location, cb ) => {
+    require.ensure( [], ( require ) => {
+        cb( null, require( './pages/TFactory/TWorkCenter' )
+            .default )
+    }, 'TWorkCenter' )
+}
+
+// 工作中心详情
 const TWorkCenterDetail = ( location, cb ) => {
     require.ensure( [], ( require ) => {
         cb( null, require( './pages/TFactory/TWorkCenterDetail' )
@@ -67,6 +81,10 @@ const routes = (
     <LocaleProvider locale={zhCN}>
         <Router history={hashHistory}>
             <Route path="/" onEnter={isLogin} component={App1}>
+                <Route path="/TOrg_WorkCenter" getComponent={TWorkCenter} >
+                    <Route path="/TWorkCenterDetail" getComponent={TWorkCenterDetail} />
+                </Route>
+                <Route path="/TOrg_workshop" getComponent={TWorkCenterDetail} />
                 <Route path="/TWorkCenterDetail" getComponent={TWorkCenterDetail} />
                 <Route path="/TBomDetail" getComponent={TBomDetail} />
                 <Route path="/TUserDetails" getComponent={TUserDetails} />
@@ -78,8 +96,11 @@ const routes = (
     </LocaleProvider>
 )
 
-
+// console.log('Routes',Routes())
 ReactDOM.render(
-    routes,
+    <Provider store={store}>
+        <Routes />
+    </Provider>,
+    // routes,
     document.getElementById( 'root' ),
 )

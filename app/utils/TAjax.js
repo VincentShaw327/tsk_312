@@ -4,8 +4,10 @@ import {format} from 'upath';
 import {ENOPROTOOPT, EOPNOTSUPP} from 'constants';
 
 // let urlBase = 'http://localhost:8888';
-export let urlBase = 'http://localhost:9000';
+// export let urlBase = 'http://localhost:9000';
+export let urlBase = 'http://localhost:1111';
 export let mockUrlBase = 'http://localhost:1111';
+
 // export  let urlBase = 'http://192.168.200.5';
 // export  let urlBase = 'http://demo.mes.top-link.me';
 // urlBase;
@@ -92,7 +94,7 @@ export function TPostData(url, op, obj, cb, ecb) {
         body: JSON.stringify(reqObj),
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
-            'Accept-Type': 'application/json;charset=utf-8'
+            // 'Accept-Type': 'application/json;charset=utf-8'
         }
     }).then(checkStatus,err=>ecb(err)).then(parseJSON)
     //.then(data => ({ data }))

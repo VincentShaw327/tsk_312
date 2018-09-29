@@ -30,6 +30,7 @@ const webpackConfigBase = {
       controllers: path.join(__dirname, '/../app/controllers'),
       style: path.join(__dirname, '/../app/style'),
       images: path.join(__dirname, '/../app/images'),
+      base: path.join(__dirname, '/../app/base'),
     },
   },
   resolveLoader: {

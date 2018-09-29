@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { message, Menu, Icon, Row, Col, Card, Table, Divider,
     Form, DatePicker, Button, Select } from 'antd';
 import { TPostData } from '../../utils/TAjax';
@@ -6,8 +7,16 @@ const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 const FormItem = Form.Item;
 import TableExport from 'tableexport';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 import './index.less';
 
+
+@connect( ( state, props ) => {
+    return {
+        workcenter: state.workcenter,
+        Breadcrumb:state.Breadcrumb,
+    }
+}, )
 export default class TProductionReport extends Component {
     // 初始化页面常量 绑定事件方法
     constructor( props, context ) {
@@ -228,6 +237,7 @@ export default class TProductionReport extends Component {
     }
 
     render() {
+        const {Breadcrumb}=this.props;
 
         const columns = [
             {
@@ -334,77 +344,79 @@ export default class TProductionReport extends Component {
         const productData=this.generate();
 
         return (
-            <div className="cardContent">
-              <Card style={{marginBottom:20}}>
-                  <Row gutter={16}>
-                      <Col className="gutter-row" span={5}>
-                          <div className="gutter-box"><span style={{ width: "40%" }}>车间:</span>
-                              <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
-                                  <Option value="-1" key="all">全部</Option>
-                                  {
-                                      this.state.workshopList.map((item,index)=>{
-                                              return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
-                                      })
-                                  }
-                              </Select>
-                          </div>
-                      </Col>
-                      <Col className="gutter-row" span={5}>
-                          <div className="gutter-box"><span style={{ width: "40%" }}>产品:</span>
-                              <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
-                                  <Option value="-1" key="all">全部</Option>
-                                  {
-                                      this.state.ProModelList.map((item,index)=>{
-                                              return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
-                                      })
-                                  }
-                              </Select>
-                          </div>
-                      </Col>
-                      <Col className="gutter-row" span={5}>
-                          <div className="gutter-box"><span style={{ width: "40%" }}>工作中心:</span>
-                              <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
-                                  <Option value="-1" key="all">全部</Option>
-                                  {
-                                      this.state.workCenterList.map((item,index)=>{
-                                              return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
-                                      })
-                                  }
-                              </Select>
-                          </div>
-                      </Col>
-                      <Col className="gutter-row" span={5}>
-                          <div className="gutter-box"><span style={{ width: "40%" }}>日期:</span>
-                              <DatePicker style={{ width: "60%" }} />
-                          </div>
-                      </Col>
-                      <Col className="gutter-row" span={4}>
-                          <div className="gutter-box">
-                              <Button type="primary" icon="search">查询</Button>
-                          </div>
-                      </Col>
-                  </Row>
-              </Card>
-              <div  style={{margin:'20px 0',overflow:'hidden'}}>
-                  <Form className="ProReMenu" style={{float:'right'}} layout="inline">
-                      <FormItem  label="导出">
-                          <div
-                              className="exportMenuWrap"
-                              id="exportProductRep"
-                              style={{display:'flex'}}/>
-                      </FormItem>
-                  </Form>
-              </div>
-              <div id="productionTable">
-                  <Table
-                      columns={columns}
-                      dataSource={productData}
-                      // dataSource={this.state.dispatchingList}
-                      bordered={true}
-                      size="small"
-                  />
-              </div>
-            </div>
+            <PageHeaderLayout title="生产报表" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
+                <div className="cardContent">
+                  <Card style={{marginBottom:20}}>
+                      <Row gutter={16}>
+                          <Col className="gutter-row" span={5}>
+                              <div className="gutter-box"><span style={{ width: "40%" }}>车间:</span>
+                                  <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
+                                      <Option value="-1" key="all">全部</Option>
+                                      {
+                                          this.state.workshopList.map((item,index)=>{
+                                                  return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
+                                          })
+                                      }
+                                  </Select>
+                              </div>
+                          </Col>
+                          <Col className="gutter-row" span={5}>
+                              <div className="gutter-box"><span style={{ width: "40%" }}>产品:</span>
+                                  <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
+                                      <Option value="-1" key="all">全部</Option>
+                                      {
+                                          this.state.ProModelList.map((item,index)=>{
+                                                  return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
+                                          })
+                                      }
+                                  </Select>
+                              </div>
+                          </Col>
+                          <Col className="gutter-row" span={5}>
+                              <div className="gutter-box"><span style={{ width: "40%" }}>工作中心:</span>
+                                  <Select defaultValue="-1" style={{ width: "60%" }} onChange={this.handleChange}>
+                                      <Option value="-1" key="all">全部</Option>
+                                      {
+                                          this.state.workCenterList.map((item,index)=>{
+                                                  return (<Option value={item.UUID} key={index}>{item.Name}</Option>)
+                                          })
+                                      }
+                                  </Select>
+                              </div>
+                          </Col>
+                          <Col className="gutter-row" span={5}>
+                              <div className="gutter-box"><span style={{ width: "40%" }}>日期:</span>
+                                  <DatePicker style={{ width: "60%" }} />
+                              </div>
+                          </Col>
+                          <Col className="gutter-row" span={4}>
+                              <div className="gutter-box">
+                                  <Button type="primary" icon="search">查询</Button>
+                              </div>
+                          </Col>
+                      </Row>
+                  </Card>
+                  <div  style={{margin:'20px 0',overflow:'hidden'}}>
+                      <Form className="ProReMenu" style={{float:'right'}} layout="inline">
+                          <FormItem  label="导出">
+                              <div
+                                  className="exportMenuWrap"
+                                  id="exportProductRep"
+                                  style={{display:'flex'}}/>
+                          </FormItem>
+                      </Form>
+                  </div>
+                  <div id="productionTable">
+                      <Table
+                          columns={columns}
+                          dataSource={productData}
+                          // dataSource={this.state.dispatchingList}
+                          bordered={true}
+                          size="small"
+                      />
+                  </div>
+                </div>
+            </PageHeaderLayout>
         )
     }
 }
