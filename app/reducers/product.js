@@ -6,7 +6,7 @@ var Random = Mock.Random;
 import { message } from 'antd'
 
 const productModelListState = {
-  bomlist: [],
+  list: [],
   currentPage: 1,
   pageCount: 0,
   pageSize: 20,
@@ -32,13 +32,21 @@ export const productModel = handleActions({
             list=res.objectlist.map((item,index)=>{
                 return{
                     UUID:item.UUID,
-                    index:index,
-                    Name:Mock.mock('@cname')
+                    key:index,
+                    UUID : item.UUID,
+                    TypeUUID: item.TypeUUID,
+                    Image:item.Image,
+                    Name:'产品_'+index,
+                    Number:"product_"+index,
+                    SN:Mock.mock('@word'),
+                    Version:'Version~',
+                    Desc:'~',
+                    UpdateDateTime:Mock.mock('@datetime'),
                 }
             })
             res.objectlist=list;
             res.totalcount=Mock.mock('@natural(0, 65)');
-            return { workshoplist:list,total:res.totalcount, loading: false }
+            return { list:list,total:res.totalcount, loading: false }
         }
     }
   },

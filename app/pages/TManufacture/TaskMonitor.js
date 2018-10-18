@@ -70,9 +70,9 @@ export default class taskMonitor extends Component {
 
     componentDidMount() {
         // console.log('查询',this.keyWordInput.value);
-        this.timer=setInterval(()=>{
+        /*this.timer=setInterval(()=>{
             this.props.dispatch( fetchTaskList( {}, ( respose ) => {} ))
-        },5000)
+        },5000)*/
 
     }
 
@@ -483,10 +483,15 @@ export default class taskMonitor extends Component {
 
         const columns = [
             {
-                title: '派工单号',
+                title: '工单号',
                 dataIndex: 'lotJobID',
                 key: 'lotJobID'
             },
+            /*{
+                title: '订单号',
+                dataIndex: 'orderID',
+                key: 'lotJobID'
+            },*/
             {
                 title: '产品',
                 dataIndex: 'ProductModelName',
@@ -527,7 +532,7 @@ export default class taskMonitor extends Component {
               dataIndex: 'FinishNumber',
               type: 'sort'
             },
-            {
+            /*{
               title: '次品数量',
               dataIndex: 'RejectNumber',
               type: 'sort'
@@ -539,13 +544,13 @@ export default class taskMonitor extends Component {
               render:(val,record)=>{
                   return(<Progress type="circle" percent={val} width={40} />)
               }
-            },
+            },*/
             /*{
               title: '派工时间',
               dataIndex: 'PlanStartDateTime',
               type: 'string'
             },*/
-            {
+            /*{
               title: '开始时间',
               dataIndex: 'StartDateTime',
               type: 'string'
@@ -559,7 +564,7 @@ export default class taskMonitor extends Component {
               title: '计划完成时间',
               dataIndex: 'PlanFinishDateTime',
               type: 'string'
-            },
+            },*/
             /*{
               title: '实际完成',
               dataIndex: 'FinishDateTime',

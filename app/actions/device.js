@@ -47,3 +47,14 @@ export const fetchDeviceTypeList = !gconfig.isDemo_dev?createAjaxAction(
     requestDeviceTypeList,
     recevieDeviceTypeList
 )
+
+/*Devicee点检记录数据请求*/
+export const fetchDeviceCheckList = !gconfig.isDemo_dev?createAjaxAction(
+    device.check,
+    createAction('request device check list'),
+    createAction('receive device check list')
+):fakeAjaxAction(
+    device.check,
+    createAction('request device check list'),
+    createAction('receive device check list')
+)

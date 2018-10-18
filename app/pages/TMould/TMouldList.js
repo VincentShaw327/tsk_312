@@ -270,16 +270,20 @@ export default class MouldList extends Component {
                 dataIndex: 'UUID',
                 render:(txt,record)=>{
                     return <span>
-                        <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
-                        <Divider type="vertical"/>
-                        <Popconfirm
-                            placement="topRight"
-                            title="确定删除此项数据？"
-                            onConfirm={this.handleDelete.bind(this,record)}
-                            okText="确定" cancelText="取消">
-                            <a href="#">删除</a>
-                        </Popconfirm>
-                    </span>
+                              <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
+                              <Divider type="vertical"/>
+                              <a>寿命分析</a>
+                              <Divider type="vertical"/>
+                              <a>模具履历</a>
+                              <Divider type="vertical"/>
+                              <Popconfirm
+                                  placement="topRight"
+                                  title="确定删除此项数据？"
+                                  onConfirm={this.handleDelete.bind(this,record)}
+                                  okText="确定" cancelText="取消">
+                                  <a href="#">删除</a>
+                              </Popconfirm>
+                          </span>
                 }
             }
         ];

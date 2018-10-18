@@ -4,9 +4,10 @@
  *添加人:shaw
  **/
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router'
 import { Table, Menu, Icon, Badge, Dropdown,Popover,message,Divider,Popconfirm } from 'antd';
-// import FeatureSetConfig from '../../components/TCommon/tableConfig';
+import { fetchMaterialModelList } from 'actions/wms';
 import { TPostData ,urlBase} from '../../utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
@@ -14,8 +15,14 @@ import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 
-let seft
 
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        Breadcrumb:state.Breadcrumb,
+        mtrlModel: state.mtrlModel,
+    }
+}, )
 export default class TMaterialModel extends Component {
 
     constructor( props ) {
@@ -31,12 +38,13 @@ export default class TMaterialModel extends Component {
             loading:true,
         }
         this.url = '/api/TWms/material_model';
-        seft = this;
     }
 
     componentWillMount() {
-        this.getTableList();
-        this.getMtrlTypeList();
+        // this.getTableList();
+        // this.getMtrlTypeList();
+        this.props.dispatch( fetchMaterialModelList( { current: 1 }, ( respose ) => {} ) )
+
     }
 
     getTableList(que){
@@ -180,10 +188,21 @@ export default class TMaterialModel extends Component {
 
 
     render() {
-        let Feature = this.feature;
-        const {tableDataList,MtrlTypeList,loading,current,total,pageSize,updateFromItem,UModalShow}=this.state;
+        const {
+            tableDataList,
+            MtrlTypeList,
+            // loading,
+            current,
+            // total,
+            pageSize,
+            updateFromItem,
+            UModalShow
+        } = this.state;
+        const {Breadcrumb,detail}=this.props;
+        const { list, total, loading } = this.props.mtrlModel;
         let Data={
-            list:tableDataList,
+            // list:tableDataList,
+            list:list,
             pagination:{total,current,pageSize}
         };
 

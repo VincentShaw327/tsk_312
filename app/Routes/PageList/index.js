@@ -4,7 +4,7 @@ import{
     TWorkShopType,
     TMaterialType,
     TDeviceType,
-    TWorkCenterType,
+    // TWorkCenterType,
     TAlarmType,
     TDefectiveType
 }from './basic'
@@ -13,14 +13,20 @@ import{
     DevStateReport,
     ProductionTracking,
     ProductionReport,
-    TOEEAnalysis
+    TOEEAnalysis,
+    STOEE,
+    StampingFreq,
+    DowntimeMon,
+    DowntimeWeek,
+    DevRunTimeReport,
 }from './report'
 
 import{
     TWorkshop1,
     TWorkshop2,
     TWorkshop3,
-    TWorkshop4
+    TWorkshop4,
+    TWorkshopScada
 }from './scada'
 
 import {
@@ -31,7 +37,7 @@ import {
 
 import {
     TWorkShopList,
-    TWorkCenter
+    // TWorkCenter
 }from './organization'
 
 import {
@@ -59,18 +65,31 @@ import {
 import {
     // TDeviceType,
     TDeviceModel,
-    TDeviceList
+    TDeviceList,
+    TDeviceMaintainHis
 }from './device'
+
+import {
+    TWorkCenterType,
+    TWorkCenter,
+}from './work'
+
+import {
+    MtrlLossCol,
+    MtrlLossTend,
+    MtrlLossMon,
+    MtrlLossWeek
+}from './mtrlloss'
 
 export{
     TWorkShopList,
-    TWorkCenter,
+    // TWorkCenter,
 
     TFactoryType,
     TWorkShopType,
     TMaterialType,
     // TDeviceType,
-    TWorkCenterType,
+    // TWorkCenterType,
     TAlarmType,
     TDefectiveType,
 
@@ -78,11 +97,17 @@ export{
     ProductionTracking,
     ProductionReport,
     TOEEAnalysis,
+    STOEE,
+    StampingFreq,
+    DowntimeMon,
+    DowntimeWeek,
+    DevRunTimeReport,
 
     TWorkshop1,
     TWorkshop2,
     TWorkshop3,
     TWorkshop4,
+    TWorkshopScada,
 
     TManufactureTask,
     TaskDispatch,
@@ -104,5 +129,14 @@ export{
 
     TDeviceType,
     TDeviceModel,
-    TDeviceList
+    TDeviceList,
+    TDeviceMaintainHis,
+
+    MtrlLossCol,
+    MtrlLossTend,
+    MtrlLossMon,
+    MtrlLossWeek,
+
+    TWorkCenterType,
+    TWorkCenter,
 }

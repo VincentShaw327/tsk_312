@@ -24,7 +24,7 @@ import {
 
 // bom
 import {
-  bom_list_data,
+  BomList,
   bomItem_list_data
 } from './bom'
 // bom
@@ -41,6 +41,7 @@ import {
   device,
   deviceModel,
   deviceType,
+  DevCheck
 } from './device'
 // bom
 import {
@@ -69,7 +70,9 @@ import {
 // bom
 import {
   productReportRata,
-  deviceReportData
+  deviceReportData,
+  punchFreq,
+
 } from './report'
 // bom
 import {
@@ -88,7 +91,9 @@ import {
   mtrlType,
 } from './wms'
 
-
+import{
+  MtrlLossCollate
+} from './mtrlloss'
 
 const rootReducer = combineReducers( {
     routing,
@@ -104,7 +109,7 @@ const rootReducer = combineReducers( {
 
     basic_type_data,
 
-    bom_list_data,
+    BomList,
     bomItem_list_data,
     process,
     processItem,
@@ -114,6 +119,7 @@ const rootReducer = combineReducers( {
     device,
     deviceModel,
     deviceType,
+    DevCheck,
     workshop,
     workshopType,
     factoryType,
@@ -125,6 +131,7 @@ const rootReducer = combineReducers( {
     productModel,
     productReportRata,
     deviceReportData,
+    punchFreq,
     UserAccount,
     UserGroup,
     UserAuth,
@@ -132,6 +139,8 @@ const rootReducer = combineReducers( {
     warning_item_data,
     mtrlModel,
     mtrlType,
+
+    MtrlLossCollate
 } );
 
 export default rootReducer;

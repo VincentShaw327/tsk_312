@@ -8,7 +8,7 @@ export const TDeviceType={
         }, 'TDeviceType' )
     }
 }
-// 设备列表
+// 设备型号
 export const TDeviceModel={
     path:'/TDeviceModel',
     component:( location, cb ) => {
@@ -26,5 +26,15 @@ export const TDeviceList={
             cb( null, require( '../../pages/TDevice/TDeviceList' )
                 .default )
         }, 'TDeviceType' )
+    }
+}
+// 设备保养记录
+export const TDeviceMaintainHis={
+    path:'/dev_maintain',
+    component:( location, cb ) => {
+        require.ensure( [], ( require ) => {
+            cb( null, require( '../../pages/TDevice/TMaintainHistoryList' )
+                .default )
+        }, 'TDeviceMaintainHis' )
     }
 }

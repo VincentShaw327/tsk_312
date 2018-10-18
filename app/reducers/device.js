@@ -168,3 +168,63 @@ export const deviceType = handleActions({
 
 
 }, DeviceTypeListState)
+
+const devCheckState = {
+  list: [],
+  currentPage: 1,
+  pageCount: 0,
+  pageSize: 20,
+  totalCount: 0,
+}
+export const DevCheck = handleActions({
+  'request device check list'(state, action) {
+    return { ...state, loading: true }
+  },
+  'receive device check list'(state, action) {
+    const { req, res } = action.payload
+    let list=[];
+    if (hasResponseError(res)) {
+      message.error(res.msg)
+      return { ...state, loading: false }
+    }
+    else{
+        if(!gconfig.isDemo_dev){
+            return { obj:res.obj.objectlist, loading: false }
+        }
+        else{
+            list=res.objectlist.map((item,index)=>{
+                return{
+                    UUID:item.UUID,
+                    key:index,
+                    'Name|1':['注塑设备','冲压设备','自动组装设备'],
+
+                    DeviceName:"设备_"+index,
+                    DeviceID:"DEV_"+index,
+
+                    checkItem:`项目_${Mock.mock('@natural(0, 10)')}`,
+                    // FactoryUUID: item.FactoryUUID,
+                    // TypeUUID: item.TypeUUID,
+                    // Name:item.Name,
+                    ID:'devType_'+index,
+                    Number:'ws_'+index,
+                    'TypeName|1':['自动组装车间','注塑车间','冲压车间'], //类别名称
+                    time:Random.datetime(),
+                    Desc:'-',
+                    Modifier:Mock.mock('@cname()'),
+                    Founder:Mock.mock('@cname()'),
+                    CreateTime:Random.datetime(),
+                    UpdateDateTime:Random.now(),
+                    // Note:item.Note,
+                    // TypeID:item.TypeID, //类别编号
+                }
+            })
+            list=Mock.mock(list);
+            res.objectlist=list;
+            res.totalcount=Mock.mock('@natural(0, 65)');
+            return { list:list,total:res.totalcount, loading: false }
+        }
+    }
+  },
+
+
+}, DeviceTypeListState)

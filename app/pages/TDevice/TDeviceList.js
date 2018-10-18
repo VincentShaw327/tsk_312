@@ -220,9 +220,7 @@ export default class DeviceList extends Component {
             // total,
             pageSize,updateFromItem,UModalShow
         }=this.state;
-
-        const {detail}=this.props;
-        const {Breadcrumb}=this.props;
+        const {Breadcrumb,detail}=this.props;
         const { list, total, loading } = this.props.device;
         let Data={
             // list:tableDataList,

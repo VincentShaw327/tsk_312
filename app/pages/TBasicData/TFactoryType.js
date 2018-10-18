@@ -293,7 +293,8 @@ export default class TFactoryType extends Component {
             title: '工厂类别',
           } ];
         return (
-            <PageHeaderLayout title="物料类别" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
+            <PageHeaderLayout title="物料类别" wrapperClassName="pageContent"
+              BreadcrumbList={Breadcrumb.BCList}>
                 <div className="cardContent">
                     {/* <Feature /> */}
                     {/* <SimpleQForm

@@ -13,7 +13,7 @@ const BOMListState = {
   totalCount: 0,
 }
 
-export const bom_list_data = handleActions({
+export const BomList = handleActions({
   'request bom list'(state, action) {
     return { ...state, loading: true }
   },
@@ -25,6 +25,7 @@ export const bom_list_data = handleActions({
       return { ...state, loading: false }
     }
     else{
+      console.log('receive bom list',res)
         if(!gconfig.isDemo_dev){
             return { obj:res.obj.objectlist, loading: false }
         }
@@ -32,13 +33,23 @@ export const bom_list_data = handleActions({
             list=res.objectlist.map((item,index)=>{
                 return{
                     UUID:item.UUID,
-                    index:index,
-                    Name:Mock.mock('@cname')
+                    key:index,
+                    Name:'物料_'+index,
+                    // Name:Mock.mock('@cname')
+                    ID: "mtrl_"+index,
+                    Version: "v~1.0.1",
+                    ProductModelID: Mock.mock('@word'),
+                    ProductModelSN: Mock.mock('@word'),
+                    ProductModelName: '-',
+                    Desc: '-',
+                    Note: '-',
+                    UpdateDateTime: Random.datetime(),
+                    Status: Mock.mock('@natural(0, 3)'),
                 }
             })
             res.objectlist=list;
             res.totalcount=Mock.mock('@natural(0, 65)');
-            return { workshoplist:list,total:res.totalcount, loading: false }
+            return { bomlist:list,total:res.totalcount, loading: false }
         }
     }
   },

@@ -4,14 +4,24 @@
  *添加人:shaw
  **/
  import React, { Component } from 'react'
+ import { connect } from 'react-redux'
  import { hashHistory, Link } from 'react-router'
 import { Table, Menu, Icon, Badge, Dropdown,Popover,message,Divider,Popconfirm } from 'antd';
- // import FeatureSetConfig from '../../components/TCommon/tableConfig';
+ import { fetchProductModel } from 'actions/product';
  import { TPostData,urlBase } from '../../utils/TAjax';
  import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
+
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        Breadcrumb:state.Breadcrumb,
+        productModel: state.productModel,
+    }
+}, )
 export default class ProductModel extends Component {
 
     constructor( props ) {
@@ -30,6 +40,8 @@ export default class ProductModel extends Component {
 
     componentWillMount(){
         this.getTableList();
+        this.props.dispatch( fetchProductModel( { current: 1 }, ( respose ) => {} ) )
+
     }
 
     getTableList(que){
@@ -160,9 +172,20 @@ export default class ProductModel extends Component {
 
     render() {
         // let Feature=this.feature;
-        const {tableDataList,loading,current,total,pageSize,updateFromItem,UModalShow}=this.state;
+        const {
+            tableDataList,
+            // loading,
+            current,
+            // total,
+            pageSize,
+            updateFromItem,
+            UModalShow
+        }=this.state;
+        const {Breadcrumb}=this.props;
+        const { list, total, loading } = this.props.productModel;
         let Data={
-            list:tableDataList,
+            // list:tableDataList,
+            list:list,
             pagination:{total,current,pageSize}
         };
 
@@ -321,6 +344,8 @@ export default class ProductModel extends Component {
         ];
 
         return (
+          <PageHeaderLayout title="产品型号" wrapperClassName="pageContent"
+            BreadcrumbList={Breadcrumb.BCList}>
             <div className="cardContent">
                 {/* <Feature /> */}
                 <SimpleQForm
@@ -347,6 +372,7 @@ export default class ProductModel extends Component {
                     hideModal={this.toggleUModalShow}
                 />
             </div>
+          </PageHeaderLayout>
         )
     }
 }

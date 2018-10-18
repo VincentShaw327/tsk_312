@@ -4,8 +4,10 @@
  *添加人:shaw
  **/
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router';
 import { Button, Icon, Popover,message,Breadcrumb,Table,Card,Row,Col,Select,Input,Popconfirm  } from 'antd';
+import { fetchBOMList } from 'actions/bom';
 import { TPostData,urlBase } from '../../utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
@@ -14,6 +16,14 @@ import TBomDetail from './TBomDetail';
 const Option = Select.Option;
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 
+
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        Breadcrumb:state.Breadcrumb,
+        BomList: state.BomList,
+    }
+}, )
 export default class TBomList extends Component {
     constructor( props ) {
         super( props )
@@ -38,8 +48,10 @@ export default class TBomList extends Component {
     }
 
     componentWillMount() {
-        this.getTableList();
-        this.getProModelList();
+        // this.getTableList();
+        // this.getProModelList();
+        this.props.dispatch( fetchBOMList( { current: 1 }, ( respose ) => {} ) )
+
     }
 
     getTableList(){
@@ -198,9 +210,23 @@ export default class TBomList extends Component {
 
     render() {
         const {detail}=this.props;
-        const {tableDataList,ProModelList,loading,current,total,pageSize,updateFromItem,UModalShow,showDetal,detailID,detailMessage}=this.state;
+        const {
+          tableDataList,
+          ProModelList,
+          // loading,
+          current,
+          // total,
+          pageSize,
+          updateFromItem,
+          UModalShow,
+          showDetal,
+          detailID,
+          detailMessage
+        } = this.state;
+        const { bomlist, total, loading } = this.props.BomList;
         let Data={
-            list:tableDataList,
+            // list:tableDataList,
+            list:bomlist,
             pagination:{total,current,pageSize}
         };
 

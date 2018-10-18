@@ -45,7 +45,6 @@ export const productReportRata = handleActions({
 
 }, ProductReportState)
 
-
 const DeviceReportState = {
   bomlist: [],
   currentPage: 1,
@@ -85,3 +84,46 @@ export const deviceReportData = handleActions({
 
 
 }, DeviceReportState)
+
+const punchFreqState = {
+  list: [],
+  currentPage: 1,
+  pageCount: 0,
+  pageSize: 20,
+  totalCount: 0,
+}
+export const punchFreq = handleActions({
+  'request punch freq list'(state, action) {
+    return { ...state, loading: true }
+  },
+  'receive punch freq list'(state, action) {
+    const { req, res } = action.payload
+    let list=[];
+    if (hasResponseError(res)) {
+      message.error(res.msg)
+      return { ...state, loading: false }
+    }
+    else{
+        if(!gconfig.isDemo_dev){
+            return { obj:res.obj.objectlist, loading: false }
+        }
+        else{
+            list=res.objectlist.map((item,index)=>{
+                return{
+                    UUID:item.UUID,
+                    key:index,
+                    devName:'设备_'+index,
+                    devID:'dev_'+index,
+                    moldID:'mold_'+index,
+                    date: Random.date(),
+                    freq:Mock.mock('@natural(500000, 700000)'),
+                    product:'产品_'+index
+                }
+            })
+            res.objectlist=list;
+            res.totalcount=Mock.mock('@natural(0, 65)');
+            return { list:list,total:res.totalcount, loading: false }
+        }
+    }
+  },
+}, punchFreqState)

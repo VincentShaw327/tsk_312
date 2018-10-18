@@ -5,7 +5,8 @@ import { Layout, Menu, Icon, Input, Row,
 // import LOGO from '../../images/T-3.png';
 // import LOGO from '../../images/_TOP-STAR-LOGO.png';
 // import LOGO from '../../images/_TOP-STAR-LOGO_01.jpg';
-import LOGO from '../../images/_TOP-STAR-LOGO_02.jpg';
+// import LOGO from '../../images/_TOP-STAR-LOGO_02.jpg';
+import LOGO from '../../images/logo.png';
 import styles from './THeader.less';
 import HeaderSearch from '../../components/ant-design-pro/HeaderSearch';
 const Option = AutoComplete.Option;

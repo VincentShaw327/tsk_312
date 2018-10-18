@@ -24,7 +24,7 @@ export const fetchBOMList = !gconfig.isDemo_dev?createAjaxAction(
 
 /*BOM item列表数据请求*/
 export const requestBOMItemList = createAction('request bom item list');
-export const recevieBOMList = createAction('receive bom item list');
+export const recevieBOMItemList = createAction('receive bom item list');
 export const fetchBOMItemList = !gconfig.isDemo_dev?createAjaxAction(
     bom.bom_item,
     requestBOMItemList,

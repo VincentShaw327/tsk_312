@@ -1,0 +1,108 @@
+import React, { Component } from 'react';
+import { Chart, Axis, Tooltip, Geom ,Legend} from 'bizcharts';
+import { DataView } from '@antv/data-set';
+import Debounce from 'lodash-decorators/debounce';
+import Bind from 'lodash-decorators/bind';
+import autoHeight from '../autoHeight';
+// import styles from '../index.less';
+
+@autoHeight()
+class Polyline extends Component {
+  state = {
+    autoHideXLabels: false,
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.resize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize);
+  }
+
+  @Bind()
+  @Debounce(400)
+  resize() {
+    if (!this.node) {
+      return;
+    }
+    const canvasWidth = this.node.parentNode.clientWidth;
+    const { data = [], autoLabel = true } = this.props;
+    if (!autoLabel) {
+      return;
+    }
+    const minWidth = data.length * 30;
+    const { autoHideXLabels } = this.state;
+
+    if (canvasWidth <= minWidth) {
+      if (!autoHideXLabels) {
+        this.setState({
+          autoHideXLabels: true,
+        });
+      }
+    } else if (autoHideXLabels) {
+      this.setState({
+        autoHideXLabels: false,
+      });
+    }
+  }
+
+  handleRoot = (n) => {
+    this.root = n;
+  };
+
+  handleRef = (n) => {
+    this.node = n;
+  };
+
+  render() {
+    const {
+      height,
+      title,
+      forceFit = true,
+      data,
+      color = 'rgba(24, 144, 255, 0.85)',
+      padding,
+    } = this.props;
+
+    const { autoHideXLabels } = this.state;
+
+    const dv = new DataView();
+    dv.source(data).transform({
+      type: 'fold',
+      fields: [ '车间总停机次数', '设备一' ], // 展开字段集
+      key: 'city', // key字段
+      value: 'temperature', // value字段
+    });
+    console.log(dv);
+    const cols = {
+      month: {
+        range: [ 0, 1 ]
+      }
+    }
+
+    return (
+      <div  style={{ height }} ref={this.handleRoot}>
+        <div ref={this.handleRef}>
+          {title && <h4 style={{ marginBottom: 20 }}>{title}</h4>}
+          <Chart
+            scale={cols}
+            height={title ? height - 41 : height}
+            forceFit={forceFit}
+            data={dv}
+            padding={padding || 'auto'}
+          >
+            <Legend />
+             <Axis name="month" />
+             <Axis name="temperature" label={{formatter: val => `${val}/次`}}/>
+             <Tooltip crosshairs={{type : "y"}}/>
+             <Geom type="line" position="month*temperature" size={2} color={'city'} />
+             <Geom type='point' position="month*temperature" size={4} shape={'circle'} color={'city'} style={{ stroke: '#fff', lineWidth: 1}} />
+          </Chart>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Polyline;

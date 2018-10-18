@@ -6,7 +6,7 @@ var Random = Mock.Random;
 import { message } from 'antd'
 
 const materialModelState = {
-  mtrlModelList: [],
+  list: [],
   currentPage: 1,
   pageCount: 0,
   pageSize: 20,
@@ -31,13 +31,22 @@ export const mtrlModel = handleActions({
             list=res.objectlist.map((item,index)=>{
                 return{
                     UUID:item.UUID,
-                    index:index,
-                    Name:Mock.mock('@cname')
+                    key: index,
+                    TypeUUID: item.TypeUUID,
+                    Image: item.Image,
+                    Name: '物料_'+index,
+                    Number:"mtrl_"+index,
+                    'TypeName|1':['类型一','类型二','类型三'],
+                    Desc: '-',
+                    UpdateDateTime:Mock.mock('@datetime'),
+                    Status: 1,
+                    TypeID: "-",
+                    Note: "-",
                 }
             })
             res.objectlist=list;
             res.totalcount=Mock.mock('@natural(0, 65)');
-            return { mtrlModelList:list,total:res.totalcount, loading: false }
+            return { list:list,total:res.totalcount, loading: false }
         }
     }
   },

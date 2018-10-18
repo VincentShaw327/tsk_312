@@ -37,3 +37,14 @@ export const TWorkshop4={
         }, 'TWorkshop4' )
     }
 }
+
+
+export const TWorkshopScada={
+    path:'/scada',
+    component:( location, cb ) => {
+        require.ensure( [], ( require ) => {
+            cb( null, require( '../../pages/TScada/TScadaWorkShop_Auto' )
+                .default )
+        }, 'TWorkshopScada' )
+    }
+}
