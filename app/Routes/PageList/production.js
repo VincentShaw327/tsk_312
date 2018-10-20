@@ -26,5 +26,24 @@ export const TaskMonitor={
             cb( null, require( '../../pages/TManufacture/TaskMonitor' )
                 .default )
         }, 'TaskMonitor' )
+    },
+    children:{
+        path:'/workorder_detail',
+        component:( location, cb ) => {
+            require.ensure( [], ( require ) => {
+                cb( null, require( '../../pages/TManufacture/workOrderDetail' )
+                    .default )
+            }, 'workorder_detail' )
+        }
     }
 }
+
+// export const OrderDetail={
+//     path:'/workorder_detail',
+//     component:( location, cb ) => {
+//         require.ensure( [], ( require ) => {
+//             cb( null, require( '../../pages/TManufacture/workOrderDetail' )
+//                 .default )
+//         }, 'orderDetail' )
+//     }
+// }

@@ -39,6 +39,9 @@ export default (() => {
           {
             name:'投料计划', key: 'consumPlan',url:'consumPlan'
           },
+          {
+            name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
+          },
         ],
       },
       {
@@ -179,9 +182,9 @@ export default (() => {
           {
             name:'设备运行时间统计', key: 'dev_run_time',url:'dev_run_time',
           },
-          {
+          /*{
             name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
-          },
+          },*/
           {
             name:'生产报表', key: 'stampingFreq',url:'stampingFreq',
           },

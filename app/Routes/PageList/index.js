@@ -32,7 +32,8 @@ import{
 import {
     TManufactureTask,
     TaskDispatch,
-    TaskMonitor
+    TaskMonitor,
+    // OrderDetail
 }from './production'
 
 import {
@@ -112,6 +113,7 @@ export{
     TManufactureTask,
     TaskDispatch,
     TaskMonitor,
+    // OrderDetail,
 
     MoldManagement,
     MoldList,

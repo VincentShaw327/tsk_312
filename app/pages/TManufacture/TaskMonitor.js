@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {  Link } from 'react-router';
 import { connect } from 'react-redux';
 import {Table, Button,Radio, Row, Col, Divider,Select,
      List, Card, DatePicker,Input,message,Form,Switch,Popconfirm,Modal ,Progress} from 'antd';
@@ -79,6 +80,10 @@ export default class taskMonitor extends Component {
     componentWillUnmount() {
         // client.end()
         clearInterval(this.timer)
+    }
+
+    toggleShow=()=>{
+      this.setState({showDetail:true});
     }
 
 
@@ -478,7 +483,7 @@ export default class taskMonitor extends Component {
             ProModelID,WorkshopID,keyWord,dispatchLotState,
             finishedNum,rejectNum
         }=this.state;
-        const {Breadcrumb}=this.props;
+        const {Breadcrumb,children}=this.props;
         const { productTaskList, total, loading } = this.props.productTask;
 
         const columns = [
@@ -607,7 +612,9 @@ export default class taskMonitor extends Component {
                 // multipleType: "dispatch",
                 render:(e1,record)=>{
                     let operate='';
-                    return (<a>工单详情</a>)
+                    // return (<a onClick={this.toggleShow}>工单详情</a>)
+                    // return (<a href="/workorder_detail">工单详情</a>)
+                    return (<Link to="/workorder_detail">工单详情</Link>)
                 }
             }
         ];
@@ -977,16 +984,30 @@ export default class taskMonitor extends Component {
         );
 
         const workOrderDetail=(
-            <div>详情</div>
+            <div >
+              <Card>neirong</Card>
+              详情</div>
+        )
+
+        const action=(
+          <Button type="primary">
+            <Link to='/task_monitor'>返回</Link>
+          </Button>
         )
 
         return (
-            <PageHeaderLayout title="生产派工" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
-                {
+            <PageHeaderLayout
+              title="生产派工"
+              action={children?action:''}
+              wrapperClassName="pageContent"
+              BreadcrumbList={Breadcrumb.BCList}>
+                {/* {
                     !this.state.showDetail?workOrderList:workOrderDetail
                     // workOrderList
+                } */}
+                {
+                  children?children:workOrderList
                 }
-
             </PageHeaderLayout>
         )
     }
