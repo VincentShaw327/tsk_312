@@ -30,18 +30,18 @@ export default (() => {
           {
             name:'订单排程', key: 'manufacture_task',url:'manufacture_task'
           },
-          {
+          /*{
             name:'生产派工', key: 'task_dispatch',url:'task_dispatch'
-          },
+          },*/
           {
-            name:'工单监控', key: 'task_monitor',url:'task_monitor'
+            name:'工单管理', key: 'task_monitor',url:'task_monitor'
           },
           {
             name:'投料计划', key: 'consumPlan',url:'consumPlan'
           },
-          {
+          /*{
             name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
-          },
+          },*/
         ],
       },
       {

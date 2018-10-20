@@ -960,11 +960,11 @@ export default class TstateTimeOverview extends Component {
                     sorter: (a, b) => a.name.length - b.name.length,
                     sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,*/
                 },
-                {
+                /*{
                     title: '所属车间',
                     dataIndex: 'WorkshopName',
                     type: 'sort'
-                },
+                },*/
                 {
                     title: '计划产量',
                     dataIndex: 'PlanNumber',
@@ -994,7 +994,7 @@ export default class TstateTimeOverview extends Component {
                     title: '订单状态',
                     dataIndex: 'Status',
                     type: 'string',
-                    // width: 80,
+                    width: 120,
                     render: ( e1, record ) => {
                         /*let statusText='';
                         statusText=e1==0?'已取消':
@@ -1036,7 +1036,7 @@ export default class TstateTimeOverview extends Component {
                         if(record.hasOwnProperty &&(record.Status==1||record.Status==2)){
                             operate=(
                                 <span>
-                                    <a onClick={this.toggleSModalShow.bind(this, record)} href="#">排产</a>
+                                    <a onClick={this.toggleSModalShow.bind(this, record)}>排产</a>
                                     <span className="ant-divider"></span>
                                     <Popconfirm
                                         placement="topLeft"

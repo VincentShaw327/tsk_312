@@ -230,13 +230,13 @@ export default class MLossCollate extends Component {
                 type: 'string',
                 // render:(str,item)=><Progress  percent={str} />
             },
-            {
+            /*{
                 title: '生产进度',
                 dataIndex: 'progress',
                 type: 'string',
                 width:150,
                 render:(str,item)=><Progress percent={str} />
-            }
+            }*/
         ];
         //更新弹框数据项
         const UFormItem= [
