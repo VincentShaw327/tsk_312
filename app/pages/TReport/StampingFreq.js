@@ -13,6 +13,8 @@ import { fetchPunchFreq } from 'actions/report'
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+import AchievingRate from './components/AchievingRate';
+
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
@@ -181,20 +183,21 @@ export default class MLossCollate extends Component {
                 title: '序号',
                 dataIndex: 'key',
             },
-            {
-              title:"日期",
-              dataIndex: 'date',
-            },
+
             {
               title:"工单号",
               dataIndex: 'workOrder',
+            },
+            {
+              title:"日期",
+              dataIndex: 'date',
             },
             /*{
                 title: '设备名称',
                 dataIndex: 'devName',
             },*/
             {
-                title: '设备编号',
+                title: '工作中心',
                 dataIndex: 'devID',
             },
             {
@@ -206,16 +209,33 @@ export default class MLossCollate extends Component {
                 dataIndex: 'product',
             },
             {
+                title: '冲速设定',
+                dataIndex: 'StampingSpeed',
+            },
+            {
                 title: '冲压次数',
                 dataIndex: 'freq',
             },
             {
-                title: '产量',
-                dataIndex: 'yield',
+                title: '目标产量',
+                dataIndex: 'TargetYield',
+            },
+            {
+                title: '实际产量',
+                dataIndex: 'ActualYield',
+            },
+            {
+                title: '理论产量',
+                dataIndex: 'TheoreticalYield',
             },
             {
                 title: '库存数量',
                 dataIndex: 'stock',
+            },
+            {
+                title: '生产达成率',
+                dataIndex: 'AchievingRate',
+                render:(str)=>(<span>{`${str}%`}</span>)
             }
         ];
         //更新弹框数据项
@@ -287,14 +307,15 @@ export default class MLossCollate extends Component {
             <PageHeaderLayout title="生产报表" wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}>
                 <div className="cardContent">
-                    <StandardQForm
+                    {/* <StandardQForm
                         FormItem={RFormItem}
                         submit={this.handleQuery}
                     />
                     <CreateModal
                         FormItem={CFormItem}
                         submit={this.handleCreat.bind(this)}
-                    />
+                    /> */}
+                    <AchievingRate />
                     <SimpleTable
                         size="middle"
                         loading={loading}
@@ -303,13 +324,13 @@ export default class MLossCollate extends Component {
                         isHaveSelect={false}
                         onChange={this.handleTableChange}
                     />
-                    <UpdateModal
+                    {/* <UpdateModal
                         FormItem={UFormItem}
                         updateItem={updateFromItem}
                         submit={this.handleUpdate.bind(this)}
                         showModal={UModalShow}
                         hideModal={this.toggleUModalShow}
-                    />
+                    /> */}
                 </div>
             </PageHeaderLayout>
         )

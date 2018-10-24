@@ -198,27 +198,27 @@ export default (() => {
             name:'周停机分析', key: 'DowntimeWeek',url:'DowntimeWeek',
           },*/
           {
-            name:'时间稼动率', key: 'stoee',url:'oee_analysis_report',
+            name:'OEE', key: 'stoee',url:'oee_analysis_report',
           },
         ],
       },
       {
-        name: '原料耗损分析',
+        name: '原料利用率分析',
         icon: 'area-chart',
         url: '',
         key: 'matrl_consumption',
         children: [
           {
-            name:'产品材料损耗分析', key: 'material_loss_collate',url:'material_loss_collate',
+            name:'单日材料利用率', key: 'material_loss_collate',url:'material_loss_collate',
           },
           {
-            name:'产品材料耗损趋势', key: 'material_loss_tend',url:'material_loss_tend',
+            name:'材料利用率分析', key: 'material_loss_tend',url:'material_loss_tend',
           },
           {
-            name:'月度材料耗损', key: 'material_loss_mon',url:'material_loss_mon',
+            name:'材料利用率同比分析', key: 'material_loss_mon',url:'material_loss_mon',
           },
           {
-            name:'一周材料耗损', key: 'material_loss_week',url:'material_loss_week',
+            name:'材料利用率周期汇总', key: 'material_loss_week',url:'material_loss_week',
           },
         ],
       },

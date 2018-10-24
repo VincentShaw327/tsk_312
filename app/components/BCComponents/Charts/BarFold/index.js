@@ -4,6 +4,7 @@ import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import autoHeight from '../autoHeight';
 import styles from '../index.less';
+import DataSet from "@antv/data-set";
 
 @autoHeight()
 class BarFold extends Component {
@@ -82,6 +83,17 @@ class BarFold extends Component {
         value: y,
       }),
     ];
+
+    const ds = new DataSet();
+    const dv = ds.createView().source(data);
+    dv.transform({
+      type: "fold",
+      fields: ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug."],
+      // 展开字段集
+      key: "月份",
+      // key字段
+      value: "月均降雨量" // value字段
+    });
 
     return (
       <div className={styles.chart} style={{ height }} ref={this.handleRoot}>

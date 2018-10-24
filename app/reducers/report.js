@@ -115,9 +115,16 @@ export const punchFreq = handleActions({
                     devName:'设备_'+index,
                     devID:'dev_'+index,
                     moldID:'mold_'+index,
+                    workOrder:`P20181023_${2345+index}`,
                     date: Random.date(),
                     freq:Mock.mock('@natural(500000, 700000)'),
-                    product:'产品_'+index
+                    product:'产品_'+index,
+                    StampingSpeed:Mock.mock('@natural(60, 120)'),
+                    TargetYield:Mock.mock('@natural(25000, 30000)'),
+                    TheoreticalYield:Mock.mock('@natural(25000, 30000)'),
+                    ActualYield:Mock.mock('@natural(2000, 25000)'),
+                    stock:Mock.mock('@natural(5000, 20000)'),
+                    AchievingRate:Mock.mock('@natural(35, 90)')
                 }
             })
             res.objectlist=list;
