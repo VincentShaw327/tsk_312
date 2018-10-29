@@ -17,6 +17,7 @@ import * as user from './user'
 import * as warning from './warning'
 import * as wms from './wms'
 import * as mtrlloss from './mtrlloss'
+import * as quality from './quality'
 
 export {
   common,
@@ -36,5 +37,6 @@ export {
   user,
   warning,
   wms,
-  mtrlloss
+  mtrlloss,
+  quality
 }

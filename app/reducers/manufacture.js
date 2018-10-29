@@ -170,3 +170,108 @@ export const productTask = handleActions({
   },
 
 }, productTaskState)
+
+const feedingState = {
+  list:[],
+  currentPage: 1,
+  pageCount: 0,
+  pageSize: 20,
+  totalCount: 0,
+}
+export const Feeding = handleActions({
+  'request feeding list'(state, action) {
+    return { ...state, loading: true }
+  },
+  'receive feeding list'(state, action) {
+    const { req, res } = action.payload
+    console.log('receive feeding list',state,action)
+    let list=[];
+    if (hasResponseError(res)) {
+      message.error(res.msg)
+      return { ...state, loading: false }
+    }
+    else{
+        if(!gconfig.isDemo_dev){
+            return { obj:res.obj.objectlist, loading: false }
+        }
+        else{
+
+            if(state.list.length==0){
+                list=res.objectlist.map((item,index)=>{
+                    return{
+                        UUID:item.UUID,
+                        key:index,
+                        mtrl:"物料"+index,
+                        workorder:`T20181024_${40185+index}`,
+                        number:Mock.mock('@natural(6, 20)'),
+                        weight:Mock.mock('@natural(60, 350)'),
+                        'center|1':['ST-01','ST-02','ST-03','ST-04','ST-05','ST-06',],
+                        product:'静触杆P',
+                        lotJobID: `T${Random.now('yyyyMMdd')}_${Mock.mock('@natural(20000, 50000)')}`,
+                        // FinishDateTime: item.FinishDateTime,
+                        FinishNumber: 2000,
+                        // MoldModelUUID: item.MoldModelUUID,
+                        CreateDateTime: moment().
+                                                subtract(Mock.mock('@natural(0, 15)'), 'days').
+                                                format('YYYY-MM-DD HH:mm'),
+                        ProcessingTime: moment().
+                                            add(Mock.mock('@natural(0, 15)'), 'days').
+                                            format('YYYY-MM-DD HH:mm'),
+                        deadline: moment().
+                                            add(Mock.mock('@natural(0, 15)'), 'days').
+                                            format('YYYY-MM-DD HH:mm'),
+                        PlanNumber: Mock.mock('@natural(20000, 50000)'),
+                        // ProductModelID: item.ProductModelID,
+                        'ProductModelName|1': ['HDMI端子','RCA音视频端子','光纤端子','PCMCIA'], //产品名称
+                        ProductModelSN: item.ProductModelSN,
+                        // ProductModelUUID: item.ProductModelUUID,
+                        RejectNumber: 0,
+                        rej_progress:0,
+                        pro_progress:0,//生产进度
+                        StartDateTime: moment().format('YYYY-MM-DD HH:mm'),
+                        Status: Mock.mock('@natural(0, 4)'),
+                        UpdateDateTime: item.UpdateDateTime,
+                        restTime:function(){
+                                    // this.PlanFinishDateTime-this.StartDateTime
+                                    let a=moment(item.PlanFinishDateTime),
+                                        b=this.StartDateTime,
+                                        c=a.diff(b);
+                                  return  moment(c).format('YYYY-MM-DD HH:mm');
+                                },
+                        WorkstationID: item.WorkstationID,
+                        WorkstationName: '设备'+Mock.mock('@natural(0, 20)'),
+                        WorkstationUUID: item.WorkstationUUID
+                    }
+                })
+            }
+            else{
+                list=state.list.map((item,index)=>{
+                    return{
+                        ...item,
+                        FinishNumber: item.FinishNumber+Mock.mock('@natural(0, 50)'),
+                        RejectNumber: item.RejectNumber+Mock.mock('@natural(0, 1)'),
+                        status:Mock.mock('@natural(0, 1)'),
+                        rej_progress:(item.RejectNumber/item.FinishNumber).toFixed(2),
+                        pro_progress:(item.FinishNumber/item.PlanNumber).toFixed(2),
+                        restTime:function(){
+                                    // this.PlanFinishDateTime-this.StartDateTime
+                                    let a=moment(item.PlanFinishDateTime),
+                                        b=moment(),
+                                        c=a.diff(b);
+                                return  moment.duration(c,'ms').as('hours').toFixed(0);
+                                  // return moment(c).format('HH:mm:ss')
+                                  // return  c;
+                                },
+                    }
+                })
+            }
+            list=Mock.mock(list);
+            res.objectlist=list;
+            res.totalcount=Mock.mock('@natural(0, 65)');
+            sessionStorage.setItem('MockTaskList', JSON.stringify({ productTaskList:list}));
+            return { list:list,total:res.totalcount, loading: false }
+        }
+    }
+  },
+
+}, feedingState)

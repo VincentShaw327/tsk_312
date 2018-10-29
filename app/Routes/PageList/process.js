@@ -27,3 +27,14 @@ export const CraftsList={
         }, 'AuthList' )
     }
 }
+
+
+export const StampingSet={
+    path:'/stamping_set',
+    component:( location, cb ) => {
+        require.ensure( [], ( require ) => {
+            cb( null, require( '../../pages/TProcess/stampingSetting' )
+                .default )
+        }, 'StampingSet' )
+    }
+}

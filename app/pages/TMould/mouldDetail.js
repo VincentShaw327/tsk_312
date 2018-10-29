@@ -1,12 +1,8 @@
-/**
- *这是设备列表页
- *添加日期:2017.12.06
- *添加人:shaw
- **/
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router'
-import { Table,Button, Menu, Icon,Popover, Badge, Dropdown,message,Divider,Popconfirm } from 'antd';
+import {Row,Col, Table, Tabs,Menu, Icon,Card, Badge, Dropdown,message,Divider,Popconfirm } from 'antd';
 import { fetchMoldList } from 'actions/mold';
 import { TPostData ,urlBase} from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
@@ -14,6 +10,9 @@ import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import moldPic from  'images/assets/mold01.jpg'
+import Quality from './chart/Quality'
+const TabPane = Tabs.TabPane;
+
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
@@ -22,7 +21,7 @@ import moldPic from  'images/assets/mold01.jpg'
         moldList: state.moldList,
     }
 }, )
-export default class MouldList extends Component {
+export default class MouldDetail extends Component {
 
     constructor( props ) {
         super( props )
@@ -36,8 +35,7 @@ export default class MouldList extends Component {
             UModalShow:false,
             loading:true,
             ModelUUID: -1,
-            keyWord:'',
-            showDetail:false
+            keyWord:''
         }
         this.url = '/api/TMold/mold';
     }
@@ -188,8 +186,8 @@ export default class MouldList extends Component {
         this.setState({UModalShow:!this.state.UModalShow,updateFromItem:record});
     }
 
-    showDetail=()=>{
-        this.setState({showDetail:true});
+    callback=(key)=> {
+      console.log(key);
     }
 
     render() {
@@ -202,65 +200,41 @@ export default class MouldList extends Component {
             // total,
             pageSize,
             updateFromItem,
-            UModalShow,
-            showDetail
+            UModalShow
         } = this.state;
-        const {Breadcrumb,children}=this.props;
+        const {Breadcrumb}=this.props;
         const { list, total, loading } = this.props.moldList;
-        let Data={
+        /*let Data={
             // list:tableDataList,
             list:list,
             pagination:{total,current,pageSize}
-        };
+        };*/
 
         const Tcolumns= [
             {
-                title: '序号',
-                dataIndex: 'key',
+                title: '工单号',
+                dataIndex: 'workOrder',
                 type: 'string'
             },
             {
-                title: '图片',
-                dataIndex: 'Image',
-                render: ( e, record ) => {
-                    // console.log('图片地址',e);
-                    const content = (
-                        <div>
-                          <img width="300"
-                              // src={urlBase+e}
-                              src={moldPic}
-                          />
-                        </div>
-                    );
-                    return (
-                        <Popover placement="right"  content={content} trigger="hover">
-                          {/* <Button>Right</Button> */}
-                          <img height='50'
-                              // src={urlBase+e}
-                              src={moldPic}
-                          />
-                        </Popover>
-                    )
-                }
-            },
-            {
-                title: '模具名称',
-                dataIndex: 'Name',
+                title: '日期',
+                dataIndex: 'date',
                 type: 'string'
             },
             {
-                title: '架位号',
-                dataIndex: 'ModelName',
-                type: 'string'
-            },
-            {
-                title: '编号',
-                dataIndex: 'Number',
+                title: '生产模次',
+                dataIndex: 'freqency',
                 type: 'string'
             },
             {
                 // title: '规格尺寸（材料/尺寸/步距）',
-                title: '规格尺寸',
+                title: '累积模次',
+                dataIndex: 'accumulation',
+                type: 'string'
+            },
+            /*{
+                // title: '规格尺寸（材料/尺寸/步距）',
+                title: '额定频次',
                 dataIndex: 'ModelSize',
                 type: 'string'
             },
@@ -268,56 +242,25 @@ export default class MouldList extends Component {
                 title: '标签',
                 dataIndex: 'Label',
                 type: 'string'
+            }*/
+        ];
+
+        const Tcolumns2= [
+            {
+                title: '日期',
+                dataIndex: 'date',
+                width:150
             },
             {
-                title: '厂家',
-                dataIndex: 'Desc',
+                title: '内容',
+                dataIndex: 'content',
                 type: 'string'
             },
             {
-                title: '验收日期',
-                dataIndex: 'UpdateDateTime',
-                type: 'string'
+                title: '负责人',
+                dataIndex: 'charger',
+                width:150
             },
-            {
-                title: '设计寿命',
-                dataIndex: 'life',
-                type: 'string'
-            },
-            {
-                title: '模具等级',
-                dataIndex: 'grade',
-                type: 'string'
-            },
-            /*{
-                title: '模具状态',
-                dataIndex: 'grade',
-                type: 'string'
-            },*/
-            {
-                title: '操作',
-                dataIndex: 'UUID',
-                render:(txt,record)=>{
-                    return <span>
-                              <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
-                              <Divider type="vertical"/>
-                              <Link to="/mould_detail">详情</Link>
-                              {/* <a onClick={this.showDetail}>详情</a> */}
-                              {/* <Divider type="vertical"/>
-                              <a>寿命分析</a>
-                              <Divider type="vertical"/>
-                              <a>模具履历</a> */}
-                              <Divider type="vertical"/>
-                              <Popconfirm
-                                  placement="topRight"
-                                  title="确定删除此项数据？"
-                                  onConfirm={this.handleDelete.bind(this,record)}
-                                  okText="确定" cancelText="取消">
-                                  <a href="#">删除</a>
-                              </Popconfirm>
-                          </span>
-                }
-            }
         ];
         //更新弹框数据项
         const UFormItem= [
@@ -397,70 +340,123 @@ export default class MouldList extends Component {
             }
         ];
 
-        const bcList1 = [{
+        const bcList = [{
             title:"首页",
             href: '/',
             }, {
             title: '模具列表',
-            // href: '/mould_list',
-        }];
-
-        const bcList2 = [{
-            title:"首页",
             href: '/',
             }, {
-            title: '模具列表',
-            href: '/mould_list',
-            }, {
-            title: '模具详情',
+            title: '物料类别',
         }];
 
-        const MouldList=(
-            <div className="cardContent">
-                {/* <Feature /> */}
-                {/* <SimpleQForm
-                    FormItem={RFormItem}
-                    submit={this.handleQuery}
-                /> */}
-                <CreateModal
-                    FormItem={CFormItem}
-                    submit={this.handleCreat.bind(this)}
-                />
-                <SimpleTable
+        let inspect=[],inspect2=[];
+        for (var i = 0; i < 12; i++) {
+            inspect.push({
+                workOrder:'T20181025_37893',
+                date:'2018/10/23',
+                freqency:345002,
+                accumulation:3456603
+            });
+            inspect2.push({
+                date:'2018/10/23',
+                content:'',
+                charger:'-'
+            })
+        }
+
+        let Data={
+            list:inspect,
+        };
+        let Data2={
+            list:inspect2,
+        };
+
+
+        return (
+            <div>
+                {/* <SimpleTable
                     size="middle"
                     loading={loading}
                     data={Data}
                     columns={Tcolumns}
                     isHaveSelect={false}
                     onChange={this.handleTableChange}
-                />
-                <UpdateModal
-                    FormItem={UFormItem}
-                    updateItem={updateFromItem}
-                    submit={this.handleUpdate.bind(this)}
-                    showModal={UModalShow}
-                    hideModal={this.toggleUModalShow}
-                />
+                /> */}
+                <Card>
+                    <Row>
+                        <Col span={6}>
+                            <img
+                                // width="300"
+                                // src={urlBase+e}
+                                style={{width:'100%'}}
+                                src={moldPic}
+                            />
+                        </Col>
+                        <Col span={6}>
+                            <div style={{paddingTop:20}}>
+                                <p>名称：磁轭侧板</p>
+                                <p>架位号：A01-01-6</p>
+                                <p>编号：980.001.02</p>
+                                <p>验收日期：2017.08.17</p>
+                            </div>
+                        </Col>
+                        <Col span={6}>
+                            <div style={{paddingTop:20}}>
+                                <p>尺寸：-</p>
+                                <p>标签：-</p>
+                                <p>厂家：松下</p>
+                                <p>穴数：8</p>
+                            </div>
+                        </Col>
+                        <Col span={6}></Col>
+                    </Row>
+                    <Tabs defaultActiveKey="1" onChange={this.callback}>
+                      <TabPane tab="模具图纸" key="1">
+                          这是图纸
+                      </TabPane>
+                      <TabPane tab="生产履历与寿命" key="2">
+                          <Row>
+                              <Col span={16}>
+                                  <SimpleTable
+                                      size="small"
+                                      loading={false}
+                                      data={Data}
+                                      columns={Tcolumns}
+                                      isHaveSelect={false}
+                                      // onChange={this.handleTableChange}
+                                  />
+                              </Col>
+                              <Col span={8}>
+                                  <div style={{paddingLeft:35}}>
+                                      <p>总累积模次：24508</p>
+                                      <p>总设计模次：30000</p>
+                                      <p>预警模次：26000</p>
+                                      <p>日均模次：2200</p>
+                                      <p>剩余寿命：63天</p>
+                                  </div>
+                              </Col>
+                          </Row>
+                      </TabPane>
+                      <TabPane tab="维护保养记录" key="3">
+                          <SimpleTable
+                              size="small"
+                              loading={false}
+                              data={Data2}
+                              columns={Tcolumns2}
+                              isHaveSelect={false}
+                              // onChange={this.handleTableChange}
+                          />
+                      </TabPane>
+                      <TabPane tab="等级评估" key="4">
+                      </TabPane>
+                      <TabPane tab="品质合格率分析" key="5">
+                          <Quality />
+                      </TabPane>
+                    </Tabs>
+                </Card>
+
             </div>
-        )
-
-        const action=(
-          <Button type="primary">
-            <Link to='/mould_list'>返回</Link>
-          </Button>
-        )
-
-        return (
-            <PageHeaderLayout
-                title="模具列表"
-                wrapperClassName="pageContent"
-                action={children?action:''}
-                BreadcrumbList={children?bcList2:bcList1}
-                >
-                {
-                    children?children:MouldList
-                }
-            </PageHeaderLayout>
         )
     }
 }

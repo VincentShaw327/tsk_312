@@ -10,15 +10,25 @@ import {
 } from 'utils'
 
 
-/*网关设备请求*/
-export const requestMaintain = createAction('request maintain list');
-export const recevieMaintain = createAction('receive maintain list');
-export const fetchMaintain = !gconfig.isDemo_dev?createAjaxAction(
+/**/
+export const fetchMaintainWay = !gconfig.isDemo_dev?createAjaxAction(
     maintain.maintain,
-    requestMaintain,
-    recevieMaintain
+    createAction('request maintain program'),
+    createAction('receive maintain program')
 ):fakeAjaxAction(
     maintain.maintain,
-    requestMaintain,
-    recevieMaintain
+    createAction('request maintain program'),
+    createAction('receive maintain program')
+)
+
+
+/*设备维保历史*/
+export const fetchMaintainHistory = !gconfig.isDemo_dev?createAjaxAction(
+    maintain.maintain,
+    createAction('request maintain history'),
+    createAction('receive maintain history')
+):fakeAjaxAction(
+    maintain.maintain,
+    createAction('request maintain history'),
+    createAction('receive maintain history')
 )

@@ -5,7 +5,7 @@
  **/
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hashHistory, Link } from 'react-router'
+import { hashHistory, Link } from 'react-router';
 import { Table, Menu, Icon, Badge,Popover,Breadcrumb, Dropdown,message,Divider,Popconfirm } from 'antd';
 import { fetchDeviceList } from 'actions/device';
 import { TPostData,urlBase } from 'utils/TAjax';

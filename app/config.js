@@ -37,7 +37,7 @@ export default (() => {
             name:'工单管理', key: 'task_monitor',url:'task_monitor'
           },
           {
-            name:'投料计划', key: 'consumPlan',url:'consumPlan'
+            name:'投料计划', key: 'consum_plan',url:'consum_plan'
           },
           /*{
             name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
@@ -50,14 +50,14 @@ export default (() => {
         url: '',
         key: 'TManufactureSetting',
         children: [
-          {
-            name:'工艺控制', key: 'manufacture_task',url:'manufacture_task'
-          },
+          /*{
+            name:'工艺设定', key: 'stamping_set',url:'stamping_set'
+          },*/
           /* {
             name:'库存控制', key: 'task_dispatch',url:'task_dispatch'
           }, */
           {
-            name:'工艺指导书', key: 'task_monitor',url:'task_monitor'
+            name:'作业指导书', key: 'task_monitor',url:'task_monitor'
           },
           {
             name:'开机刷卡记录', key: 'materialReq',url:'materialReq'
@@ -71,14 +71,14 @@ export default (() => {
         key: 'TQualityManagement',
         children: [
           {
-            name:'首检记录', key: 'process',url:'pm_management',
+            name:'品质检验记录', key: 'quality_record',url:'quality_record',
           },
-          {
+          /*{
             name:'抽检记录', key: 'crafts',url:'TPM_Procedure',
           },
           {
             name:'末检记录', key: 'TPM_Route',url:'TPM_Route',
-          },
+          },*/
           {
             name:'检验图纸', key: 'TPM_Product',url:'TPM_Product',
           },
@@ -103,8 +103,12 @@ export default (() => {
             name:'设备台账', key: 'TDeviceList',url:'TDeviceList',
           },
           {
-            name:'设备保养记录', key: 'dev_maintain',url:'dev_maintain',
+            name:'设备维保方案', key: 'dev_maintain_fun',url:'dev_maintain_fun',
           },
+          {
+            name:'设备保养记录', key: 'dev_maintain_his',url:'dev_maintain',
+          },
+
           /*{
             name:'设备维保', key: 'TDev_Maintain',url:'',
             children:[
@@ -131,11 +135,11 @@ export default (() => {
         url: '',
         key: 'TMould',
         children: [
-          {
+          /*{
             name:'模具型号', key: 'mould_model',url:'mould_model',
-          },
+          },*/
           {
-            name:'模具列表', key: 'mould_list',url:'mould_list',
+            name:'模具台帐', key: 'mould_list',url:'mould_list',
           },
           /*{
             name:'寿命分析', key: 'mould_life',url:'mould_life',

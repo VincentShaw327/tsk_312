@@ -1,13 +1,13 @@
 /**
- *这是设备列表页
- *添加日期:2017.12.06
+ *这是冲压工艺设定页
+ *添加日期:2018.10.25
  *添加人:shaw
  **/
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { hashHistory, Link } from 'react-router'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { hashHistory, Link } from 'react-router';
 import { Table, Menu, Icon, Badge, Popover, Dropdown, message, Divider, Popconfirm } from 'antd';
-import { fetchMaintainHistory } from 'actions/maintain'
+import { fetchFactoryTypeList } from 'actions/factory';
 import { TPostData, TPostMock } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
@@ -18,7 +18,7 @@ import PageHeaderLayout from '../../base/PageHeaderLayout';
     console.log( 'state', state )
     return {
         Breadcrumb:state.Breadcrumb,
-        Maintain: state.Maintain,
+        factoryType: state.factoryType,
     }
 }, )
 export default class TFactoryType extends Component {
@@ -40,7 +40,7 @@ export default class TFactoryType extends Component {
 
     componentWillMount() {
         // this.getTableList();
-        this.props.dispatch( fetchMaintainHistory( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( fetchFactoryTypeList( { current: 1 }, ( respose ) => {} ) )
     }
 
     getTableList( que ) {
@@ -171,11 +171,11 @@ export default class TFactoryType extends Component {
             UModalShow
         } = this.state;
         const {Breadcrumb}=this.props;
-        const { recordList, total, loading } = this.props.Maintain;
+        const { factoryTypeList, total, loading } = this.props.factoryType;
 
         let Data = {
             // list:tableDataList,
-            list: recordList,
+            list: factoryTypeList,
             pagination: { total, current, pageSize }
         };
 
@@ -187,44 +187,50 @@ export default class TFactoryType extends Component {
                 type: 'string'
             },
             {
-                title: '设备名称',
+                title: '模具',
                 dataIndex: 'Name',
                 type: 'string'
             },
             {
-                title: '保养时间',
-                dataIndex: 'dateTime',
+                title: '产品',
+                dataIndex: 'Number',
                 type: 'string'
             },
             {
-                title: '保养方案',
-                dataIndex: 'ways',
+                title: '创建人',
+                dataIndex: 'Founder',
                 type: 'string'
             },
             {
-                title: '下次保养时间',
-                dataIndex: 'nextDateTime',
+                title: '创建时间',
+                dataIndex: 'CreatDateTime',
                 type: 'string'
             },
             {
-                title: '操作人',
-                dataIndex: 'Operator',
+                title: '修改人',
+                dataIndex: 'Renewing',
                 type: 'string'
             },
             {
-                title: '是否有异常',
-                dataIndex: 'isAbnormal',
-                render:(item)=>{
-                    return <span>{item==0?'否':'是'}</span>
-                }
+                title: '修改时间',
+                dataIndex: 'UpdateDateTime',
+                type: 'string'
             },
             {
                 title: '操作',
                 dataIndex: 'UUID',
                 render: ( UUID, record ) => {
                     return <span>
-                                <a>详情</a>
-                            </span>
+                        <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
+                        <Divider type="vertical"/>
+                        <Popconfirm
+                            placement="topRight"
+                            title="确定删除此项数据？"
+                            onConfirm={this.handleDelete.bind(this,record)}
+                            okText="确定" cancelText="取消">
+                            <a href="#">删除</a>
+                        </Popconfirm>
+                    </span>
                 }
             }
         ];
@@ -287,17 +293,17 @@ export default class TFactoryType extends Component {
             title: '工厂类别',
           } ];
         return (
-            <PageHeaderLayout title="设备保养记录" wrapperClassName="pageContent"
+            <PageHeaderLayout title="物料类别" wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}>
                 <div className="cardContent">
                     {/* <SimpleQForm
                         FormItem={RFormItem}
                         submit={this.handleQuery}
                     /> */}
-                    <CreateModal
+                    {/* <CreateModal
                         FormItem={CFormItem}
                         submit={this.handleCreat.bind(this)}
-                    />
+                    /> */}
                     <SimpleTable
                         size="middle"
                         loading={loading}

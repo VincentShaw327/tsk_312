@@ -34,6 +34,7 @@ import {
     TaskDispatch,
     TaskMonitor,
     // OrderDetail
+    Feeding
 }from './production'
 
 import {
@@ -43,7 +44,8 @@ import {
 
 import {
     MoldManagement,
-    MoldList
+    MoldList,
+    // MoldDetail
 }from './mould'
 
 import {
@@ -60,7 +62,8 @@ import {
 
 import {
     ProcessList,
-    CraftsList
+    CraftsList,
+    StampingSet
 }from './process'
 
 import {
@@ -81,6 +84,15 @@ import {
     MtrlLossMon,
     MtrlLossWeek
 }from './mtrlloss'
+
+import{
+    TQuality
+}from './quality'
+
+import {
+    TMaintain,
+    TMaintainRecord
+}from './maintain'
 
 export{
     TWorkShopList,
@@ -114,9 +126,11 @@ export{
     TaskDispatch,
     TaskMonitor,
     // OrderDetail,
+    Feeding,
 
     MoldManagement,
     MoldList,
+    // MoldDetail,
 
     MaterialModel,
     ProductModel,
@@ -128,6 +142,7 @@ export{
 
     ProcessList,
     CraftsList,
+    StampingSet,
 
     TDeviceType,
     TDeviceModel,
@@ -141,4 +156,9 @@ export{
 
     TWorkCenterType,
     TWorkCenter,
+
+    TQuality,
+
+    TMaintain,
+    TMaintainRecord
 }

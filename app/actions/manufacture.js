@@ -36,3 +36,15 @@ export const fetchTaskList = !gconfig.isDemo_dev?createAjaxAction(
     requestTaskList,
     recevieTaskList
 )
+
+
+/*投料计划*/
+export const fetchFeedingList = !gconfig.isDemo_dev?createAjaxAction(
+    manufacture.feeding,
+    createAction('request feeding list'),
+    createAction('receive feeding list')
+):fakeAjaxAction(
+    manufacture.feeding,
+    createAction('request feeding list'),
+    createAction('receive feeding list')
+)

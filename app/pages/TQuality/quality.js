@@ -1,13 +1,24 @@
 /**
- *这是设备列表页
- *添加日期:2017.12.06
+ *这是检验记录页
+ *添加日期:2018.10.24
  *添加人:shaw
  **/
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router'
-import { Table, Menu, Icon, Badge, Popover, Dropdown, message, Divider, Popconfirm } from 'antd';
-import { fetchMaintainHistory } from 'actions/maintain'
+import {
+  Table,
+  Menu,
+  Icon,
+  Badge,
+  Popover,
+  Dropdown,
+  message,
+  Divider,
+  Popconfirm,
+  Card
+} from 'antd';
+import { fetchInspectList } from 'actions/quality';
 import { TPostData, TPostMock } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
@@ -18,10 +29,10 @@ import PageHeaderLayout from '../../base/PageHeaderLayout';
     console.log( 'state', state )
     return {
         Breadcrumb:state.Breadcrumb,
-        Maintain: state.Maintain,
+        Inspect: state.Inspect,
     }
 }, )
-export default class TFactoryType extends Component {
+export default class quality extends Component {
 
     constructor( props ) {
         super( props )
@@ -40,7 +51,7 @@ export default class TFactoryType extends Component {
 
     componentWillMount() {
         // this.getTableList();
-        this.props.dispatch( fetchMaintainHistory( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( fetchInspectList( { current: 1 }, ( respose ) => {} ) )
     }
 
     getTableList( que ) {
@@ -171,11 +182,11 @@ export default class TFactoryType extends Component {
             UModalShow
         } = this.state;
         const {Breadcrumb}=this.props;
-        const { recordList, total, loading } = this.props.Maintain;
+        const { list, total, loading } = this.props.Inspect;
 
         let Data = {
             // list:tableDataList,
-            list: recordList,
+            list: list,
             pagination: { total, current, pageSize }
         };
 
@@ -187,94 +198,97 @@ export default class TFactoryType extends Component {
                 type: 'string'
             },
             {
-                title: '设备名称',
-                dataIndex: 'Name',
+                title: '工单号',
+                dataIndex: 'workOrder',
                 type: 'string'
             },
             {
-                title: '保养时间',
-                dataIndex: 'dateTime',
+                title: '产品图号',
+                dataIndex: 'productDraw',
                 type: 'string'
             },
             {
-                title: '保养方案',
-                dataIndex: 'ways',
+                title: '检验图纸',
+                dataIndex: 'inspectDraw',
                 type: 'string'
             },
             {
-                title: '下次保养时间',
-                dataIndex: 'nextDateTime',
+                title: '检验类别',
+                dataIndex: 'inspectType',
                 type: 'string'
             },
             {
-                title: '操作人',
-                dataIndex: 'Operator',
+                title: '工作中心',
+                dataIndex: 'center',
                 type: 'string'
             },
             {
-                title: '是否有异常',
-                dataIndex: 'isAbnormal',
+                title: '检验时间',
+                dataIndex: 'inspectTime',
+                type: 'string'
+            },
+            {
+                title: '检验人',
+                dataIndex: 'Inspector',
+                type: 'string'
+            },
+            {
+                title: '样品数量',
+                dataIndex: 'samples',
+                type: 'string'
+            },
+            /*{
+                title: '合格数量',
+                dataIndex: 'qualified',
+                type: 'string'
+            },*/
+            {
+                title: '不良数量',
+                dataIndex: 'defective',
+                type: 'string'
+            },
+            {
+                title: '合格率',
+                dataIndex: 'PassRate',
+                type: 'string'
+            },
+            {
+                title: '是否通过',
+                dataIndex: 'Renewing',
                 render:(item)=>{
-                    return <span>{item==0?'否':'是'}</span>
+                    return item==0?<Icon
+                            type="check"
+                            theme="outlined"
+                            style={{color:'green'}}
+                            />:
+                            <Icon type="close"
+                                theme="outlined"
+                                style={{color:'red'}}
+                            />
                 }
+            },
+            /*{
+                title: '修改时间',
+                dataIndex: 'UpdateDateTime',
+                type: 'string'
             },
             {
                 title: '操作',
                 dataIndex: 'UUID',
                 render: ( UUID, record ) => {
                     return <span>
-                                <a>详情</a>
-                            </span>
+                        <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
+                        <Divider type="vertical"/>
+                        <Popconfirm
+                            placement="topRight"
+                            title="确定删除此项数据？"
+                            onConfirm={this.handleDelete.bind(this,record)}
+                            okText="确定" cancelText="取消">
+                            <a href="#">删除</a>
+                        </Popconfirm>
+                    </span>
                 }
-            }
-        ];
-        //更新弹框数据项
-        const UFormItem = [
-            {
-                name: 'Name',
-                label: '型号名称',
-                type: 'string',
-                placeholder: '请输入型号名称',
-                rules: [ { required: true, message: '名称不能为空' } ],
-            },
-            {
-                name: 'Number',
-                label: '型号编号',
-                type: 'string',
-                placeholder: '请输入模具编号',
-                rules: [ { required: true, message: '编号不能为空' } ],
-            },
-            {
-                name: 'Desc',
-                label: '备注',
-                type: 'string',
-            }
-        ];
-        //添加的弹出框菜单
-        const CFormItem = [
-            {
-                name: 'Name',
-                label: '名称',
-                type: 'string',
-                placeholder: '请输入型号名称',
-                rules: [ { required: true, message: '名称不能为空' } ],
-            },
-            {
-                name: 'Number',
-                label: '编号',
-                type: 'string',
-                placeholder: '请输入型号编号',
-                rules: [ { required: true, message: '编号不能为空' } ],
-            }
-        ];
-        //查询的数据项
-        const RFormItem = [
-            {
-                name: 'keyWord',
-                label: '搜索内容',
-                type: 'string',
-                placeholder: '请输入要搜索的内容'
-            },
+            }*/
         ];
 
         const bcList = [ {
@@ -286,33 +300,31 @@ export default class TFactoryType extends Component {
           }, {
             title: '工厂类别',
           } ];
+
         return (
-            <PageHeaderLayout title="设备保养记录" wrapperClassName="pageContent"
+            <PageHeaderLayout title="品质检验记录" wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}>
-                <div className="cardContent">
-                    {/* <SimpleQForm
-                        FormItem={RFormItem}
-                        submit={this.handleQuery}
-                    /> */}
-                    <CreateModal
-                        FormItem={CFormItem}
-                        submit={this.handleCreat.bind(this)}
-                    />
-                    <SimpleTable
-                        size="middle"
-                        loading={loading}
-                        data={Data}
-                        columns={Tcolumns}
-                        isHaveSelect={false}
-                        onChange={this.handleTableChange}
-                    />
-                    <UpdateModal
+                <div>
+                    {/* <Card>
+                        
+                    </Card> */}
+                    <Card>
+                        <SimpleTable
+                            size="middle"
+                            loading={loading}
+                            data={Data}
+                            columns={Tcolumns}
+                            isHaveSelect={false}
+                            onChange={this.handleTableChange}
+                        />
+                    </Card>
+                    {/* <UpdateModal
                         FormItem={UFormItem}
                         updateItem={updateFromItem}
                         submit={this.handleUpdate.bind(this)}
                         showModal={UModalShow}
                         hideModal={this.toggleUModalShow}
-                    />
+                    /> */}
                 </div>
             </PageHeaderLayout>
         )

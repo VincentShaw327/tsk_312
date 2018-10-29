@@ -4,13 +4,23 @@
  *添加人:shaw
  **/
 import React, { Component } from 'react'
-import { Table, Menu, Icon, Badge, Dropdown,message,Divider,Popconfirm } from 'antd';
+import { Table, Menu, Icon, Badge,Button, Dropdown,message,Divider,Popconfirm } from 'antd';
+import { hashHistory, Link } from 'react-router'
 import { TPostData ,TPostMock,mockUrlBase} from 'utils/TAjax';
+import { connect } from 'react-redux';
+import { fetchMaintainWay } from 'actions/maintain';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 
+@connect( ( state, props ) => {
+    console.log( 'state', state )
+    return {
+        Breadcrumb:state.Breadcrumb,
+        Maintain: state.Maintain,
+    }
+}, )
 export default class App extends Component {
 
     constructor( props ) {
@@ -23,13 +33,14 @@ export default class App extends Component {
             pageSize:10,
             keyWord:'',
             UModalShow:false,
-            loading:true,
+            loading:false,
         }
         this.url='/api/TFactory/workshop_type';
     }
 
     componentWillMount() {
-        this.getWSTypeList();
+        // this.getWSTypeList();
+        this.props.dispatch( fetchMaintainWay( { current: 1 }, ( respose ) => {} ) )
     }
 
     componentDidMount(){}
@@ -147,11 +158,23 @@ export default class App extends Component {
     }
 
     render() {
-        const {tableDataList,loading,current,total,pageSize,updateFromItem,UModalShow}=this.state;
+        const {
+            tableDataList,
+            // loading,
+            current,
+            // total,
+            pageSize,
+            updateFromItem,
+            UModalShow
+        } = this.state;
+        const {Breadcrumb,children}=this.props;
+        const { list, total, loading } = this.props.Maintain;
         let Data={
-            list:tableDataList,
+            // list:tableDataList,
+            list:list,
             pagination:{total,current,pageSize}
         };
+
         const Tcolumns =[
             {
                 title: '序号',
@@ -165,16 +188,16 @@ export default class App extends Component {
                 // sorter: (a, b) => a.Name.length - b.Name.length
             },
             {
-                title: '设备类别',
-                dataIndex: 'dev_Type',
+                title: '适用设备',
+                dataIndex: 'devSuitable',
                 type: 'string',
             },
-            {
+            /*{
                 title: '保养类别',
-                dataIndex: 'mt_Type',
+                dataIndex: 'maintainType',
                 type: 'string',
-            },
-            {
+            },*/
+            /*{
                 title: '基准时间',
                 dataIndex: 'DatumTime',
                 type: 'string',
@@ -183,15 +206,15 @@ export default class App extends Component {
                 title: '保养周期',
                 dataIndex: 'mt_cycle',
                 type: 'string',
-            },
+            },*/
             {
-                title: '周期单位',
-                dataIndex: 'cycle_unit',
+                title: '保养有效时间',
+                dataIndex: 'EffectiveTime',
                 type: 'string',
             },
             {
-                title: '有效时间',
-                dataIndex: 'EffectiveTime',
+                title: '时间单位',
+                dataIndex: 'cycle_unit',
                 type: 'string',
             },
             {
@@ -200,6 +223,8 @@ export default class App extends Component {
                 render:(txt,record)=>{
                     return <span>
                         <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
+                        <Divider type="vertical"/>
+                        <Link to="/dev_maintain_detail">详情</Link>
                         <Divider type="vertical"/>
                         <Popconfirm
                             placement="topRight"
@@ -231,6 +256,7 @@ export default class App extends Component {
                 rules: [{required: true,message: '名称不能为空'}]
             }
         ];
+
         const UFormItem= [
             {
                 name: 'Name',
@@ -256,33 +282,50 @@ export default class App extends Component {
             }, {
             title: '物料类别',
         }];
+
+        const MaintainList=(
+            <div className="cardContent">
+                {/* <SimpleQForm
+                    FormItem={RFormItem}
+                    submit={this.handleQuery}
+                /> */}
+                <CreateModal
+                    FormItem={CFormItem}
+                    submit={this.handleCreat.bind(this)}
+                />
+                <SimpleTable
+                    loading={loading}
+                    size="middle"
+                    data={Data}
+                    columns={Tcolumns}
+                    isHaveSelect={false}
+                    onChange={this.handleTableChange}
+                />
+                <UpdateModal
+                    FormItem={UFormItem}
+                    updateItem={updateFromItem}
+                    submit={this.handleUpdate.bind(this)}
+                    showModal={UModalShow}
+                    hideModal={this.toggleUModalShow}
+                />
+            </div>
+        )
+
+        const action=(
+          <Button type="primary">
+            <Link to='/dev_maintain_fun'>返回</Link>
+          </Button>
+        )
+
         return (
-            <PageHeaderLayout title="保养计划" wrapperClassName="pageContent" BreadcrumbList={bcList}>
-                <div className="cardContent">
-                    {/* <SimpleQForm
-                        FormItem={RFormItem}
-                        submit={this.handleQuery}
-                    /> */}
-                    <CreateModal
-                        FormItem={CFormItem}
-                        submit={this.handleCreat.bind(this)}
-                    />
-                    <SimpleTable
-                        loading={loading}
-                        size="middle"
-                        data={Data}
-                        columns={Tcolumns}
-                        isHaveSelect={false}
-                        onChange={this.handleTableChange}
-                    />
-                    <UpdateModal
-                        FormItem={UFormItem}
-                        updateItem={updateFromItem}
-                        submit={this.handleUpdate.bind(this)}
-                        showModal={UModalShow}
-                        hideModal={this.toggleUModalShow}
-                    />
-                </div>
+            <PageHeaderLayout
+                title="保养计划"
+                action={children?action:''}
+                wrapperClassName="pageContent"
+                BreadcrumbList={bcList}>
+                {
+                    children?children:MaintainList
+                }
             </PageHeaderLayout>
         )
     }

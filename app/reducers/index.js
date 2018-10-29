@@ -33,7 +33,8 @@ import {
   processItem,
   workcenter,
   workcenterType,
-  MockMqttData
+  MockMqttData,
+  StampingSet
   // processItemListData
 } from './crafts'
 // bom
@@ -56,7 +57,8 @@ import {
 // bom
 import {
   productOrder,
-  productTask
+  productTask,
+  Feeding
 } from './manufacture'
 // bom
 import {
@@ -95,6 +97,14 @@ import{
   MtrlLossCollate
 } from './mtrlloss'
 
+import {
+    Inspect
+}from './quality'
+
+import {
+    Maintain
+}from './maintain'
+
 const rootReducer = combineReducers( {
     routing,
     config: ( state = {} ) => state,
@@ -116,6 +126,8 @@ const rootReducer = combineReducers( {
     workcenter,
     workcenterType,
     MockMqttData,
+    StampingSet,
+
     device,
     deviceModel,
     deviceType,
@@ -126,6 +138,8 @@ const rootReducer = combineReducers( {
     iot_list_data,
     productOrder,
     productTask,
+    Feeding,
+
     moldList,
     moldModel,
     productModel,
@@ -140,7 +154,11 @@ const rootReducer = combineReducers( {
     mtrlModel,
     mtrlType,
 
-    MtrlLossCollate
+    MtrlLossCollate,
+
+    Inspect,
+
+    Maintain
 } );
 
 export default rootReducer;

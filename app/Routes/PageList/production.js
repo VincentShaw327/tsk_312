@@ -46,4 +46,15 @@ export const TaskMonitor={
 //                 .default )
 //         }, 'orderDetail' )
 //     }
-// }
+//
+
+
+export const Feeding={
+    path:'/consum_plan',
+    component:( location, cb ) => {
+        require.ensure( [], ( require ) => {
+            cb( null, require( '../../pages/TManufacture/feeding' )
+                .default )
+        }, 'Feeding' )
+    }
+}
