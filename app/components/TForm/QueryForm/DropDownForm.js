@@ -1,15 +1,10 @@
 import React, {Component} from 'react';
 import {
     Button,
+    Input,
     Row,
     Col,
-    Divider,
-    List,
-    Timeline,
-    Menu,
-    Card,
     Form,
-    Dropdown,
     Icon
 } from 'antd';
 import CFormItem from '../CreatFormItem/CreateFormItem';
@@ -70,7 +65,8 @@ export default class DropDownForm extends Component {
             },
             updateItem,
             width=350,
-            position='leftBottom'
+            position='leftBottom',
+            isHaveSearch=true
         } = this.props;
         const {left,top,right,offsetWidth}=this.state;
         const rightBottomStyle={
@@ -126,11 +122,34 @@ export default class DropDownForm extends Component {
           'item-hidden': !this.state.visible
         });
 
+        const haveSearch=(
+            <div style={{
+                display:'flex',
+                minWidth:'150px',
+                justifyContent:'space-between',
+                alignItems:'center'
+                }}>
+                <Input style={{width:'90%'}} />
+                <a onClick={this.showDropMenu} ref={btn=>this._btn=btn}>
+                    <Icon  type="filter" theme="outlined" />
+                </a>
+            </div>
+
+        );
+
+        const noSearch=(
+            <a onClick={this.showDropMenu} ref={btn=>this._btn=btn}>
+                <Icon  type="filter" theme="outlined" />
+            </a>
+
+        )
+
         return (
             <div>
-              <a onClick={this.showDropMenu} ref={btn=>this._btn=btn}>
-                <Icon  type="filter" theme="outlined" />
-              </a>
+              {
+                  isHaveSearch?
+                    haveSearch:noSearch
+              }
               <div
                 className={dropFormClass}
                 style={

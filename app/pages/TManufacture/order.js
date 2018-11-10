@@ -1203,25 +1203,22 @@ export default class order extends Component {
 
         return (
             <PageHeaderLayout title="任务排程" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
-                <div className="cardContent">
-                    {/* <StandardQForm
-                        FormItem={RFormItem}
-                        submit={this.handleQuery}
-                    /> */}
-                    <Card bordered={false}>
+                <Card bordered={false}>
+                    <div>
                         <Row>
-                            <Col span={10}></Col>
-                            <Col span={10}></Col>
-                            <Col span={1}>
+                            <Col span={6}></Col>
+                            <Col span={6}></Col>
+                            <Col span={8}>
                                 <DropDownForm
                                     FormItem={RFormItem}
                                 />
                             </Col>
+                            <Col span={1}></Col>
                             <Col span={3}>
                                 边框：<Switch checked={bordered} onChange={this.handleToggleBorder.bind(this)}/>
                             </Col>
                         </Row>
-                    </Card>
+                    </div>
                     <TableExport ref={te=>this._tableExport=te}>
                         <SimpleTable
                             expandedRowRender={this.renderSubTable}
@@ -1238,7 +1235,7 @@ export default class order extends Component {
                     <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate.bind(this)} isShow={UModalShow} hideForm={this.toggleUModalShow.bind(this)}/>
                     <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul.bind(this)} isShow={SModalShow} hideForm={this.toggleSModalShow.bind(this)}/>
                     <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul.bind(this)} isShow={BSModalShow} hideForm={this.toggleBSModalShow.bind(this)}/>
-                </div>
+                </Card>
             </PageHeaderLayout>
         )
     }
