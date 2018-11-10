@@ -34,7 +34,8 @@ import {
     TaskDispatch,
     TaskMonitor,
     // OrderDetail
-    Feeding
+    Feeding,
+    Product
 }from './production'
 
 import {
@@ -127,6 +128,7 @@ export{
     TaskMonitor,
     // OrderDetail,
     Feeding,
+    Product,
 
     MoldManagement,
     MoldList,

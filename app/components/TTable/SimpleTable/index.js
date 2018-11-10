@@ -22,7 +22,7 @@ class SimpleTable extends PureComponent {
 
   render() {
     const { selectedRowKeys, needTotalList } = this.state;
-    const {expandedRowRender,rowSelection, data: { list, pagination }, loading, columns,isHaveSelect,bordered,size='middle' } = this.props;
+    const {expandedRowRender, data: { list, pagination }, loading, columns,isHaveSelect,bordered,size='middle' } = this.props;
 
     const paginationProps = {
       showSizeChanger: true,
@@ -30,11 +30,20 @@ class SimpleTable extends PureComponent {
       ...pagination,
     };
 
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.handleRowSelectChange,
+      getCheckboxProps: record => ({
+        disabled: record.disabled,
+      }),
+    };
+
     return (
       <div className={styles.standardTable}>
         <Table
           expandedRowRender={expandedRowRender}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
+          // rowSelection={isHaveSelect?rowSelection:null}
           loading={loading}
           rowKey={record => record.key}
           dataSource={list}

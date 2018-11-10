@@ -91,7 +91,8 @@ export function TPostData(url, op, obj, cb, ecb) {
     fetch(urlBase + url, {
         method: 'POST',
         mode: 'cors',
-        body: JSON.stringify(reqObj),
+        // body: JSON.stringify(reqObj),
+        body: JSON.stringify(obj),
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             // 'Accept-Type': 'application/json;charset=utf-8'

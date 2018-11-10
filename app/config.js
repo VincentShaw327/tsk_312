@@ -2,7 +2,10 @@ export default (() => {
   window.gconfig = {};
   +(function (global) {
     // 本地开发打开的路径以及端口
-    global.linkUrl = 'http://localhost:3001';
+    // global.linkUrl = 'http://localhost:9000/';
+    global.linkUrl = 'http://192.168.3.69/';
+    // global.linkUrl = 'http://dev.mes.top-link.me/';
+    // global.linkUrl = 'http://dev.mes.top-link.me/';
     if (process.env.NODE_ENV === 'production') { // 生产环境用不同的接口地址
       global.linkUrl = 'http://localhost:3000';
     }
@@ -50,9 +53,9 @@ export default (() => {
         url: '',
         key: 'TManufactureSetting',
         children: [
-          /*{
-            name:'工艺设定', key: 'stamping_set',url:'stamping_set'
-          },*/
+          {
+            name:'工艺配置', key: 'process',url:'stamping_set'
+          },
           /* {
             name:'库存控制', key: 'task_dispatch',url:'task_dispatch'
           }, */
@@ -248,4 +251,5 @@ export default (() => {
 })()
 
 export const prefix = global.gconfig.linkUrl
-export const suffix = '.json'
+// export const suffix = '.json'
+export const suffix = ''

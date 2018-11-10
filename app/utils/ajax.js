@@ -28,11 +28,19 @@ import { prefix, suffix } from '../config'
 } */
 
 export function fetchJSON(url, params, target) {
+  const obj={
+      data:JSON.stringify( params)
+  }
   const data = {
     method: 'POST',
-    'Content-Type': 'application/json',
-    credentials: 'include',
-    body: JSON.stringify(params),
+    // 'Content-Type': 'application/json',
+    mode: 'cors',
+    headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        'Accept-Type': 'application/json;charset=utf-8'
+    },
+    // credentials: 'include',
+    body: JSON.stringify(obj),
   }
   let newUrl
   if (target) {

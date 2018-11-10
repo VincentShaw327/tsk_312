@@ -177,7 +177,7 @@ export default class TDeviceType extends Component {
             // list:tableDataList,
             pagination:{total,current,pageSize}
         };
-
+// 
         const Tcolumns= [
             {
                 title: '序号',

@@ -14,11 +14,11 @@ import {
 export const requestMoldList = createAction('request mold list');
 export const recevieMoldList = createAction('receive mold list');
 export const fetchMoldList = !gconfig.isDemo_dev?createAjaxAction(
-    mold.mold,
+    mold.mold_instance,
     requestMoldList,
     recevieMoldList
 ):fakeAjaxAction(
-    mold.mold,
+    mold.mold_instance,
     requestMoldList,
     recevieMoldList
 )

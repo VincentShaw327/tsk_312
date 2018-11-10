@@ -200,9 +200,22 @@ export default class CFormItem extends Component{
                 return <FormItem label={item.label}
                                  key={item.name}
                                  {...formItemLayout}>
-                                {getFieldDecorator(item.name, {rules:item.rules, initialValue:defaultValue})(
-                                  <Input placeholder={item.placeholder||'' } />
-                                )}
+                            {
+                                getFieldDecorator(
+                                    item.name,
+                                    {
+                                        rules:item.rules,
+                                        initialValue:defaultValue
+                                    }
+                                )
+                                (
+                                    <Input
+                                        placeholder={
+                                            item.placeholder||''
+                                        }
+                                    />
+                                )
+                            }
                         </FormItem>
                 break;
 
@@ -377,6 +390,12 @@ export default class CFormItem extends Component{
                         </FormItem>
                 break;
 
+            case 'submit':
+                return  <FormItem {...formItemLayout}>
+                          <Button type="primary" >确定</Button>
+                          <Button type="default" style={{marginLeft:20}}>取消</Button>
+                        </FormItem>
+            
             default:
                 return '';
                 break;

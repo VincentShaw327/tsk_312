@@ -5,7 +5,7 @@ export const TManufactureTask={
     path:'/manufacture_task',
     component:( location, cb ) => {
         require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TManufacture/TOrderScheduling' )
+            cb( null, require( '../../pages/TManufacture/order' )
                 .default )
         }, 'TManufactureTask' )
     }
@@ -23,7 +23,7 @@ export const TaskMonitor={
     path:'/task_monitor',
     component:( location, cb ) => {
         require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TManufacture/TaskMonitor' )
+            cb( null, require( '../../pages/TManufacture/workorder' )
                 .default )
         }, 'TaskMonitor' )
     },
@@ -57,4 +57,34 @@ export const Feeding={
                 .default )
         }, 'Feeding' )
     }
+}
+
+export const Product={
+    path:'/process',
+    component:( location, cb ) => {
+        require.ensure( [], ( require ) => {
+            cb( null, require( '../../pages/TProduct/product' )
+                .default )
+        }, 'Product' )
+    },
+    children:[
+        {
+            path: '/config',
+            component: (location, cb) => {
+                require.ensure([], (require) => {
+                    cb(null, require('../../pages/TProcess/configuration')
+                        .default)
+                }, 'config')
+            }
+        },
+        {
+            path: '/edit',
+            component: (location, cb) => {
+                require.ensure([], (require) => {
+                    cb(null, require('../../pages/TProcess/edit')
+                        .default)
+                }, 'config')
+            }
+        }
+    ]
 }

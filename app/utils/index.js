@@ -23,7 +23,7 @@ export const createAjaxAction = (api, startAction, endAction) => (data, cb, reje
       if (!newData) {
         newData = {}
       }
-      newData.token = token || null
+      // newData.token = token || null
     }
     newData = isArray(newData) ? newData : [newData]
     api(...newData)
@@ -34,11 +34,11 @@ export const createAjaxAction = (api, startAction, endAction) => (data, cb, reje
         endAction && dispatch(endAction({ req: newData, res: resp }))
       })
       .then(() => {
-        switch (respon.status) {
-        case 1:
+        switch (respon.err) {
+        case 0:
           cb && cb(respon)
           break
-        case 0:
+        case 1:
           if (typeof (reject) === 'function') {
             reject(respon)
           } else {
@@ -98,7 +98,12 @@ export const fakeAjaxAction = (api, startAction, endAction) => (data, cb, reject
     obj.objectlist=[];
     obj.err=0;
     obj.msg='OK';
-    for (var i = 0; i < 20; i++) {
+    let times=20;
+    console.log('newData',data,newData)
+    if(data.hasOwnProperty('num')){
+        times=data.num
+    }
+    for (var i = 0; i < times; i++) {
         obj.objectlist.push({
             UUID:i+1
         })

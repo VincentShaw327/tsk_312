@@ -1,12 +1,12 @@
 
 export const ProcessList={
-    path:'/process',
+/*    path:'/process',
     component:( location, cb ) => {
         require.ensure( [], ( require ) => {
             cb( null, require( '../../pages/TProcess/TProcessList' )
                 .default )
         }, 'AuthList' )
-    },
+    },*/
     /*children:{
         path:'/process_detail',
         component:( location, cb ) => {

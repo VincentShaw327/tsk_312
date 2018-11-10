@@ -47,7 +47,7 @@ export default () => (
                 <Route path="/THome" getComponent={THome} />
                 {
                     Object.values(pageList).map(function renderRoute(item,index){
-                        if(item.hasOwnProperty('children')){
+                        if(item.hasOwnProperty('children')&&!Array.isArray(item.children)){
                             return  <Route
                                             key={item.path}
                                             path={item.path}
@@ -55,6 +55,18 @@ export default () => (
                                             >
                                                 {
                                                     renderRoute(item.children)
+                                                }
+                                    </Route>
+                        }
+                        else if(item.hasOwnProperty('children')&&Array.isArray(item.children)){
+                            return  <Route
+                                            key={item.path}
+                                            path={item.path}
+                                            getComponent={item.component}
+                                            >
+                                                {
+                                                    // renderRoute(item.children)
+                                                    Object.values(item.children).map((item2,index2)=>renderRoute(item2,index2))
                                                 }
                                     </Route>
                         }

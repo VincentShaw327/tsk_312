@@ -132,6 +132,9 @@ export const workcenter = handleActions({
                 return{
                     key: index,
                     // ID: item.ID,
+                    nDeviceUUID:index==0?13:index==1?15:index==2?16:index,
+                    strMachineID:'-',
+                    
                     ID: 'AUTO_SMT'+Mock.mock('@natural(1, 6)'),
                     UUID: item.UUID,
                     WorkshopUUID: Mock.mock('@natural(0, 65)'),
