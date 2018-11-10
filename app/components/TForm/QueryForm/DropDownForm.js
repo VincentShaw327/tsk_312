@@ -128,18 +128,6 @@ export default class DropDownForm extends Component {
 
         return (
             <div>
-              {/*
-                <Dropdown
-                    overlay={filterForm}
-                    visible={this.state.visible}
-                    trigger={['click']}
-                    onClick={this.showDropMenu}
-                    >
-                    <a className="ant-dropdown-link" >
-                      <Icon  type="filter" theme="outlined" />
-                    </a>
-                  </Dropdown>
-              */}
               <a onClick={this.showDropMenu} ref={btn=>this._btn=btn}>
                 <Icon  type="filter" theme="outlined" />
               </a>

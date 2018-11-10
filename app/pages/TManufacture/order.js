@@ -31,7 +31,8 @@ import SimpleTable from 'components/TTable/SimpleTable';
 import {SimpleQForm,StandardQForm,DropDownForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import styles from './common.less';
-import TableExport from 'tableexport';
+// import TableExport from 'tableexport';
+import {TableExport} from  'components/Export';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const ButtonGroup = Button.Group;
@@ -100,7 +101,12 @@ export default class order extends Component {
         this.props.dispatch( fetchOrderList( { current: 1 }, ( respose ) => {} ) )
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        // console.log('_tableExport',TableExport)
+        setTimeout(()=>{
+            this._tableExport.export();
+        },2000)
+    }
 
     componentwillreceiveprops(){
         // console.log("receiveprops",this.props.GlobalKeyword)
@@ -1204,11 +1210,8 @@ export default class order extends Component {
                     /> */}
                     <Card bordered={false}>
                         <Row>
-                            <Col span={6}>
-                                <span>导出：<div className="exportMenuWrap" id="exportLotListMenu" style={{display:'flex'}}></div></span>
-                            </Col>
                             <Col span={10}></Col>
-                            <Col span={4}></Col>
+                            <Col span={10}></Col>
                             <Col span={1}>
                                 <DropDownForm
                                     FormItem={RFormItem}
@@ -1219,22 +1222,7 @@ export default class order extends Component {
                             </Col>
                         </Row>
                     </Card>
-                    <div id="lotListTableWrap">
-                        {/* <Table
-                            expandedRowRender={this.renderSubTable.bind(this)}
-                            rowSelection={rowSelection}
-                            dataSource={productOrderList}
-                            columns={columns}
-                            loading={this.state.loading}
-                            bordered={bordered}
-                            size={size}
-                            scroll={scroll}
-                            // pagination={pagination}
-                            // hideDefaultSelections={true}
-                            // size={this.state.tableSize}
-                            // scroll={{ x:1500 }}
-                            // onExpand={this.handleExpand}
-                        /> */}
+                    <TableExport ref={te=>this._tableExport=te}>
                         <SimpleTable
                             expandedRowRender={this.renderSubTable}
                             // rowSelection={rowSelection}
@@ -1246,7 +1234,7 @@ export default class order extends Component {
                             size={size}
                             onChange={this.handleTableChange}
                         />
-                    </div>
+                    </TableExport>
                     <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate.bind(this)} isShow={UModalShow} hideForm={this.toggleUModalShow.bind(this)}/>
                     <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul.bind(this)} isShow={SModalShow} hideForm={this.toggleSModalShow.bind(this)}/>
                     <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul.bind(this)} isShow={BSModalShow} hideForm={this.toggleBSModalShow.bind(this)}/>
