@@ -3,8 +3,9 @@ export default (() => {
   +(function (global) {
     // 本地开发打开的路径以及端口
     // global.linkUrl = 'http://localhost:9000/';
-    global.linkUrl = 'http://192.168.3.69/';
-    // global.linkUrl = 'http://dev.mes.top-link.me/';
+    // global.linkUrl = 'http://192.168.3.9/';
+    global.linkUrl = 'http://dev.mes.top-link.me/';
+    // global.linkUrl = '47.91.154.238/';
     // global.linkUrl = 'http://dev.mes.top-link.me/';
     if (process.env.NODE_ENV === 'production') { // 生产环境用不同的接口地址
       global.linkUrl = 'http://localhost:3000';
@@ -15,32 +16,32 @@ export default (() => {
       {
         name: '系统主页',
         icon: 'home',
-        url: 'THome',
-        key: 'THome',
+        key: '/home',
+        url: '/home',
       },
       {
         name: '车间监控',
         icon: 'desktop',
         url: '',
-        key: 'scada',
+        key: '/scada/punch',
       },
       {
         name: '生产管理',
         icon: 'form',
         url: '',
-        key: 'TManufacture',
+        key: 'manufacture',
         children: [
           {
-            name:'订单排程', key: 'manufacture_task',url:'manufacture_task'
+            name:'订单排程', key: '/manufacture/order',url:'manufacture/order'
           },
           /*{
             name:'生产派工', key: 'task_dispatch',url:'task_dispatch'
           },*/
           {
-            name:'工单管理', key: 'task_monitor',url:'task_monitor'
+            name:'工单管理', key: '/manufacture/lot',url:'/manufacture/lot'
           },
           {
-            name:'投料计划', key: 'consum_plan',url:'consum_plan'
+            name:'投料计划', key: '/manufacture/feeding',url:'consum_plan'
           },
           /*{
             name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
@@ -54,14 +55,14 @@ export default (() => {
         key: 'TManufactureSetting',
         children: [
           {
-            name:'工艺配置', key: 'process',url:'stamping_set'
+            name:'工艺配置', key: '/process/product',url:'/process/product'
           },
           /* {
             name:'库存控制', key: 'task_dispatch',url:'task_dispatch'
           }, */
-          {
+          /* {
             name:'作业指导书', key: 'task_monitor',url:'task_monitor'
-          },
+          }, */
           {
             name:'开机刷卡记录', key: 'materialReq',url:'materialReq'
           },
@@ -74,7 +75,7 @@ export default (() => {
         key: 'TQualityManagement',
         children: [
           {
-            name:'品质检验记录', key: 'quality_record',url:'quality_record',
+            name:'品质检验记录', key: '/quality/quality_record',url:'/quality/quality_record',
           },
           /*{
             name:'抽检记录', key: 'crafts',url:'TPM_Procedure',
@@ -100,16 +101,16 @@ export default (() => {
             name:'设备类别', key: 'TDeviceCategory',url:'TDeviceCategory',
           },*/
           {
-            name:'设备型号', key: 'TDeviceModel',url:'TDeviceModel',
+            name:'设备型号', key: '/device/model',url:'/device/model',
           },
           {
-            name:'设备台账', key: 'TDeviceList',url:'TDeviceList',
+            name:'设备台账', key: '/device/instance',url:'/device/instance',
           },
           {
             name:'设备维保方案', key: 'dev_maintain_fun',url:'dev_maintain_fun',
           },
           {
-            name:'设备保养记录', key: 'dev_maintain_his',url:'dev_maintain',
+            name:'设备保养记录', key: '/device/maintain_his',url:'/device/maintain_his',
           },
 
           /*{
@@ -138,11 +139,14 @@ export default (() => {
         url: '',
         key: 'TMould',
         children: [
-          /*{
-            name:'模具型号', key: 'mould_model',url:'mould_model',
-          },*/
+          /* {
+            name:'模具架管理', key: '/mould/rack_list',url:'/mould/rack_list',
+          }, */
           {
-            name:'模具台帐', key: 'mould_list',url:'mould_list',
+            name:'模具型号', key: '/mould/mould_model',url:'/mould/mould_model',
+          },
+          {
+            name:'模具台帐', key: '/mould/mould_list',url:'/mould/mould_list',
           },
           /*{
             name:'寿命分析', key: 'mould_life',url:'mould_life',
@@ -156,13 +160,13 @@ export default (() => {
         key: 'TMtrl',
         children: [
           {
-            name:'物料型号', key: 'material_model',url:'mtrl_model',
+            name:'物料型号', key: '/material/material_model',url:'/material/material_model',
           },
           {
-            name:'产品型号', key: 'product_model',url:'product_list',
+            name:'产品型号', key: '/material/product_model',url:'/material/product_model',
           },
           {
-            name:'BOM表', key: 'bom_list',url:'bom_list',
+            name:'BOM表', key: '/material/bom_list',url:'/material/bom_list',
           },
         ],
       },
@@ -173,10 +177,10 @@ export default (() => {
         key: 'TWorkCenter',
         children: [
           {
-            name:'工作中心类型', key: 'workCenter_type',url:'workCenter_type',
+            name:'工作中心类型', key: '/process/workcenter_type',url:'/process/centerType',
           },
           {
-            name:'工作中心', key: 'workCenter',url:'workCenter',
+            name:'工作中心', key: '/process/workcenter',url:'/process/workcenter',
           },
         ],
       },
@@ -187,25 +191,25 @@ export default (() => {
         key: 'TReport',
         children: [
           {
-            name:'设备运行时间统计', key: 'dev_run_time',url:'dev_run_time',
+            name:'设备运行时间统计', key: '/report/dev_run_time',url:'/report/dev_run_time',
           },
           /*{
             name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
           },*/
           {
-            name:'生产报表', key: 'stampingFreq',url:'stampingFreq',
+            name:'生产报表', key: '/report/stampingFreq',url:'/report/stampingFreq',
           },
           /*{
             name:'模具冲次统计', key: 'mold_punch_report',url:'mold_punch_report',
           },*/
           {
-            name:'停机分析', key: 'DowntimeMon',url:'DowntimeMon',
+            name:'停机分析', key: '/report/DowntimeMon',url:'/report/DowntimeMon',
           },
           /*{
             name:'周停机分析', key: 'DowntimeWeek',url:'DowntimeWeek',
           },*/
           {
-            name:'OEE', key: 'stoee',url:'oee_analysis_report',
+            name:'OEE', key: '/report/stoee',url:'/report/stoee',
           },
         ],
       },
@@ -216,16 +220,16 @@ export default (() => {
         key: 'matrl_consumption',
         children: [
           {
-            name:'单日材料利用率', key: 'material_loss_collate',url:'material_loss_collate',
+            name:'单日材料利用率', key: '/mtrl_loss/material_loss_collate',url:'/mtrl_loss/material_loss_collate',
           },
           {
-            name:'材料利用率分析', key: 'material_loss_tend',url:'material_loss_tend',
+            name:'材料利用率分析', key: '/mtrl_loss/material_loss_tend',url:'/mtrl_loss/material_loss_tend',
           },
           {
-            name:'材料利用率同比分析', key: 'material_loss_mon',url:'material_loss_mon',
+            name:'材料利用率同比分析', key: '/mtrl_loss/material_loss_mon',url:'/mtrl_loss/material_loss_mon',
           },
           {
-            name:'材料利用率周期汇总', key: 'material_loss_week',url:'material_loss_week',
+            name:'材料利用率周期汇总', key: '/mtrl_loss/material_loss_week',url:'/mtrl_loss/material_loss_week',
           },
         ],
       },
@@ -236,13 +240,13 @@ export default (() => {
         key: 'TSystemSetting',
         children: [
           {
-            name:'用户列表', key: 'user_list',url:'user_list',
+            name:'用户列表', key: '/setting/user_list',url:'/setting/user_list',
           },
           {
-            name:'权限列表', key: 'auth_list',url:'auth_list',
+            name:'权限列表', key: '/setting/auth_list',url:'/setting/auth_list',
           },
           {
-            name:'权限组', key: 'auth_group_list',url:'auth_group_list',
+            name:'权限组', key: '/setting/auth_group_list',url:'/setting/auth_group_list',
           },
         ],
       },

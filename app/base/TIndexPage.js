@@ -1,21 +1,26 @@
 import React, { Fragment }  from 'react';
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types';
-import { Layout, Menu, Icon,Switch } from 'antd';
-import { hashHistory,History , Link } from 'react-router';
+// import PropTypes from 'prop-types';
+import { Layout, Menu, Icon } from 'antd';
+import { Switch, Route } from 'react-router-dom';
+// import { hashHistory} from 'react-router';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { updateTabList } from 'actions/tabList';
 import { updateBreadcrumbList } from 'actions/common';
-import TFooter from './TFooter';
+// import TFooter from './TFooter';
 import GlobalFooter from 'components/ant-design-pro/GlobalFooter';
 import THeader from './Header/THeader';
 import TTabMain from './TTabMain';
-import PageHeaderLayout from './PageHeaderLayout';
-import { TPostData } from 'utils/ajax';
-import LOGO from '../images/SCLOGO1.png';
+// import PageHeaderLayout from './PageHeaderLayout';
+// import { TPostData } from 'utils/ajax';
+import  {asyncComponent} from 'utils/load';
+// import LOGO from '../images/SCLOGO1.png';
+import * as pageList from '../Routes/PageList'
+// import TabList from './tabList'
+import THome from '../pages/THome/THome'
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
-
+console.log("pageList",  Object.values(pageList.default))
 
 @connect((state, props) => ({
   config: state.config,
@@ -46,9 +51,10 @@ export default class TIndexPage extends React.Component {
     }
 
     // 调用子组件方法获取孩子名字
-    THandleClick = ( e,key,keyPath ) => {
-        console.log("TPageOpen( e.key )",e,key,keyPath)
-        hashHistory.push(e.key)
+    THandleClick = (e) => {
+        console.log("点击菜单按钮：",e,this.props)
+        // hashHistory.push(e.key)
+        this.props.history.push(e.key)
         // this._child.TPageOpen( e.key );
         // this._child.TPageOpen1( e.item.props );
         this.props.dispatch(updateTabList({ title: e.item.props.name, content: '', key: e.key }))
@@ -531,9 +537,24 @@ export default class TIndexPage extends React.Component {
                                 <div style={{ minHeight: 360 }}>
                                     <TTabMain
                                         ref={child => this._child = child}
-                                        content ={children}
+                                        {...this.props}
                                     />
-                                    {children}
+                                    <Switch>
+                                        <Route path="/home" key="THome" component={THome} />
+                                        {
+                                            Object.values(pageList.default).map((item)=>{
+                                                return <Route
+                                                            key={item.path}
+                                                            path={item.path}
+                                                            // component={item.component}
+                                                            render={(props)=>{
+                                                                const Child=asyncComponent(item.component);
+                                                                return <Child {...props}/>
+                                                            }}
+                                                        />
+                                            })
+                                        }
+                                    </Switch>
                                 </div>
                                 {/* <TFooter /> */}
                             </Content>

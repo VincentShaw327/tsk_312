@@ -1,10 +1,19 @@
-.item-hidden{
-    display: none;
-}
-.item{
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-    position: absolute;
-    background-color: white;
-    z-index: 1000;
-    padding: 20px;
+.wrap-drop-form{
+    min-width: 200px;
+    max-width: 500px;
+    position: relative;
+    width:100%;
+    .item-hidden{
+        display: none;
+        // visibility: hidden;
+    }
+    .item{
+        // visibility: visible;
+        box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        position: absolute;
+        background-color: white;
+        z-index: 1000;
+        padding: 20px;
+        min-width: 350px;
+    }
 }

@@ -1,27 +1,12 @@
 import React from 'react'
-import { Router, Route, IndexRoute } from 'react-router'
-import hashHistory from '../history'
+import { Switch, Route,HashRouter,BrowserRouter   } from 'react-router-dom'
 import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 // import App from './base'
 import App from '../base/TIndexPage';
-import * as pageList from './PageList'
+import Login from '../pages/login' // 登录*/
+import Register from '../pages/register'// 注册
 
-console.log("pageList", pageList)
-// 登录*/
-const Login = ( location, cb ) => {
-    require.ensure( [], ( require ) => {
-        cb( null, require( '../pages/login' )
-            .default )
-    }, 'login' )
-}
-// 注册
-const Register = ( location, cb ) => {
-    require.ensure( [], ( require ) => {
-        cb( null, require( '../pages/register' )
-            .default )
-    }, 'register' )
-}
 
 /* 进入路由的判断 */
 function isLogin( nextState, replaceState ) {
@@ -30,22 +15,16 @@ function isLogin( nextState, replaceState ) {
         replaceState( '/login' )
     }
 }
-//
-const THome = ( location, cb ) => {
-    require.ensure( [], ( require ) => {
-        cb( null, require( '../pages/THome/THome' )
-            .default )
-    }, 'THome' )
-}
-
 
 export default () => (
     <LocaleProvider locale={zhCN}>
-        <Router history={hashHistory}>
+        <HashRouter >
+        {/* <BrowserRouter> */}
+        <Switch>
             <Route path="/" onEnter={isLogin} component={App}>
-                <IndexRoute getComponent={THome} />
-                <Route path="/THome" getComponent={THome} />
-                {
+                {/* <IndexRoute getComponent={THome} /> */}
+                {/* <Route path="/THome" getComponent={THome} /> */}
+                {/* {
                     Object.values(pageList).map(function renderRoute(item,index){
                         if(item.hasOwnProperty('children')&&!Array.isArray(item.children)){
                             return  <Route
@@ -78,11 +57,12 @@ export default () => (
                             />
                         }
                     })
-                }
+                } */}
             </Route>
             <Route path="/login" getComponent={Login} />
             <Route path="/register" getComponent={Register} />
-        </Router>
+        </Switch>
+        {/* </BrowserRouter> */}
+        </HashRouter>
     </LocaleProvider>
 )
-// export default routes

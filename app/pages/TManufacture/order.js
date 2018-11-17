@@ -1202,7 +1202,9 @@ export default class order extends Component {
         }];
 
         return (
-            <PageHeaderLayout title="任务排程" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
+            <PageHeaderLayout 
+            // title="任务排程" 
+            wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
                 <Card bordered={false}>
                     <div>
                         <Row>

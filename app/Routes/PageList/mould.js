@@ -1,32 +1,24 @@
 export const MoldManagement={
-    path:'/mould_model',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TMould/TMouldModel' )
-                .default )
-        }, 'MoldManagement' )
-    }
+    path:'/mould/mould_model',
+    component:()=>import( '../../pages/TMould/TMouldModel' )
 }
 
 export const MoldList={
-    path:'/mould_list',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TMould/TMouldList' )
-                .default )
-        }, 'MoldList' )
-    },
-    children:{
-        path:'/mould_detail',
-        component:( location, cb ) => {
-            require.ensure( [], ( require ) => {
-                cb( null, require( '../../pages/TMould/mouldDetail' )
-                    .default )
-            }, 'MoldDetail' )
-        }
-    }
+    path:'/mould/mould_list',
+    component:()=>import( '../../pages/TMould/TMouldList' )
 }
 
-// export const MoldDetail={
-//
-// }
+export const mouldDetail={
+    path:'/mould/mould_detail',
+    component:()=>import( '../../pages/TMould/mouldDetail' )
+}
+
+export const RackList={
+    path:'/mould/rack_list',
+    component:()=>import( '../../pages/TMould/rack/list' )
+}
+export const RackBin={
+    path:'/mould/rack_bin',
+    component:()=>import( '../../pages/TMould/rack/bin' )
+}
+

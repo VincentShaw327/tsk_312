@@ -47,7 +47,7 @@ export const createAjaxAction = (api, startAction, endAction) => (data, cb, reje
           break
         default:
           console.log('status的返回值不是0或1')
-          logOut()
+          // logOut()
         }
       })
       .catch(catchError) // eslint-disable-line no-use-before-define

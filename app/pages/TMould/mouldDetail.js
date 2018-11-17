@@ -43,7 +43,7 @@ export default class MouldDetail extends Component {
     componentWillMount() {
         // this.getMoldModelList();
         // this.getTableList();
-        this.props.dispatch( fetchMoldList( { current: 1 }, ( respose ) => {} ) )
+        // this.props.dispatch( fetchMoldList( { current: 1 }, ( respose ) => {} ) )
     }
 
     getTableList(que){

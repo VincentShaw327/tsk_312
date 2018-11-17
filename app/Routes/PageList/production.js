@@ -1,90 +1,49 @@
 /*
 **生产管理模块
 */
-export const TManufactureTask={
-    path:'/manufacture_task',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TManufacture/order' )
-                .default )
-        }, 'TManufactureTask' )
-    }
+
+export const order={
+    path:'/manufacture/order',
+    component:(props)=>import('../../pages/TManufacture/order')
 }
-export const TaskDispatch={
-    path:'/task_dispatch',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TManufacture/TManufactureTaskDispatch' )
-                .default )
-        }, 'TaskDispatch' )
-    }
-}
-export const TaskMonitor={
-    path:'/task_monitor',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TManufacture/workorder' )
-                .default )
-        }, 'TaskMonitor' )
-    },
-    children:{
-        path:'/workorder_detail',
-        component:( location, cb ) => {
-            require.ensure( [], ( require ) => {
-                cb( null, require( '../../pages/TManufacture/workOrderDetail' )
-                    .default )
-            }, 'workorder_detail' )
-        }
-    }
+export const lot_01={
+    path:'/manufacture/lot_01',
+    component:()=>import('../../pages/TManufacture/TManufactureTaskDispatch')
 }
 
-// export const OrderDetail={
-//     path:'/workorder_detail',
-//     component:( location, cb ) => {
-//         require.ensure( [], ( require ) => {
-//             cb( null, require( '../../pages/TManufacture/workOrderDetail' )
-//                 .default )
-//         }, 'orderDetail' )
-//     }
-//
+export const lot={
+    path:'/manufacture/lot',
+    component:()=>import('../../pages/TManufacture/workorder')
+}
 
+export const order_detail={
+    path:'/manufacture/order/workorder_detail',
+    component:()=>import('../../pages/TManufacture/workOrderDetail')
+}
 
 export const Feeding={
-    path:'/consum_plan',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TManufacture/feeding' )
-                .default )
-        }, 'Feeding' )
-    }
+    path:'/manufacture/feeding',
+    component:()=>import('../../pages/TManufacture/feeding')
 }
 
-export const Product={
-    path:'/process',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TProduct/product' )
-                .default )
-        }, 'Product' )
-    },
-    children:[
-        {
-            path: '/config',
-            component: (location, cb) => {
-                require.ensure([], (require) => {
-                    cb(null, require('../../pages/TProcess/configuration')
-                        .default)
-                }, 'config')
-            }
-        },
-        {
-            path: '/edit',
-            component: (location, cb) => {
-                require.ensure([], (require) => {
-                    cb(null, require('../../pages/TProcess/edit')
-                        .default)
-                }, 'config')
-            }
+
+/* children:[
+    {
+        path: '/config',
+        component: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('../../pages/TProcess/configuration')
+                    .default)
+            }, 'config')
         }
-    ]
-}
+    },
+    {
+        path: '/edit',
+        component: (location, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require('../../pages/TProcess/edit')
+                    .default)
+            }, 'config')
+        }
+    }
+] */

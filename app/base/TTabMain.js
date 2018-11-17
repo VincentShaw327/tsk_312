@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { routerActions } from 'react-router-redux'
-import { hashHistory,History } from 'react-router';
 import { Tabs, Button,Icon } from 'antd';
 import PropTypes from 'prop-types';
 import styles from './index.less';
@@ -35,7 +34,9 @@ export default class TTabMain extends React.Component {
         let update_title
 
         // this.setState( { activeKey } );
-        hashHistory.push(activeKey)
+        console.log('tab change',this.props,activeKey)
+        // hashHistory.push(activeKey)
+        this.props.history.push(activeKey)
         this.props.dispatch(updateTabChecked({ activeKey: activeKey }))
 
         tabList.list.map((tab, index) => {
@@ -61,12 +62,11 @@ export default class TTabMain extends React.Component {
         let delIndex
         let activeKey
         let update_title
-
         if (targetKey === tabList.activeKey) {
           tabList.list.map((tab, index) => {
             tab.key === targetKey ? delIndex = index : null;
           });
-          // eslint-disable-next-line no-nested-ternary
+          // 判断是否为当前活跃key的前后tab
           activeKey = tabList.list[delIndex + 1] ?
             tabList.list[delIndex + 1].key : (tabList.list[delIndex - 1] ?
               tabList.list[delIndex - 1].key : '');
@@ -74,7 +74,8 @@ export default class TTabMain extends React.Component {
           update_title = tabList.list[delIndex + 1] ?
             tabList.list[delIndex + 1].title : (tabList.list[delIndex - 1] ?
               tabList.list[delIndex - 1].title : '');
-          actions.push(activeKey);
+        //   actions.push(activeKey);
+          this.props.history.push(activeKey);
           this.props.dispatch(updateBreadcrumbList({ title: update_title,href:activeKey }))
         }
         this.props.dispatch(deleteTabFromList({ targetKey: targetKey }));
@@ -83,7 +84,7 @@ export default class TTabMain extends React.Component {
     clearTab(){
         // const panes = this.state.panes.filter( pane => pane.key == 'THome' );
         this.props.dispatch(clearTabList());
-        hashHistory.push('THome');
+        this.props.history.push('/home');
 
     }
 
@@ -92,7 +93,7 @@ export default class TTabMain extends React.Component {
         const { activeKey,list } = this.props.tabList;
 
         return (
-            <div>
+            <React.Fragment>
                 <Tabs
                   hideAdd
                   onChange={this.onChange}
@@ -121,7 +122,7 @@ export default class TTabMain extends React.Component {
                         </TabPane>)
                     }
                 </Tabs>
-            </div>
+            </React.Fragment>
         );
     }
 }

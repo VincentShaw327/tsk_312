@@ -2,31 +2,16 @@
 *系统设置
 */
 export const userList={
-    path:'/user_list',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TUser/TUserList' )
-                .default )
-        }, 'userList' )
-    }
+    path:'/setting/user_list',
+    component:() =>import( '../../pages/TUser/TUserList' )
 }
 
 export const AuthList={
-    path:'/auth_list',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TUser/TAuthList' )
-                .default )
-        }, 'AuthList' )
-    }
+    path:'/setting/auth_list',
+    component:() =>import( '../../pages/TUser/TAuthList' )
 }
 
 export const AuthGroup={
-    path:'/auth_group_list',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TUser/TAuthGroupList' )
-                .default )
-        }, 'AuthGroup' )
-    }
+    path:'/setting/auth_group_list',
+    component:() =>import( '../../pages/TUser/TAuthGroupList' )
 }

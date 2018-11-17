@@ -2,41 +2,21 @@
 **原料损耗分析
 */
 export const MtrlLossCol={
-    path:'/material_loss_collate',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/MtrlLoss/MLossCollate' )
-                .default )
-        }, 'MtrlLossCol' )
-    }
+    path:'/mtrl_loss/material_loss_collate',
+    component:() =>import( '../../pages/MtrlLoss/MLossCollate' )
 }
 
 export const MtrlLossTend={
-    path:'/material_loss_tend',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/MtrlLoss/MLossTend' )
-                .default )
-        }, 'MtrlLossTend' )
-    }
+    path:'/mtrl_loss/material_loss_tend',
+    component:() =>import( '../../pages/MtrlLoss/MLossTend' )
 }
 
 export const MtrlLossMon={
-    path:'/material_loss_mon',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/MtrlLoss/MLossMon' )
-                .default )
-        }, 'MtrlLossMon' )
-    }
+    path:'/mtrl_loss/material_loss_mon',
+    component:() =>import( '../../pages/MtrlLoss/MLossMon' )
 }
 
 export const MtrlLossWeek={
-    path:'/material_loss_week',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/MtrlLoss/MLossWeek' )
-                .default )
-        }, 'MtrlLossWeek' )
-    }
+    path:'/mtrl_loss/material_loss_week',
+    component:() =>import( '../../pages/MtrlLoss/MLossWeek' )
 }

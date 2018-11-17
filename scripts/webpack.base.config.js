@@ -18,6 +18,8 @@ const webpackConfigBase = {
     path: resolve('../dist'),
     filename: '[name].[hash:4].js',
     chunkFilename: 'chunks/[name].[hash:4].js',
+    // publicPath:'http://localhost:3016/dist/'
+    // publicPath:'../dist/'
   },
   resolve: {
     extensions: ['.js', '.json'],
@@ -31,6 +33,7 @@ const webpackConfigBase = {
       style: path.join(__dirname, '/../app/style'),
       images: path.join(__dirname, '/../app/images'),
       base: path.join(__dirname, '/../app/base'),
+      functions: path.join(__dirname, '/../app/functions'),
     },
   },
   resolveLoader: {
@@ -129,6 +132,7 @@ const webpackConfigBase = {
       async: 'async-common',
       minChunks: 3,
     }),
+    new webpack.SourceMapDevToolPlugin()
   ]
 }
 

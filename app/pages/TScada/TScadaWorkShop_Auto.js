@@ -29,6 +29,7 @@ export default class TScadaWorkShop_Auto extends Component {
 
     constructor( props ) {
         super( props )
+        console.log('看看scada props',props)
         this.state = {
             //单台机台数据状态
             // aEquipList: [],
@@ -37,7 +38,7 @@ export default class TScadaWorkShop_Auto extends Component {
             onLine: '-',
             warning: '-',
             allQuery: '-',
-            loading: props.workcenter.loading
+            loading: true
         }
     }
     //查询工作中心

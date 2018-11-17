@@ -1,40 +1,20 @@
 //
-export const TDeviceType={
+export const DeviceType={
     path:'/TBas_Type_Dev',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TBasicData/TDeviceType' )
-                .default )
-        }, 'TDeviceType' )
-    }
+    component:() =>import( '../../pages/TBasicData/TDeviceType' )
 }
 // 设备型号
 export const TDeviceModel={
-    path:'/TDeviceModel',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TDevice/TDeviceModel' )
-                .default )
-        }, 'TDeviceModel' )
-    }
+    path:'/device/model',
+    component:() =>import( '../../pages/TDevice/TDeviceModel' )
 }
 // 设备列表
 export const TDeviceList={
-    path:'/TDeviceList',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TDevice/TDeviceList' )
-                .default )
-        }, 'TDeviceType' )
-    }
+    path:'/device/instance',
+    component:() =>import( '../../pages/TDevice/TDeviceList' )
 }
 // 设备保养记录
 export const TDeviceMaintainHis={
-    path:'/dev_maintain',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TDevice/TMaintainHistoryList' )
-                .default )
-        }, 'TDeviceMaintainHis' )
-    }
+    path:'/device/maintain_his',
+    component:() =>import( '../../pages/TDevice/TMaintainHistoryList' )
 }

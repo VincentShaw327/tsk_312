@@ -52,7 +52,7 @@ export default class CreateModal extends Component {
         };
         return (
             <div>
-                <div style={{margin:'20px 0'}}>
+                <div style={{margin:'0px 0'}}>
                     <Button
                         onClick={this.toggleShow}
                         icon="plus" type="primary">添加</Button>

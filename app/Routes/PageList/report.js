@@ -4,91 +4,46 @@
 
 
 export const DevRunTimeReport={
-    path:'/dev_run_time',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/DevRunRecord' )
-                .default )
-        }, 'DevRunTimeReport' )
-    }
+    path:'/report/dev_run_time',
+    component:() =>import( '../../pages/TReport/DevRunRecord' )
 }
 
 
 export const DevStateReport={
-    path:'/dev_state_report',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/TStateTimeOverview' )
-                .default )
-        }, 'DevStateReport' )
-    }
+    path:'/report/dev_state_report',
+    component:() =>import( '../../pages/TReport/TStateTimeOverview' )
 }
 
 export const ProductionTracking={
-    path:'/production_tracking',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/TLossTimeReport' )
-                .default )
-        }, 'ProductionTracking' )
-    }
+    path:'/report/production_tracking',
+    component:() =>import( '../../pages/TReport/TLossTimeReport' )
 }
 
 export const ProductionReport={
-    path:'/production_report',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/TProductionReport' )
-                .default )
-        }, 'ProductionReport' )
-    }
+    path:'/report/production_report',
+    component:() =>import( '../../pages/TReport/TProductionReport' )
 }
 
 export const TOEEAnalysis={
-    path:'/oee_analysis_report',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/TOEEAnalysis' )
-                .default )
-        }, 'TOEEAnalysis' )
-    }
+    path:'/report/oee_analysis_report',
+    component:() =>import( '../../pages/TReport/TOEEAnalysis' )
 }
 
 export const STOEE={
-    path:'/stoee',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/STOEE' )
-                .default )
-        }, 'STOEE' )
-    }
+    path:'/report/stoee',
+    component:() =>import( '../../pages/TReport/STOEE' )
 }
 
 export const StampingFreq={
-    path:'/stampingFreq',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/StampingFreq' )
-                .default )
-        }, 'stampingFreq' )
-    }
+    path:'/report/stampingFreq',
+    component:() =>import( '../../pages/TReport/StampingFreq' )
 }
 export const DowntimeMon={
-    path:'/DowntimeMon',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/DowntimeMon' )
-                .default )
-        }, 'DowntimeMon' )
-    }
+    path:'/report/DowntimeMon',
+    component:() =>import( '../../pages/TReport/DowntimeMon' )
 }
 
 export const DowntimeWeek={
-    path:'/DowntimeWeek',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TReport/DowntimeWeek' )
-                .default )
-        }, 'DowntimeWeek' )
-    }
+    path:'/report/DowntimeWeek',
+    component:() =>import( '../../pages/TReport/DowntimeWeek' )
 }

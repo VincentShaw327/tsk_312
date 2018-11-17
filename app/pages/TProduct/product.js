@@ -5,18 +5,19 @@
  **/
  import React, { Component } from 'react'
  import { connect } from 'react-redux'
- import { hashHistory, Link } from 'react-router'
-import { Table, Menu, Icon,Button, Badge, Dropdown,Popover,message,Divider,Popconfirm } from 'antd';
+ import {Link,Route,Switch } from 'react-router-dom'
+import { Table,Icon,Button, Badge,Popover,message,Divider,Popconfirm } from 'antd';
  import { fetchProductModel } from 'actions/product';
  import { TPostData,urlBase } from '../../utils/TAjax';
  import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
-
+import configuration from '../TProcess/configuration'
+import edit from '../TProcess/edit'
 
 @connect( ( state, props ) => {
-    console.log( 'state', state )
+    console.log( 'process_product:state', state,props )
     return {
         Breadcrumb:state.Breadcrumb,
         productModel: state.productModel,
@@ -171,7 +172,6 @@ export default class ProductModel extends Component {
 
 
     render() {
-        // let Feature=this.feature;
         const {
             tableDataList,
             // loading,
@@ -248,9 +248,16 @@ export default class ProductModel extends Component {
                 dataIndex: 'UUID',
                 render:(UUID,record)=>{
                     return <span>
-                        <Link to='config'>工艺配置</Link>
+                        <Link to='/process/product/configuration'>配置</Link>
+                        {/* <Redirect  
+                            from='/process/product'
+                            to='/process/product/configuration'
+                        >
+                        工艺配置
+                        </Redirect> */}
+                        {/* <a onClick={()=>this.props.history.push('/process/product/configuration')}>工艺配置</a> */}
                         <Divider type="vertical"/>
-                        <Link to='edit'>工艺编辑</Link>
+                        <Link to='/process/product/edit'>编辑</Link>
                         <Divider type="vertical"/>
                         <Popconfirm
                             placement="topRight"
@@ -345,7 +352,7 @@ export default class ProductModel extends Component {
             }
         ];
 
-        const productList=(
+        const productList=()=>(
             <div className="cardContent">
                 <SimpleQForm
                     FormItem={RFormItem}
@@ -375,7 +382,7 @@ export default class ProductModel extends Component {
 
         const action=(
           <Button type="primary">
-            <Link to='/process'>返回</Link>
+            <Link to='/process/product'>返回</Link>
           </Button>
         );
 
@@ -385,7 +392,12 @@ export default class ProductModel extends Component {
             wrapperClassName="pageContent"
             action={children?action:''}
             BreadcrumbList={Breadcrumb.BCList}>
-                {children?children:productList}
+            <Switch>
+                <Route path='/process/product/configuration' component={configuration} />
+                <Route path='/process/product/edit' component={edit} />
+                <Route path='/process/product' component={productList} />
+            </Switch>
+            {/* {children?children:productList} */}
           </PageHeaderLayout>
         )
     }

@@ -1,4 +1,5 @@
 import React, {Component,Fragment} from 'react';
+import {Link } from 'react-router-dom'
 import {
     Button,
     Radio,
@@ -111,28 +112,9 @@ export default class TstateTimeOverview extends Component{
     return(
         <div>
             <Card style={{height:500}}>
-                {/* <Row>
-                    <Col span={4}>
-                        <Menu
-                          // onClick={this.handleClick}
-                          // selectedKeys={[this.state.current]}
-                          mode="vertical "
-                         >
-                          <Menu.Item key="process">
-                            工艺参数
-                          </Menu.Item>
-                          <Menu.Item key="mold">
-                            模具
-                          </Menu.Item>
-                          <Menu.Item key="mtrl">
-                            物料
-                          </Menu.Item>
-                        </Menu>
-                    </Col>
-                    <Col span={20}>
-                        {parameter01}
-                    </Col>
-                </Row> */}
+              <Link to='/process/product'>
+                <Icon type="left" />
+              </Link>
                 <Steps current={steps}>
                   <Step title="工艺参数" description="配置工艺参数" />
                   <Step title="模具" description="配置模具" />

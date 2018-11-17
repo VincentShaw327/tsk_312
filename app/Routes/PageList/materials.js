@@ -2,31 +2,16 @@
 **物料管理
 */
 export const MaterialModel={
-    path:'/material_model',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TWms/TMaterialModel' )
-                .default )
-        }, 'MaterialModel' )
-    }
+    path:'/material/material_model',
+    component:() =>import( '../../pages/TWms/TMaterialModel' )
 }
 
 export const ProductModel={
-    path:'/product_model',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TProduct/TProductModel' )
-                .default )
-        }, 'ProductModel' )
-    }
+    path:'/material/product_model',
+    component:() =>import( '../../pages/TProduct/TProductModel' )
 }
 
 export const BomManagement={
-    path:'/bom_list',
-    component:( location, cb ) => {
-        require.ensure( [], ( require ) => {
-            cb( null, require( '../../pages/TBom/TBomList' )
-                .default )
-        }, 'BomManagement' )
-    }
+    path:'/material/bom_list',
+    component:() =>import( '../../pages/TBom/TBomList' )
 }

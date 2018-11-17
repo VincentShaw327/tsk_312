@@ -193,6 +193,7 @@ export default class CFormItem extends Component{
 
         // const formItemLayout = formItemLayout || {};
         // const item = item || {};
+        // console.log('formitem',item);
         let defaultValue = item.defaultValue || (item.type=='number'?0:'');
         switch (item.type){
 
@@ -277,9 +278,10 @@ export default class CFormItem extends Component{
                                     >
                                     {item.hasAllButtom?<Option key="1000" value="-1" style={{borderBottom:'solid 1px #a4a4a9'}}>全部</Option>:null}
                                     {
-                                        item.options.map(function(item, i,arr){
-                                            return <Option key={i} value={item.value}>{item.text || item.value}</Option>
-                                        })
+                                        Array.isArray(item.options)?
+                                            item.options.map(function(item, i,arr){
+                                                return <Option key={i} value={item.value}>{item.text || item.value}</Option>
+                                            }):''
                                     }
                                 </Select>
                         )}

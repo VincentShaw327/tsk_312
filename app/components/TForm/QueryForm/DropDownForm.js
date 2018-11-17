@@ -50,11 +50,35 @@ export default class DropDownForm extends Component {
     }
 
     hideDropMenu=(e)=>{
-        console.log('隐藏',e)
+        // console.log('隐藏',e)
         e.preventDefault();
         e.stopPropagation();
         e.hasOwnProperty("nativeEvent")?e.nativeEvent.stopImmediatePropagation():''
         this.setState({visible:false});
+    }
+
+    handleSubmit=(e)=>{
+        this.props.form.validateFields( ( errors, values ) => {
+            // console.log('收到表单值：', values);
+            let subValue = {};
+            if ( !!errors ) {
+                console.log( 'Errors in form!!!' );
+                message.error( '添加失败' )
+                return;
+            } else {
+                this.props.submit( values,'filter' );
+                this.hideDropMenu(e);
+                // message.success('添加成功');
+            }
+        } );
+    }
+
+    handleSearch=(e)=>{
+        if(e&&e.keyCode&&e.keyCode==13){
+            console.log('开始搜索。。。',e,e.keyCode,this._input.input.value)
+            let value=this._input.input.value;
+            this.props.submit(value,'search');
+        }
     }
 
     render() {
@@ -66,22 +90,26 @@ export default class DropDownForm extends Component {
             updateItem,
             width=350,
             position='leftBottom',
-            isHaveSearch=true
+            isHaveSearch=true,
+            styles={
+                maxWidth:500
+            }
         } = this.props;
         const {left,top,right,offsetWidth}=this.state;
         const rightBottomStyle={
             width,
-            left,
-            top
+            // left,
+            top:25,
+            right:-width
         }
         const leftBottomStyle={
             width,
             // left:Math.abs(left-offsetWidth),
-            left:left-offsetWidth,
-            top
+            right:0,
+            top:25
         }
 
-        console.log('state',this.state)
+        // console.log('dropform state',this.state)
 
         const formItemLayout = {
           labelCol: {
@@ -95,26 +123,26 @@ export default class DropDownForm extends Component {
         };
 
         const filterForm=(
-                <Form
-                    // layout="horizontal"
-                    // style={{padding:20}}
-                    >
-                        {
-                            FormItem.map(function(item,index){
-                                return <CFormItem
-                                    key={index}
-                                    getFieldDecorator={getFieldDecorator}
-                                    formItemLayout={formItemLayout}
-                                    item={item}
-                                    recordItem={updateItem}
-                                />
-                        })
-                    }
-                    {/* <FormItem {...formItemLayout}>
-                    <Button type="primary" >确定</Button>
-                    <Button type="default" style={{marginLeft:20}}>取消</Button>
-                    </FormItem> */}
-                </Form>
+            <Form
+                // layout="horizontal"
+                // style={{padding:20}}
+                >
+                {
+                    FormItem.map(function(item,index){
+                        return <CFormItem
+                            key={index}
+                            getFieldDecorator={getFieldDecorator}
+                            formItemLayout={formItemLayout}
+                            item={item}
+                            recordItem={updateItem}
+                        />
+                    })
+                }
+                {/* <FormItem {...formItemLayout}>
+                <Button type="primary" >确定</Button>
+                <Button type="default" style={{marginLeft:20}}>取消</Button>
+                </FormItem> */}
+            </Form>
         )
 
         const dropFormClass = classnames({
@@ -126,15 +154,16 @@ export default class DropDownForm extends Component {
             <div style={{
                 display:'flex',
                 minWidth:'150px',
+                maxWidth:'500px',
+                width:'100%',
                 justifyContent:'space-between',
                 alignItems:'center'
                 }}>
-                <Input style={{width:'90%'}} />
+                <Input style={{width:'90%'}} ref={_in=>this._input=_in} onKeyDown={this.handleSearch}  />
                 <a onClick={this.showDropMenu} ref={btn=>this._btn=btn}>
                     <Icon  type="filter" theme="outlined" />
                 </a>
             </div>
-
         );
 
         const noSearch=(
@@ -145,7 +174,7 @@ export default class DropDownForm extends Component {
         )
 
         return (
-            <div>
+            <div style={styles} className="wrap-drop-form">
               {
                   isHaveSearch?
                     haveSearch:noSearch
@@ -162,7 +191,7 @@ export default class DropDownForm extends Component {
                   {
                       filterForm
                   }
-                <Button type="primary" >确定</Button>
+                <Button type="primary" onClick={this.handleSubmit}>确定</Button>
                 <Button type="default" onClick={this.hideDropMenu} style={{marginLeft:20}}>取消</Button>
               </div>
             </div>

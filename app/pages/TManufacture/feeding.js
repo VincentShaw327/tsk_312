@@ -360,7 +360,11 @@ export default class feeding extends Component {
                         FormItem={CFormItem}
                         submit={this.handleCreat.bind(this)}
                     /> */}
-                    <DropDownForm FormItem={DropQFormItem}></DropDownForm>
+                    <div style={{width:'35%',marginBottom:15}}>
+                        <DropDownForm 
+                            FormItem={DropQFormItem}
+                            />
+                    </div>
                     <SimpleTable
                         size="middle"
                         loading={loading}

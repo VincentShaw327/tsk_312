@@ -7,7 +7,6 @@ import 'style/base.less'
 
 import Header from './header'
 import LeftNav from './nav'
-import TabList from './tabList'
 
 
 // @connect((state, props) => ({}))

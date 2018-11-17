@@ -9,158 +9,34 @@ import{
     TDefectiveType
 }from './basic'
 
-import{
-    DevStateReport,
-    ProductionTracking,
-    ProductionReport,
-    TOEEAnalysis,
-    STOEE,
-    StampingFreq,
-    DowntimeMon,
-    DowntimeWeek,
-    DevRunTimeReport,
-}from './report'
+import * as scada  from './scada'
+import * as production  from './production'
+import * as mould  from './mould'
+import * as materials  from './materials'
+import * as device  from './device'
+import * as process  from './process'
+import * as work  from './work'
+import * as mtrlloss  from './mtrlloss'
+import * as quality  from './quality'
+import * as maintain  from './maintain'
+import * as setting  from './setting'
+import * as report  from './report'
 
-import{
-    TWorkshop1,
-    TWorkshop2,
-    TWorkshop3,
-    TWorkshop4,
-    TWorkshopScada
-}from './scada'
-
-import {
-    TManufactureTask,
-    TaskDispatch,
-    TaskMonitor,
-    // OrderDetail
-    Feeding,
-    Product
-}from './production'
-
-import {
-    TWorkShopList,
-    // TWorkCenter
-}from './organization'
-
-import {
-    MoldManagement,
-    MoldList,
-    // MoldDetail
-}from './mould'
-
-import {
-    MaterialModel,
-    ProductModel,
-    BomManagement
-}from './materials'
-
-import {
-    userList,
-    AuthList,
-    AuthGroup
-}from './setting'
-
-import {
-    ProcessList,
-    CraftsList,
-    StampingSet
-}from './process'
-
-import {
-    // TDeviceType,
-    TDeviceModel,
-    TDeviceList,
-    TDeviceMaintainHis
-}from './device'
-
-import {
-    TWorkCenterType,
-    TWorkCenter,
-}from './work'
-
-import {
-    MtrlLossCol,
-    MtrlLossTend,
-    MtrlLossMon,
-    MtrlLossWeek
-}from './mtrlloss'
-
-import{
-    TQuality
-}from './quality'
-
-import {
-    TMaintain,
-    TMaintainRecord
-}from './maintain'
-
-export{
-    TWorkShopList,
-    // TWorkCenter,
-
-    TFactoryType,
-    TWorkShopType,
-    TMaterialType,
-    // TDeviceType,
-    // TWorkCenterType,
-    TAlarmType,
-    TDefectiveType,
-
-    DevStateReport,
-    ProductionTracking,
-    ProductionReport,
-    TOEEAnalysis,
-    STOEE,
-    StampingFreq,
-    DowntimeMon,
-    DowntimeWeek,
-    DevRunTimeReport,
-
-    TWorkshop1,
-    TWorkshop2,
-    TWorkshop3,
-    TWorkshop4,
+/* export{
     TWorkshopScada,
-
-    TManufactureTask,
-    TaskDispatch,
-    TaskMonitor,
-    // OrderDetail,
-    Feeding,
-    Product,
-
-    MoldManagement,
-    MoldList,
-    // MoldDetail,
-
-    MaterialModel,
-    ProductModel,
-    BomManagement,
-
-    userList,
-    AuthList,
-    AuthGroup,
-
-    ProcessList,
-    CraftsList,
-    StampingSet,
-
-    TDeviceType,
-    TDeviceModel,
-    TDeviceList,
-    TDeviceMaintainHis,
-
-    MtrlLossCol,
-    MtrlLossTend,
-    MtrlLossMon,
-    MtrlLossWeek,
-
-    TWorkCenterType,
-    TWorkCenter,
-
-    TQuality,
-
-    TMaintain,
-    TMaintainRecord
-}
+    production
+} */
+export default Object.assign(
+    production,
+    scada,
+    mould, 
+    materials, 
+    device, 
+    process,
+    report,
+    work,
+    mtrlloss,
+    quality,
+    maintain,
+    setting
+)

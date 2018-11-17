@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Link } from 'react-router';
+import {  Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
   Table,
@@ -1197,7 +1197,7 @@ export default class taskMonitor extends Component {
 
         return (
             <PageHeaderLayout
-              title="生产派工"
+            //   title="生产派工"
               action={children?action:''}
               wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}

@@ -3,197 +3,235 @@
  *添加日期:2017.12.06
  *添加人:shaw
  **/
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { hashHistory, Link } from 'react-router'
-import { Table,Button, Menu, Icon,Popover, Badge, Dropdown,message,Divider,Popconfirm } from 'antd';
-import { fetchMoldList } from 'actions/mold';
-import { TPostData ,urlBase} from 'utils/TAjax';
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {Link,Route,Switch } from 'react-router-dom'
+import {
+    Table,
+    Card,
+    Row,
+    Col,
+    Button,
+    Icon,
+    Popover,
+    Badge,
+    message,
+    Divider,
+    Popconfirm
+} from 'antd';
+import {
+    f_mold_view, 
+    add_mold_instance,
+    f_mold_model_foradd,
+    update_mold_instance,
+    delete_mold_instance
+} from 'actions/mold';
+import {TPostData, urlBase} from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
-import { CreateModal,UpdateModal } from 'components/TModal';
-import {SimpleQForm,StandardQForm } from 'components/TForm';
+import {CreateModal, UpdateModal} from 'components/TModal';
+import {DropDownForm, StandardQForm} from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
-import moldPic from  'images/assets/mold01.jpg'
+import {fn_mes_trans} from 'functions'
+import moldPic from 'images/assets/mold01.jpg'
 
-@connect( ( state, props ) => {
-    console.log( 'state', state )
+@connect((state, props) => {
+    console.log('mold_list_state', state)
     return {
-        Breadcrumb:state.Breadcrumb,
+        Breadcrumb: state.Breadcrumb, 
         moldList: state.moldList,
+        moldModel: state.moldModel
     }
-}, )
+},)
 export default class MouldList extends Component {
 
-    constructor( props ) {
-        super( props )
+    constructor(props) {
+        super(props)
         this.state = {
-            tableDataList:[],
-            MoldModelList:[],
-            updateFromItem:{},
-            total:0,
-            current:1,
-            pageSize:10,
-            UModalShow:false,
-            loading:true,
+            tableDataList: [],
+            MoldModelList: [],
+            updateFromItem: {},
+            total: 0,
+            current: 1,
+            pageSize: 10,
+            UModalShow: false,
+            loading: true,
             ModelUUID: -1,
-            keyWord:'',
-            showDetail:false
+            keyWord: '',
+            showDetail: false
         }
         this.url = '/api/TMold/mold';
     }
 
     componentWillMount() {
-        // this.getMoldModelList();
-        // this.getTableList();
-        this.props.dispatch( fetchMoldList( { current: 1 }, ( respose ) => {} ) )
+        // this.getMoldModelList(); this.getTableList();
+        const reqData = {}
+        this
+            .props
+            .dispatch(f_mold_view(reqData, (respose) => {}))
     }
 
-    getTableList(que){
+    componentDidMount(){
+        /* this
+        .props
+        .dispatch(f_mold_model_foradd({}, (respose) => {})) */
+    }    
 
-        const {current,pageSize,ModelUUID,keyWord}=this.state;
+    getTableList(que) {
+
+        const {current, pageSize, ModelUUID, keyWord} = this.state;
         const dat = {
-            PageIndex : current-1,       //分页：页序号，不分页时设为0
-            PageSize:pageSize,   //分页：每页记录数，不分页时设为-1
-            ModelUUID: ModelUUID,  //类型UUID，不作为查询条件时取值设为-1
-            KeyWord : keyWord
+            PageIndex: current - 1, //分页：页序号，不分页时设为0
+            PageSize: pageSize, //分页：每页记录数，不分页时设为-1
+            ModelUUID: ModelUUID, //类型UUID，不作为查询条件时取值设为-1
+            KeyWord: keyWord
         }
 
-        TPostData( this.url, "ListActive", dat,
-            ( res )=> {
-              var list = [];
-              console.log("查询到模具列表", res);
-              var data_list = res.obj.objectlist || [];
-              var totalcount = res.obj.totalcount;
-              data_list.forEach(function (item, index) {
-                  list.push({
-                      key: index,
-                      UUID: item.UUID,
-                      ModelUUID: item.ModelUUID,
-                      StorageUUID: item.StorageUUID,
-                      Image: item.ModelImage,
-                      Name: item.Name,
-                      ModelName: item.ModelName,
-                      Number: item.ID,
-                      Label: item.Label,
-                      ModelSize: item.ModelSize,
-                      Desc: item.Desc,
-                      UpdateDateTime: item.UpdateDateTime,
+        TPostData(this.url, "ListActive", dat, (res) => {
+            var list = [];
+            console.log("查询到模具列表", res);
+            var data_list = res.obj.objectlist || [];
+            var totalcount = res.obj.totalcount;
+            data_list.forEach(function (item, index) {
+                list.push({
+                    key: index,
+                    UUID: item.UUID,
+                    ModelUUID: item.ModelUUID,
+                    StorageUUID: item.StorageUUID,
+                    Image: item.ModelImage,
+                    Name: item.Name,
+                    ModelName: item.ModelName,
+                    Number: item.ID,
+                    Label: item.Label,
+                    ModelSize: item.ModelSize,
+                    Desc: item.Desc,
+                    UpdateDateTime: item.UpdateDateTime,
 
-                      Status: 1,
-                      ModelID: "-",
-                      Note: "-",
-                  })
-              })
-              this.setState({tableDataList:list,total:totalcount,loading:false});
-            },
-            ( error )=> {
-              message.error( error );
-              this.setState({loading:false});
-            }
-        )
+                    Status: 1,
+                    ModelID: "-",
+                    Note: "-"
+                })
+            })
+            this.setState({tableDataList: list, total: totalcount, loading: false});
+        }, (error) => {
+            message.error(error);
+            this.setState({loading: false});
+        })
 
     }
 
-    getMoldModelList(str){
+    getMoldModelList(str) {
 
-        TPostData( this.url, 'ListActive', { 'PageIndex': 0, 'PageSize': -1, 'ModelUUID': -1 },
-            ( res )=> {
-                var Ui_list = res.obj.objectlist || [],
-                    list=[];
-                Ui_list.forEach( function ( item, index ) {
-                    list.push( { key: index, value: item.UUID.toString(), text: item.Name } )
-                } );
-                this.setState({MoldModelList:list});
-            },
-            ( error )=> {
-                message.info( error );
-            }
-        )
+        TPostData(this.url, 'ListActive', {
+            'PageIndex': 0,
+            'PageSize': -1,
+            'ModelUUID': -1
+        }, (res) => {
+            var Ui_list = res.obj.objectlist || [],
+                list = [];
+            Ui_list.forEach(function (item, index) {
+                list.push({
+                    key: index,
+                    value: item
+                        .UUID
+                        .toString(),
+                    text: item.Name
+                })
+            });
+            this.setState({MoldModelList: list});
+        }, (error) => {
+            message.info(error);
+        })
 
     }
 
-    handleCreat=(data)=>{
-        let dat = {
-            Name: data.Name,
-            ID: data.Number,
-            ModelUUID: data.ModelUUID,
+    handleCreat = (data) => {
+        const addData = {
+            cols: fn_mes_trans.toCols(data)
         }
-        TPostData( this.url, "Add", dat,
-            ( res )=> {
-                message.success("创建成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("创建失败！");
-                console.log('err',err);
-            }
-        )
+        console.log('开始添加', addData);
+        this
+            .props
+            .dispatch(add_mold_instance(addData, (respose) => console.log('添加成功！', respose)))
+
     }
 
-    handleQuery=(data)=>{
-        console.log("查询的值是:",data);
-        const {keyWord,ModelUUID}=data;
-        this.setState({keyWord,ModelUUID},()=>{
+    handleQuery = (data,type) => {
+        const{current,pageSize}=this.state;
+        const quePage={
+            page:current-1,
+            size:pageSize
+        };
+        const searchKey=[
+            'strModelName',
+            // 'strModelLabel',
+            // 'nMouldRateLife',
+            'nInstanceLife',
+            'nMouldStepCount',
+            'nMouldHoleCount',
+            // 'fMouldLength',
+            // 'fMouldWidth',
+            // 'fMouldHeight',
+            'fMouldStepValue',
+            'strMouldCode',
+            'strInstanceCode'
+        ];
+        let options=type=='filter'?
+                    fn_mes_trans.toFilter(data):
+                    type=='search'?
+                    fn_mes_trans.toSearch(data,searchKey):'';
+        const queReq=Object.assign(quePage,options);
+        console.log('moldmodel查询值是：',queReq)
+        this
+            .props
+            .dispatch(f_mold_view(queReq, (respose) => {}))
+    }
+
+    handleUpdate = (data) => {
+        let item=this.state.updateFromItem;
+        const editData = {
+            uuid:item.uObjectUUID,
+            cols: fn_mes_trans.toCols(data)
+        }
+        console.log('开始修改', editData);
+        this
+            .props
+            .dispatch(update_mold_instance(editData))
+    }
+
+    handleDelete = (data) => {
+        const deleteData = {
+            uuids:[data.uObjectUUID]
+        }
+        console.log('开始删除', deleteData);
+        this
+            .props
+            .dispatch(delete_mold_instance(deleteData))
+    }
+
+    handleTableChange = (pagination) => {
+        const {current, pageSize} = pagination;
+        this.setState({
+            current,
+            pageSize,
+            loading: true
+        }, () => {
             this.getTableList();
         });
     }
 
-    handleUpdate=(data)=>{
-        let dat = {
-            UUID: this.state.updateFromItem.UUID,
-            Name: data.Name,
-            ID: data.Number,
-            Label: data.Label,
-            ModelUUID: data.ModelUUID,
-            Desc: data.Desc,
-            Note: '-',
-        }
-        TPostData( this.url, "Update", dat,
-            ( res )=> {
-                message.success("更新成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("更新失败！");
-                console.log('err',err);
-            }
-        )
-    }
-
-    handleDelete=(data)=>{
-        var dat = {
-            UUID: data.UUID,
-        }
-        // console.log("看看data",data);
-        TPostData( this.url, "Inactive", dat,
-            ( res )=> {
-                message.success("删除成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("删除失败！");
-                console.log('err',err);
-            }
-        )
-    }
-
-    handleTableChange=(pagination)=>{
-        const {current,pageSize}=pagination;
-        this.setState({current,pageSize,loading:true},()=>{
-            this.getTableList();
+    toggleUModalShow = (record) => {
+        this.setState({
+            UModalShow: !this.state.UModalShow,
+            updateFromItem: record
         });
     }
 
-    toggleUModalShow=(record)=>{
-        this.setState({UModalShow:!this.state.UModalShow,updateFromItem:record});
-    }
-
-    showDetail=()=>{
-        this.setState({showDetail:true});
+    showDetail = () => {
+        this.setState({showDetail: true});
     }
 
     render() {
-        // let Feature = this.feature;
+
         const {
             MoldModelList,
             tableDataList,
@@ -205,60 +243,63 @@ export default class MouldList extends Component {
             UModalShow,
             showDetail
         } = this.state;
-        const {Breadcrumb,children}=this.props;
-        const { list, total, loading } = this.props.moldList;
-        let Data={
+        console.log('mouldlist props',this.props)
+        const {Breadcrumb, children} = this.props;
+        const {list, total, loading} = this.props.moldList;
+        let Data = {
             // list:tableDataList,
-            list:list,
-            pagination:{total,current,pageSize}
+            list: list,
+            pagination: {
+                total,
+                current,
+                pageSize
+            }
         };
 
-        const Tcolumns= [
+        const Tcolumns = [
             {
                 title: '序号',
                 dataIndex: 'key',
                 type: 'string'
-            },
-            {
+            }, {
                 title: '图片',
                 dataIndex: 'Image',
-                render: ( e, record ) => {
+                render: (e, record) => {
                     // console.log('图片地址',e);
                     const content = (
                         <div>
-                          <img width="300"
-                              // src={urlBase+e}
-                              src={moldPic}
-                          />
+                            <img width="300" 
+                                // src={urlBase + e}} 
+                                src={moldPic}/>
                         </div>
                     );
                     return (
-                        <Popover placement="right"  content={content} trigger="hover">
-                          {/* <Button>Right</Button> */}
-                          <img height='50'
-                              // src={urlBase+e}
-                              src={moldPic}
-                          />
+                        <Popover placement="right" content={content} trigger="hover">
+                            {/* <Button>Right</Button> */}
+                            <img height='50' 
+                                // src={urlBase + e}} 
+                                src={moldPic}/>
                         </Popover>
                     )
                 }
-            },
-            {
+            }, {
                 title: '模具名称',
                 dataIndex: 'Name',
                 type: 'string'
-            },
-            {
+            }, {
                 title: '架位号',
-                dataIndex: 'ModelName',
-                type: 'string'
-            },
-            {
+                dataIndex: 'strBinCode'
+            }, {
                 title: '编号',
-                dataIndex: 'Number',
-                type: 'string'
+                dataIndex: 'strInstanceCode'
+            }, {
+                title: '图号',
+                dataIndex: 'strMouldCode'
+            }, {
+                title: '步距',
+                dataIndex: 'fMouldStepValue'
             },
-            {
+            /* {
                 // title: '规格尺寸（材料/尺寸/步距）',
                 title: '规格尺寸',
                 dataIndex: 'ModelSize',
@@ -278,17 +319,17 @@ export default class MouldList extends Component {
                 title: '验收日期',
                 dataIndex: 'UpdateDateTime',
                 type: 'string'
-            },
+            }, */
             {
                 title: '设计寿命',
-                dataIndex: 'life',
+                dataIndex: 'nInstanceLife',
                 type: 'string'
             },
-            {
+            /* {
                 title: '模具等级',
                 dataIndex: 'grade',
                 type: 'string'
-            },
+            }, */
             /*{
                 title: '模具状态',
                 dataIndex: 'grade',
@@ -297,168 +338,220 @@ export default class MouldList extends Component {
             {
                 title: '操作',
                 dataIndex: 'UUID',
-                render:(txt,record)=>{
+                render: (txt, record) => {
                     return <span>
-                              <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
-                              <Divider type="vertical"/>
-                              <Link to="/mould_detail">详情</Link>
-                              {/* <a onClick={this.showDetail}>详情</a> */}
-                              {/* <Divider type="vertical"/>
+                        <a
+                            onClick={this
+                            .toggleUModalShow
+                            .bind(this, record)}>编辑</a>
+                        <Divider type="vertical"/>
+                        <Link to="/mould_detail">详情</Link>
+                        {/* <a onClick={this.showDetail}>详情</a> */}
+                        {/* <Divider type="vertical"/>
                               <a>寿命分析</a>
                               <Divider type="vertical"/>
                               <a>模具履历</a> */}
-                              <Divider type="vertical"/>
-                              <Popconfirm
-                                  placement="topRight"
-                                  title="确定删除此项数据？"
-                                  onConfirm={this.handleDelete.bind(this,record)}
-                                  okText="确定" cancelText="取消">
-                                  <a href="#">删除</a>
-                              </Popconfirm>
-                          </span>
+                        <Divider type="vertical"/>
+                        <Popconfirm
+                            placement="topRight"
+                            title="确定删除此项数据？"
+                            onConfirm={this
+                            .handleDelete
+                            .bind(this, record)}
+                            okText="确定"
+                            cancelText="取消">
+                            <a href="#">删除</a>
+                        </Popconfirm>
+                    </span>
                 }
             }
         ];
         //更新弹框数据项
-        const UFormItem= [
-            {
+        const UFormItem = [
+            /* {
                 name: 'Name',
                 label: '模具名称',
                 type: 'string',
                 placeholder: '请输入模具名称',
-                rules: [ { required: true, message: '名称不能为空' } ],
-            },
-            {
-                name: 'Number',
+                rules: [
+                    {
+                        required: true,
+                        message: '名称不能为空'
+                    }
+                ]
+            }, */ {
+                name: 'strInstanceCode',
                 label: '模具编号',
                 type: 'string',
                 placeholder: '请输入模具编号',
-                rules: [ { required: true, message: '编号不能为空' } ],
-            },
-            {
-                name: 'ModelUUID',
+                rules: [
+                    {
+                        required: true,
+                        message: '编号不能为空'
+                    }
+                ]
+            }, {
+                name: 'uModelUUID',
                 label: '模具型号',
                 type: 'select',
-                rules: [ { required: true, message: '请选择型号' } ],
+                rules: [
+                    {
+                        required: true,
+                        message: '请选择型号'
+                    }
+                ],
+                // options: this.props.moldList.modelList
                 options: MoldModelList
-            },
-            {
+            },/*  {
                 name: 'Label',
                 label: '模具标签',
-                rules: [ { required: true, message: '标签不能为空' } ],
-                type: 'string',
-            },
-            {
+                rules: [
+                    {
+                        required: true,
+                        message: '标签不能为空'
+                    }
+                ],
+                type: 'string'
+            }, {
                 name: 'Desc',
                 label: '备注',
-                type: 'string',
-            }
+                type: 'string'
+            } */
         ];
         //添加的弹出框菜单
-        const CFormItem= [
+        const CFormItem = [
             {
-                name: 'ModelUUID',
+                name: 'uModelUUID',
                 label: '模具型号',
                 type: 'select',
                 rules: [ { required: true, message: '请选择型号' } ],
                 options: MoldModelList
+                // options: this.props.moldList.modelList
             },
             {
-                name: 'Name',
-                label: '模具名称',
+                name: 'nInstanceHoleCount',
+                label: '模具穴数',
                 type: 'string',
-                placeholder: '请输入模具名称',
-                rules: [ { required: true, message: '名称不能为空' } ],
-            },
-            {
-                name: 'Number',
+                placeholder: '请输入模具穴数',
+                rules: [
+                    {
+                        required: true,
+                        message: '名称不能为空'
+                    }
+                ]
+            }, {
+                name: 'strInstanceCode',
                 label: '模具编号',
                 type: 'string',
                 placeholder: '请输入模具编号',
-                rules: [ { required: true, message: '编号不能为空' } ],
-            },
+                rules: [
+                    {
+                        required: true,
+                        message: '编号不能为空'
+                    }
+                ]
+            }
         ];
         //查询的数据项
-        const RFormItem= [
+        const RFormItem = [
             {
-                name: 'keyWord',
-                label: '搜索内容',
-                type: 'string',
-                placeholder: '请输入要搜索的内容'
-            },
-            {
-                name: 'ModelUUID',
+                name: 'uModelUUID',
                 label: '模具型号',
                 type: 'select',
-                hasAllButtom: true,
-                defaultValue: '-1',
-                width: 150,
-                options: MoldModelList
+                // hasAllButtom: true,
+                // defaultValue: '-1',
+                // width: 150,
+                options: MoldModelList,
+                // options: this.props.moldList.modelList
             }
         ];
 
-        const bcList1 = [{
-            title:"首页",
-            href: '/',
+        const bcList1 = [
+            {
+                title: "首页",
+                href: '/'
             }, {
-            title: '模具列表',
-            // href: '/mould_list',
-        }];
+                title: '模具列表',
+                // href: '/mould_list',
+            }
+        ];
 
-        const bcList2 = [{
-            title:"首页",
-            href: '/',
+        const bcList2 = [
+            {
+                title: "首页",
+                href: '/'
             }, {
-            title: '模具列表',
-            href: '/mould_list',
+                title: '模具列表',
+                href: '/mould_list'
             }, {
-            title: '模具详情',
-        }];
+                title: '模具详情'
+            }
+        ];
 
-        const MouldList=(
-            <div className="cardContent">
-                {/* <Feature /> */}
+        const MouldList = (
+            <Card bordered={false}>
                 {/* <SimpleQForm
                     FormItem={RFormItem}
                     submit={this.handleQuery}
                 /> */}
-                <CreateModal
-                    FormItem={CFormItem}
-                    submit={this.handleCreat.bind(this)}
-                />
+                <div style={{marginBottom:15}}>
+                    <Row>
+                        <Col span={4}>
+                            <CreateModal
+                                FormItem={CFormItem}
+                                submit={this
+                                .handleCreat
+                                .bind(this)}/>
+                        </Col>
+                        <Col span={12}></Col>
+                        <Col span={8}>
+                            <DropDownForm 
+                                FormItem={RFormItem} 
+                                submit={this.handleQuery}
+                                isHaveSearch={true}
+                            />
+                        </Col>
+                    </Row>
+                </div>
                 <SimpleTable
                     size="middle"
                     loading={loading}
                     data={Data}
                     columns={Tcolumns}
                     isHaveSelect={false}
-                    onChange={this.handleTableChange}
-                />
+                    onChange={this.handleTableChange}/>
                 <UpdateModal
                     FormItem={UFormItem}
                     updateItem={updateFromItem}
-                    submit={this.handleUpdate.bind(this)}
+                    submit={this
+                    .handleUpdate
+                    .bind(this)}
                     showModal={UModalShow}
-                    hideModal={this.toggleUModalShow}
-                />
-            </div>
+                    hideModal={this.toggleUModalShow}/>
+            </Card>
         )
 
-        const action=(
-          <Button type="primary">
-            <Link to='/mould_list'>返回</Link>
-          </Button>
+        const action = (
+            <Button type="primary">
+                <Link to='/mould_list'>返回</Link>
+            </Button>
         )
 
         return (
             <PageHeaderLayout
                 title="模具列表"
                 wrapperClassName="pageContent"
-                action={children?action:''}
-                BreadcrumbList={children?bcList2:bcList1}
-                >
+                action={children
+                ? action
+                : ''}
+                BreadcrumbList={children
+                ? bcList2
+                : bcList1}>
                 {
-                    children?children:MouldList
+                    /* children
+                    ? children
+                    : MouldList */
+                    MouldList
                 }
             </PageHeaderLayout>
         )
