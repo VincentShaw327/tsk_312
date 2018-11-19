@@ -40,7 +40,6 @@ const confirm = Modal.confirm;
 
 
 @connect( ( state, props ) => {
-    console.log( 'state', state )
     return {
         Breadcrumb:state.Breadcrumb,
         productOrder: state.productOrder,

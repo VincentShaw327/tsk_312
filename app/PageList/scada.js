@@ -4,5 +4,5 @@
 
 export const TWorkshopScada={
     path:'/scada/punch',
-    component:(props)=>import('../../pages/TScada/TScadaWorkShop_Auto')
+    component:(props)=>import('../pages/TScada/TScadaWorkShop_Auto')
 }

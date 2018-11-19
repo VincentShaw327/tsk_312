@@ -22,7 +22,7 @@
   "author": "vincentshaw",
   "contributors": [
     {
-      "name": "vincentshaw",
+      "name": "vincentshaw"
     },
     {
       "name": "duxiaodu"
@@ -32,7 +32,6 @@
     }
   ],
   "devDependencies": {
-    "atool-build": "^0.7.6",
     "atool-test-mocha": "^0.1.5",
     "babel-core": "~6.26.0",
     "babel-eslint": "~8.2.1",
@@ -59,28 +58,30 @@
     "eslint-plugin-import": "~2.8.0",
     "eslint-plugin-jsx-a11y": "~6.0.3",
     "eslint-plugin-react": "~7.5.1",
-    "extract-text-webpack-plugin": "~3.0.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "~1.1.6",
     "ghooks": "^2.0.2",
-    "html-webpack-plugin": "~2.30.1",
+    "html-webpack-plugin": "~3.2.0",
     "http-proxy": "~1.16.2",
     "less": "~2.7.1",
     "less-loader": "~4.0.5",
     "mockjs": "^1.0.1-beta3",
     "numeral": "^2.0.6",
-    "open-browser-webpack-plugin": "~0.0.2",
+    "open-browser-webpack-plugin": "~0.0.5",
     "postcss-loader": "~2.0.10",
+    "progress-bar-webpack-plugin": "^1.11.0",
     "react-addons-test-utils": "~15.6.2",
     "react-hot-loader": "^3.0.0-beta.7",
     "roadhog": "^2.0.0",
     "sinon": "~4.1.6",
     "socket.io": "2.0.4",
+    "spark-md5": "^3.0.0",
     "style-loader": "~0.19.1",
     "supervisor": "^0.12.0",
-    "spark-md5":"^3.0.0",
     "url-loader": "~0.6.2",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "~2.11.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.0",
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
@@ -108,13 +109,12 @@
     "react-dom": "^16.2.0",
     "react-fittext": "^1.0.0",
     "react-redux": "~5.0.6",
-    "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "~4.0.5",
     "redux": "~3.7.2",
     "redux-actions": "~2.2.1",
     "redux-thunk": "~2.2.0",
     "tableexport": "^5.0.0",
-    "webpack": "~3.10.0"
+    "webpack": "~4.25.1"
   }
 }

@@ -4,6 +4,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
 function resolve(relatedPath) {
   return path.join(__dirname, relatedPath)
@@ -119,21 +120,29 @@ const webpackConfigBase = {
     new HtmlWebpackPlugin({
       template: resolve('../app/index.html'),
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'client', // 入口文件名
-      filename: 'common.bundle.js', // 打包后的文件名
-      minChunks: function (module, count) {
-        return module.resource &&
-          /\.js$/.test(module.resource) &&
-          module.resource.indexOf(resolve('../node_modules')) === 0
+    new webpack.SourceMapDevToolPlugin(),
+    new ProgressBarPlugin()
+  ],
+  optimization:{
+    splitChunks: {
+      chunks: 'initial', // 只对入口文件处理
+      "automaticNameDelimiter": "~",
+      cacheGroups: {
+          vendor: { // split `node_modules`目录下被打包的代码到 `page/vendor.js && .css` 没找到可打包文件的话，则没有。css需要依赖 `ExtractTextPlugin`
+              test: /node_modules\//,
+              // name: 'page/vendor',
+              priority: 10,
+              enforce: true
+          },
+          /* commons: { // split `common`和`components`目录下被打包的代码到`page/commons.js && .css`
+              // test: /common\/|components\//,
+              // name: 'page/commons',
+              priority: 10,
+              enforce: true
+          } */
       }
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      async: 'async-common',
-      minChunks: 3,
-    }),
-    new webpack.SourceMapDevToolPlugin()
-  ]
+    }
+  }
 }
 
 module.exports = webpackConfigBase

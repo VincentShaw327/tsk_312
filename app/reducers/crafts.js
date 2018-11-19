@@ -133,6 +133,7 @@ export const workcenter = handleActions({
                     key: index,
                     // ID: item.ID,
                     nDeviceUUID:index==0?13:index==1?15:index==2?16:index,
+                    // nDeviceUUID:index,
                     strMachineID:'-',
                     
                     ID: 'AUTO_SMT'+Mock.mock('@natural(1, 6)'),

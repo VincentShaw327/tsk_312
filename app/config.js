@@ -32,16 +32,16 @@ export default (() => {
         key: 'manufacture',
         children: [
           {
-            name:'订单排程', key: '/manufacture/order',url:'manufacture/order'
+            name:'订单排程', key: '/production/order',url:'production/order'
           },
           /*{
             name:'生产派工', key: 'task_dispatch',url:'task_dispatch'
           },*/
           {
-            name:'工单管理', key: '/manufacture/lot',url:'/manufacture/lot'
+            name:'工单管理', key: '/production/job',url:'/production/job'
           },
           {
-            name:'投料计划', key: '/manufacture/feeding',url:'consum_plan'
+            name:'投料计划', key: '/production/feeding',url:'/production/feeding'
           },
           /*{
             name:'计划达成率', key: 'planned_completion_rate',url:'planned_completion_rate',
@@ -63,9 +63,9 @@ export default (() => {
           /* {
             name:'作业指导书', key: 'task_monitor',url:'task_monitor'
           }, */
-          {
+          /* {
             name:'开机刷卡记录', key: 'materialReq',url:'materialReq'
-          },
+          }, */
         ],
       },
       {
@@ -83,9 +83,9 @@ export default (() => {
           {
             name:'末检记录', key: 'TPM_Route',url:'TPM_Route',
           },*/
-          {
+          /* {
             name:'检验图纸', key: 'TPM_Product',url:'TPM_Product',
-          },
+          }, */
           {
             name:'品质异常记录', key: 'TPM_Document',url:'TPM_Document',
           }

@@ -33,9 +33,9 @@ import {DropDownForm, StandardQForm} from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import {fn_mes_trans} from 'functions'
 import moldPic from 'images/assets/mold01.jpg'
+import Details from './mouldDetail'
 
 @connect((state, props) => {
-    console.log('mold_list_state', state)
     return {
         Breadcrumb: state.Breadcrumb, 
         moldList: state.moldList,
@@ -338,14 +338,14 @@ export default class MouldList extends Component {
             {
                 title: '操作',
                 dataIndex: 'UUID',
-                render: (txt, record) => {
+                render: (str, record) => {
                     return <span>
                         <a
                             onClick={this
                             .toggleUModalShow
                             .bind(this, record)}>编辑</a>
                         <Divider type="vertical"/>
-                        <Link to="/mould_detail">详情</Link>
+                        <Link to={`/mould/mould_list/detail/${record.UUID}`}>详情</Link>
                         {/* <a onClick={this.showDetail}>详情</a> */}
                         {/* <Divider type="vertical"/>
                               <a>寿命分析</a>
@@ -541,18 +541,18 @@ export default class MouldList extends Component {
             <PageHeaderLayout
                 title="模具列表"
                 wrapperClassName="pageContent"
-                action={children
-                ? action
-                : ''}
-                BreadcrumbList={children
-                ? bcList2
-                : bcList1}>
+                action={children? action: ''}
+                BreadcrumbList={children? bcList2: bcList1}>
                 {
                     /* children
                     ? children
                     : MouldList */
-                    MouldList
+                    // MouldList
                 }
+                <Switch>
+                    <Route path='/mould/mould_list/detail/:id' component={Details} />
+                    <Route path='/mould/mould_list' component={()=>MouldList} />
+                </Switch>
             </PageHeaderLayout>
         )
     }

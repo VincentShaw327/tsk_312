@@ -13,16 +13,20 @@ const webpackConfigDev = {
   plugins: [
     // 定义环境变量为开发环境
     new webpack.DefinePlugin({
-      // 'process.env.NODE_ENV': JSON.stringify('development'),
-      'process.env.NODE_ENV': JSON.stringify('demo_dev'),
+      'process.env.NODE_ENV': JSON.stringify('development'),
+      // 'process.env.NODE_ENV': JSON.stringify('demo_dev'),
       IS_DEVELOPMETN: true,
     }),
     new OpenBrowserPlugin({
       // url: `http://localhost:${PORT}/#/login`,
       url: `http://localhost:${PORT}/#/`,
     }),
+    new webpack.HotModuleReplacementPlugin({
+      // Options...
+    })
   ],
   devtool: 'source-map',
+  // devtool: 'inline-source-map',
   devServer: {
     contentBase: resolve('../app'),
     historyApiFallback: false,

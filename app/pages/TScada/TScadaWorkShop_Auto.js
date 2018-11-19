@@ -7,18 +7,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {Card,Row,Col,Progress,Divider,Tag,Spin,Alert,List,message} from 'antd';
 import { fetchWorkcenterList,mockMqttData } from 'actions/process'
-import { TPostData,TPostMock,urlBase } from 'utils/TAjax';
+import { TPostData,urlBase } from 'utils/TAjax';
 import {  yuan,Pie} from 'components/ant-design-pro/Charts';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import mqtt from 'mqtt';
-
 
 var client
 import AM1 from '../../images/assets/timg.jpg'
 
 
 @connect( ( state, props ) => {
-    console.log('state',state)
     return {
         workcenter: state.workcenter,
         Breadcrumb:state.Breadcrumb,
@@ -29,7 +27,6 @@ export default class TScadaWorkShop_Auto extends Component {
 
     constructor( props ) {
         super( props )
-        console.log('看看scada props',props)
         this.state = {
             //单台机台数据状态
             // aEquipList: [],
@@ -38,7 +35,7 @@ export default class TScadaWorkShop_Auto extends Component {
             onLine: '-',
             warning: '-',
             allQuery: '-',
-            loading: true
+            loading: false
         }
     }
     //查询工作中心
@@ -288,7 +285,7 @@ export default class TScadaWorkShop_Auto extends Component {
                 <Col span={5}>
                     <Progress
                         format={
-                            ()=>(
+                            (percent, successPercent)=>(
                                 <div>
                                     <a>3台</a>
                                     <div style={{marginTop:12,fontSize:'14px'}}>运行中</div>
@@ -302,7 +299,7 @@ export default class TScadaWorkShop_Auto extends Component {
                 <Col span={5}>
                     <Progress
                         format={
-                            ()=>(
+                            (percent, successPercent)=>(
                                 <div>
                                     <a>0台</a>
                                 <div style={{marginTop:12,fontSize:'14px'}}>调机中</div>
@@ -317,7 +314,7 @@ export default class TScadaWorkShop_Auto extends Component {
                 <Col span={5}>
                     <Progress
                         format={
-                            ()=>(
+                            (percent, successPercent)=>(
                                 <div>
                                     <a>0台</a>
                                 <div style={{marginTop:12,fontSize:'14px'}}>待机中</div>
@@ -332,7 +329,7 @@ export default class TScadaWorkShop_Auto extends Component {
                 <Col span={5}>
                     <Progress
                         format={
-                            ()=>(
+                            (percent, successPercent)=>(
                                 <div>
                                     <a>0台</a>
                                 <div style={{marginTop:12,fontSize:'14px'}}>告警中</div>
@@ -347,7 +344,7 @@ export default class TScadaWorkShop_Auto extends Component {
                 <Col span={4}>
                     <Progress
                         format={
-                            ()=>(
+                            (percent, successPercent)=>(
                                 <div>
                                     <a>9台</a>
                                 <div style={{marginTop:12,fontSize:'14px'}}>离线中</div>

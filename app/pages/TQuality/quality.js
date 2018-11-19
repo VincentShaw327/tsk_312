@@ -5,7 +5,7 @@
  **/
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hashHistory, Link } from 'react-router'
+import { Link } from 'react-router'
 import {
   Table,
   Menu,
@@ -16,14 +16,15 @@ import {
   message,
   Divider,
   Popconfirm,
-  Card
+  Card,Row,Col
 } from 'antd';
 import { fetchInspectList } from 'actions/quality';
 import { TPostData, TPostMock } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
-import { SimpleQForm, StandardQForm } from 'components/TForm';
+import { SimpleQForm, StandardQForm,DropDownForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+import {TableExport} from  'components/Export';
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
@@ -291,6 +292,63 @@ export default class quality extends Component {
             }*/
         ];
 
+        //查询的数据项
+        const RFormItem= [
+            {
+                name: 'keyWord',
+                label: '搜索内容',
+                type: 'string',
+                // width: 200,
+                placeholder: '请输入搜索内容',
+                // defaultValue:this.state.keyWord
+            },{
+                name: 'orderState',
+                label: '订单状态',
+                type: 'select',
+                defaultValue: '-1',
+                hasAllButtom: true,
+                // width: 180,
+                options:[
+                    /*{
+                        value:-1,
+                        text:'全部',
+                        key:'1'
+                    },*/
+                    {
+                        value:0,
+                        text:'已取消',
+                        key:'2'
+                    },
+                    {
+                        value:1,
+                        text:'未就绪',
+                        key:'3'
+                    },
+                    {
+                        value:2,
+                        text:'未执行',
+                        key:'4'
+                    },
+                    {
+                        value:3,
+                        text:'暂停中',
+                        key:'5'
+                    },
+                    {
+                        value:4,
+                        text:'执行中',
+                        key:'6'
+                    },
+                    {
+                        value:5,
+                        text:'已完成',
+                        key:'7'
+                    }
+                ]
+            },
+            // {type:'submit'}
+        ];
+        
         const bcList = [ {
             title: "首页",
             href: '/',
@@ -304,11 +362,17 @@ export default class quality extends Component {
         return (
             <PageHeaderLayout title="品质检验记录" wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}>
-                <div>
-                    {/* <Card>
-                        
-                    </Card> */}
-                    <Card>
+                <div style={{backgroundColor:'white',padding:15}}>
+                    <Row>
+                        <Col span={8}></Col>
+                        <Col span={8}>
+                            
+                        </Col>
+                        <Col span={8}>
+                            <DropDownForm FormItem={RFormItem}/>
+                        </Col>
+                    </Row>
+                    <TableExport>
                         <SimpleTable
                             size="middle"
                             loading={loading}
@@ -317,7 +381,7 @@ export default class quality extends Component {
                             isHaveSelect={false}
                             onChange={this.handleTableChange}
                         />
-                    </Card>
+                    </TableExport>
                     {/* <UpdateModal
                         FormItem={UFormItem}
                         updateItem={updateFromItem}

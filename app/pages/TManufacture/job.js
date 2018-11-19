@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Link } from 'react-router-dom';
+import {Link,Route,Switch } from 'react-router-dom'
 import { connect } from 'react-redux';
 import {
   Table,
@@ -15,7 +15,7 @@ import {
   Input,
   message,
   Form,
-  Switch,
+//   Switch,
   Popconfirm,
   Modal,
   Icon,
@@ -28,6 +28,7 @@ import { CModal } from 'components/TModal';
 import SimpleTable from 'components/TTable/SimpleTable';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+import Details from './workOrderDetail';
 import TableExport from 'tableexport';
 import styles from './common.less';
 
@@ -40,7 +41,7 @@ const { Search, TextArea } = Input;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 @connect( ( state, props ) => {
-    console.log( 'state', state )
+    // console.log( 'state', state )
     return {
         Breadcrumb:state.Breadcrumb,
         productTask: state.productTask,
@@ -652,11 +653,11 @@ export default class taskMonitor extends Component {
                 dataIndex: 'uMachineUUID',
                 type: 'operate', // 操作的类型必须为 operate
                 // multipleType: "dispatch",
-                render:(e1,record)=>{
+                render:(item,record)=>{
                     let operate='';
                     // return (<a onClick={this.toggleShow}>工单详情</a>)
                     // return (<a href="/workorder_detail">工单详情</a>)
-                    return (<Link to="/workorder_detail">工单详情</Link>)
+                    return (<Link to={`/manufacture/lot/lot_detail/${record.UUID}`}>工单详情</Link>)
                 }
             }
         ];
@@ -1183,12 +1184,6 @@ export default class taskMonitor extends Component {
             </div>
         );
 
-        const workOrderDetail=(
-            <div >
-              <Card>neirong</Card>
-              详情</div>
-        )
-
         const action=(
           <Button type="primary">
             <Link to='/task_monitor'>返回</Link>
@@ -1202,13 +1197,13 @@ export default class taskMonitor extends Component {
               wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}
               >
+                <Switch>
+                    <Route path='/manufacture/lot/lot_detail/:id' component={Details} />
+                    <Route path='/manufacture/lot' component={()=>workOrderList} />
+                </Switch>
                 {/* {
-                    !this.state.showDetail?workOrderList:workOrderDetail
-                    // workOrderList
-                } */}
-                {
                   children?children:workOrderList
-                }
+                } */}
             </PageHeaderLayout>
         )
     }

@@ -25,7 +25,7 @@ export default class DropDownForm extends Component {
     }
 
     componentDidMount() {
-        console.log('show position',this)
+        // console.log('show position',this)
         let _btn=this._btn;
         let _dropform=this._dropform;
         this.setState({

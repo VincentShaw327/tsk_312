@@ -34,7 +34,7 @@ import {
   workcenter,
   workcenterType,
   MockMqttData,
-  StampingSet
+  // StampingSet
   // processItemListData
 } from './crafts'
 // bom
@@ -126,7 +126,7 @@ const rootReducer = combineReducers( {
     workcenter,
     workcenterType,
     MockMqttData,
-    StampingSet,
+    // StampingSet,
 
     device,
     deviceModel,
