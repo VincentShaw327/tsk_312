@@ -20,7 +20,7 @@
     "max-len": ["warn", 150, 4, {
       "comments": 150
     }],
-    "indent": ["error", 4],
+    "indent": [0, 4],
     "react/jsx-indent": [4, 2],
     "semi": 0,
     "react/sort-comp": 0,
@@ -55,9 +55,13 @@
     "react/no-array-index-key": 1,
     "jsx-a11y/click-events-have-key-events": 1,
     "linebreak-style": "off",
-    "space-in-parens": ["error", "always"]
+    "space-in-parens": ["error", "always"],
+    "camelcase": [0, {"properties": "never"}]
   },
   "plugins": [
     "jsx-a11y"
-  ]
+  ],
+  "globals": {
+    "gconfig": true
+}
 }

@@ -1,24 +1,24 @@
 import {
-  createAction,
+    createAction,
 } from 'redux-actions'
 import {
-    Iot
+    Iot,
 } from 'api'
 import {
-  createAjaxAction,
-  fakeAjaxAction,
+    createAjaxAction,
+    fakeAjaxAction,
 } from 'utils'
 
 
-/*网关设备请求*/
-export const requestIotList = createAction('request iot list');
-export const recevieIotList = createAction('receive iot list');
-export const fetchIotList = !gconfig.isDemo_dev?createAjaxAction(
+/* 网关设备请求 */
+export const requestIotList = createAction( 'request iot list' );
+export const recevieIotList = createAction( 'receive iot list' );
+export const fetchIotList = !gconfig.isDemo_dev ? createAjaxAction(
     Iot.dau,
     requestIotList,
-    recevieIotList
-):fakeAjaxAction(
+    recevieIotList,
+) : fakeAjaxAction(
     Iot.dau,
     requestIotList,
-    recevieIotList
+    recevieIotList,
 )

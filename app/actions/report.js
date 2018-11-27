@@ -1,64 +1,64 @@
 import {
-  createAction,
+    createAction,
 } from 'redux-actions'
 import {
-  report
+    report,
 } from 'api'
 import {
-  createAjaxAction,
-  fakeAjaxAction,
+    createAjaxAction,
+    fakeAjaxAction,
 } from 'utils'
 
-/*生产报表请求*/
-export const requestProductReport = createAction('request product report  list');
-export const recevieProductReport = createAction('receive product report  list');
-export const fetchProductReport = !gconfig.isDemo_dev?createAjaxAction(
+/* 生产报表请求 */
+export const requestProductReport = createAction( 'request product report  list' );
+export const recevieProductReport = createAction( 'receive product report  list' );
+export const fetchProductReport = !gconfig.isDemo_dev ? createAjaxAction(
     report.product_report,
     requestProductReport,
-    recevieProductReport
-):fakeAjaxAction(
+    recevieProductReport,
+) : fakeAjaxAction(
     report.product_report,
     requestProductReport,
-    recevieProductReport
+    recevieProductReport,
 )
 
 
-/*设备报表*/
-export const requestDeviceReport = createAction('request device report  list');
-export const recevieDeviceReport = createAction('receive device report  list');
-export const fetchDeviceReport = !gconfig.isDemo_dev?createAjaxAction(
+/* 设备报表 */
+export const requestDeviceReport = createAction( 'request device report  list' );
+export const recevieDeviceReport = createAction( 'receive device report  list' );
+export const fetchDeviceReport = !gconfig.isDemo_dev ? createAjaxAction(
     report.device_report,
     requestDeviceReport,
-    recevieDeviceReport
-):fakeAjaxAction(
+    recevieDeviceReport,
+) : fakeAjaxAction(
     report.device_report,
     requestDeviceReport,
-    recevieDeviceReport
+    recevieDeviceReport,
 )
 
-/*冲次统计*/
-export const fetchPunchFreq = !gconfig.isDemo_dev?createAjaxAction(
+/* 冲次统计 */
+export const fetchPunchFreq = !gconfig.isDemo_dev ? createAjaxAction(
     report.device_report,
-    createAction('request punch freq list'),
-    createAction('receive punch freq list')
-):fakeAjaxAction(
+    createAction( 'request punch freq list' ),
+    createAction( 'receive punch freq list' ),
+) : fakeAjaxAction(
     report.device_report,
-    createAction('request punch freq list'),
-    createAction('receive punch freq list')
+    createAction( 'request punch freq list' ),
+    createAction( 'receive punch freq list' ),
 )
 
-/*月度停机统计*/
-export const fetchDowntimeMon = !gconfig.isDemo_dev?createAjaxAction(
+/* 月度停机统计 */
+export const fetchDowntimeMon = !gconfig.isDemo_dev ? createAjaxAction(
     report.device_report,
-    createAction('request downtime month list'),
-    createAction('receive downtime month  list')
-):fakeAjaxAction(
+    createAction( 'request downtime month list' ),
+    createAction( 'receive downtime month  list' ),
+) : fakeAjaxAction(
     report.device_report,
-    createAction('request downtime month  list'),
-    createAction('receive downtime month  list')
+    createAction( 'request downtime month  list' ),
+    createAction( 'receive downtime month  list' ),
 )
 
-/*一周统计*/
+/* 一周统计 */
 // export const fetchPunchFreq = !gconfig.isDemo_dev?createAjaxAction(
 //     report.device_report,
 //     createAction('request downtime week  list'),
@@ -69,7 +69,7 @@ export const fetchDowntimeMon = !gconfig.isDemo_dev?createAjaxAction(
 //     createAction('receive  downtime week  list')
 // )
 
-/*oee*/
+/* oee */
 // export const fetchPunchFreq = !gconfig.isDemo_dev?createAjaxAction(
 //     report.device_report,
 //     createAction('request suote oee  list'),

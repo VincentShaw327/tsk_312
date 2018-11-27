@@ -1,36 +1,36 @@
 import {
-  createAction,
+    createAction,
 } from 'redux-actions'
 import {
-    bom
+    bom,
 } from 'api'
 import {
-  createAjaxAction,
-  fakeAjaxAction,
+    createAjaxAction,
+    fakeAjaxAction,
 } from 'utils'
 
-/*BOM列表数据请求*/
-export const requestBOMList = createAction('request bom list');
-export const recevieBOMList = createAction('receive bom list');
-export const fetchBOMList = !gconfig.isDemo_dev?createAjaxAction(
+/* BOM列表数据请求 */
+export const requestBOMList = createAction( 'request bom list' );
+export const recevieBOMList = createAction( 'receive bom list' );
+export const fetchBOMList = !gconfig.isDemo_dev ? createAjaxAction(
     bom.bom,
     requestBOMList,
-    recevieBOMList
-):fakeAjaxAction(
+    recevieBOMList,
+) : fakeAjaxAction(
     bom.bom,
     requestBOMList,
-    recevieBOMList
+    recevieBOMList,
 )
 
-/*BOM item列表数据请求*/
-export const requestBOMItemList = createAction('request bom item list');
-export const recevieBOMItemList = createAction('receive bom item list');
-export const fetchBOMItemList = !gconfig.isDemo_dev?createAjaxAction(
+/* BOM item列表数据请求 */
+export const requestBOMItemList = createAction( 'request bom item list' );
+export const recevieBOMItemList = createAction( 'receive bom item list' );
+export const fetchBOMItemList = !gconfig.isDemo_dev ? createAjaxAction(
     bom.bom_item,
     requestBOMItemList,
-    recevieBOMItemList
-):fakeAjaxAction(
+    recevieBOMItemList,
+) : fakeAjaxAction(
     bom.bom,
     requestBOMItemList,
-    recevieBOMItemList
+    recevieBOMItemList,
 )

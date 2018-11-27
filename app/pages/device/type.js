@@ -180,15 +180,15 @@ export default class type extends Component {
                     <a onClick={this.toggleUModalShow.bind( this, record )}>编辑</a>
                     <Divider type="vertical" />
                     <Popconfirm
-                        placement="topRight"
-                          title="确定删除此项数据？"
-                          onConfirm={this.handleDelete.bind( this, record )}
-                        okText="确定"
-cancelText="取消"
-                        >
+                      placement="topRight"
+                        title="确定删除此项数据？"
+                      onConfirm={this.handleDelete.bind( this, record )}
+                      okText="确定"
+                                              cancelText="取消"
+                    >
                         <a href="#">删除</a>
                     </Popconfirm>
-                </span> ),
+                                             </span> ),
             },
         ];
 
@@ -256,25 +256,25 @@ cancelText="取消"
                     /> */}
                     <div style={{ marginBottom: 15 }}>
                         <CreateModal
-                          FormItem={CFormItem}
-                          submit={this.handleCreat.bind( this )}
+                            FormItem={CFormItem}
+                            submit={this.handleCreat.bind( this )}
                         />
                     </div>
                     <SimpleTable
-                      size="middle"
-                      loading={loading}
-                      data={Data}
-                      columns={Tcolumns}
-                      isHaveSelect={false}
-                      bordered
-                      onChange={this.handleTableChange}
+                        size="middle"
+                        loading={loading}
+                        data={Data}
+                        columns={Tcolumns}
+                        isHaveSelect={false}
+                        bordered
+                        onChange={this.handleTableChange}
                     />
                     <UpdateModal
-                      FormItem={UFormItem}
-                      updateItem={updateFromItem}
-                      submit={this.handleUpdate.bind( this )}
-                      showModal={UModalShow}
-                      hideModal={this.toggleUModalShow}
+                        FormItem={UFormItem}
+                        updateItem={updateFromItem}
+                        submit={this.handleUpdate.bind( this )}
+                        showModal={UModalShow}
+                        hideModal={this.toggleUModalShow}
                     />
                 </div>
             </PageHeaderLayout>

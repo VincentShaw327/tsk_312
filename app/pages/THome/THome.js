@@ -1,36 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-    List,
-    Card,
-    message,
     Tooltip,
     Icon,
-    Tabs,
-    DatePicker,
     Row,
     Col,
-    Divider
 } from 'antd';
 // import ReactEcharts from 'echarts-for-react';
-import styles from "./THome.less";
-const TabPane = Tabs.TabPane;
-import moment from 'moment';
 // import G2 from '@antv/g2';
-const {MonthPicker, RangePicker} = DatePicker;
 import {
     yuan,
-    Bar,
-    Pie,
-    Gauge,
-    Radar,
-    MiniBar,
-    MiniArea,
-    MiniProgress,
     ChartCard,
     Field,
-    WaterWave,
-    TagCloud,
-    TimelineChart,
 } from 'components/ant-design-pro/Charts';
 import Trend from 'components/ant-design-pro/Trend';
 import numeral from 'numeral';
@@ -40,11 +20,9 @@ import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 export default class THome extends Component {
     // 初始化页面常量 绑定事件方法
-    constructor(props, context) {
-        super(props)
+    constructor( props, context ) {
+        super( props )
         this.state = {
-            key: 0,
-            option: {}
         }
         this.orderRenderData = {};
     }
@@ -53,12 +31,8 @@ export default class THome extends Component {
 
     // 组件已经加载到dom中
     componentDidMount() {
-
         // var plotHeight = (window.innerHeight - 180) / 4;
-        var plotHeight =38,
-            chartWidth=40;
-        var c0Types = [ 'interval','line','area' ];
-        /*var c0Data = [
+        /* var c0Data = [
             [
                 16, 17, 18, 19, 20, 21, 21, 22, 23, 22,
                 19, 20, 20, 21
@@ -97,9 +71,9 @@ export default class THome extends Component {
             chart[c0Types[index]]()
                 .position('x*y');
             chart.render();
-        });*/
-        /**************************************/
-        const chartOption = {
+        }); */
+        /** *********************************** */
+        /* const chartOption = {
             xAxis: {
                 type: 'category',
                 data: [
@@ -109,13 +83,13 @@ export default class THome extends Component {
                     'Thu',
                     'Fri',
                     'Sat',
-                    'Sun'
-                ]
+                    'Sun',
+                ],
             },
             yAxis: {
                 type: 'value',
                 // positon:'right',
-                offset: 0
+                offset: 0,
             },
             series: [
                 {
@@ -126,14 +100,14 @@ export default class THome extends Component {
                         80,
                         70,
                         110,
-                        130
+                        130,
                     ],
-                    type: 'bar'
-                }
-            ]
-        };
-        this.setState({option: chartOption})
-        var option = {
+                    type: 'bar',
+                },
+            ],
+        }; */
+        // this.setState( { option: chartOption } );
+        /* const option = {
             xAxis: {
                 type: 'category',
                 data: [
@@ -143,11 +117,11 @@ export default class THome extends Component {
                     'Thu',
                     'Fri',
                     'Sat',
-                    'Sun'
-                ]
+                    'Sun',
+                ],
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
             },
             series: [
                 {
@@ -158,126 +132,123 @@ export default class THome extends Component {
                         80,
                         70,
                         110,
-                        130
+                        130,
                     ],
-                    type: 'bar'
-                }
-            ]
-        };
+                    type: 'bar',
+                },
+            ],
+        }; */
         // 使用刚指定的配置项和数据显示图表。
         // myChart.setOption(option);
         // window.onresize=()=>{console.log('onresize');}
-        /**************************************/
-        const data = [
+        /** *********************************** */
+        /* const data = [
             {
                 year: '1951 年',
-                sales: 38
+                sales: 38,
             }, {
                 year: '1952 年',
-                sales: 52
+                sales: 52,
             }, {
                 year: '1956 年',
-                sales: 61
+                sales: 61,
             }, {
                 year: '1957 年',
-                sales: 145
+                sales: 145,
             }, {
                 year: '1958 年',
-                sales: 48
+                sales: 48,
             }, {
                 year: '1959 年',
-                sales: 38
+                sales: 38,
             }, {
                 year: '1960 年',
-                sales: 38
+                sales: 38,
             }, {
                 year: '1962 年',
-                sales: 38
-            }
-        ];
-        /*const chart = new G2.Chart({
+                sales: 38,
+            },
+        ]; */
+        /* const chart = new G2.Chart({
             container: 'tend-charts', forceFit: true,
             // height: window.innerHeight
         });
         chart.source(data);
         chart.scale('sales', {tickInterval: 20});
         chart.interval().position('year*sales');
-        chart.render();*/
+        chart.render(); */
     }
 
-    onTabChange = (key, type) => {
-        console.log(key, type);
-        this.setState({[type]: key});
+    onTabChange = ( key, type ) => {
+        // console.log( key, type );
+        this.setState( { [type]: key } );
     }
 
     render() {
-
-        const bcList = [ 
+        const bcList = [
             {
-                title: "首页",
+                title: '首页',
                 href: '/',
-            }
+            },
         ];
-          
+
         return (
             <PageHeaderLayout
-                // title={"首页"}
-                // action={showDetal?HeadAction:''}
-                // content={showDetal?HeadContent:''}
-                wrapperClassName="pageContent"
-                BreadcrumbList={bcList}>
+              wrapperClassName="pageContent"
+              BreadcrumbList={bcList}
+            >
                 <div >
                     <Row>
                         <Col span={6}>
                             <ChartCard
-                                title="销售额"
-                                action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-                                total={yuan(126560)}
-                                footer={<Field label="日均销售额" value={numeral(12423).format('0,0')} />}
-                                contentHeight={46}
-                                >
+                              title="销售额"
+                              action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+                              total={yuan( 126560 )}
+                              footer={<Field label="日均销售额" value={numeral( 12423 ).format( '0,0' )} />}
+                              contentHeight={46}
+                            >
                                 <span>
                                 周同比
-                                <Trend flag="up" style={{ marginLeft: 8, color: 'rgba(0,0,0,.85)' }}>12%</Trend>
+                                    <Trend flag="up" style={{ marginLeft: 8, color: 'rgba(0,0,0,.85)' }}>12%</Trend>
                                 </span>
                                 <span style={{ marginLeft: 16 }}>
                                 日环比
-                                <Trend flag="down" style={{ marginLeft: 8, color: 'rgba(0,0,0,.85)' }}>11%</Trend>
+                                    <Trend flag="down" style={{ marginLeft: 8, color: 'rgba(0,0,0,.85)' }}>11%</Trend>
                                 </span>
                             </ChartCard>
                         </Col>
                         <Col span={6}>
-                        <ChartCard
-                            title="移动指标"
-                            avatar={
-                            <img
-                                style={{ width: 56, height: 56 }}
-                                src="https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png"
-                                alt="indicator"
+                            <ChartCard
+                              title="移动指标"
+                              avatar={
+                                    <img
+                                      style={{ width: 56, height: 56 }}
+                                      src="https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png"
+                                      alt="indicator"
+                                    />
+                                }
+                              action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+                              total={yuan( 126560 )}
+                              footer={<Field label="日均销售额" value={numeral( 12423 ).format( '0,0' )} />}
                             />
-                            }
-                            action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-                            total={yuan(126560)}
-                            footer={<Field label="日均销售额" value={numeral(12423).format('0,0')} />}
-                        />
                         </Col>
                         <Col span={6}>
-                        <ChartCard
-                            title="移动指标"
-                            avatar={(
-                            <img
-                                alt="indicator"
-                                style={{ width: 56, height: 56 }}
-                                src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
+                            <ChartCard
+                              title="移动指标"
+                              avatar={(
+                                    <img
+                                      alt="indicator"
+                                      style={{ width: 56, height: 56 }}
+                                      src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
+                                    />
+                                )}
+                              action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+                              total={yuan( 126560 )}
                             />
-                            )}
-                            action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-                            total={yuan(126560)}
-                        />
                         </Col>
                     </Row>
                 </div>
             </PageHeaderLayout>
-            )
+        )
     }
 }

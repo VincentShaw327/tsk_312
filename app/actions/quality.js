@@ -1,22 +1,23 @@
 import {
-  createAction,
+    createAction,
 } from 'redux-actions'
 import {
-  quality
+    quality,
 } from 'api'
 import {
-  createAjaxAction,
-  fakeAjaxAction,
+    createAjaxAction,
+    fakeAjaxAction,
 } from 'utils'
 
-/*工艺列表请求*/
+/* 工艺列表请求 */
 
-export const fetchInspectList = !gconfig.isDemo_dev?createAjaxAction(
+export const fetchInspectList = !gconfig.isDemo_dev ? createAjaxAction(
     quality.inspect,
-    createAction('request inspect list'),
-    createAction('receive inspect list')
-):fakeAjaxAction(
+    createAction( 'request inspect list' ),
+    createAction( 'receive inspect list' ),
+) : fakeAjaxAction(
     quality.inspect,
-    createAction('request inspect list'),
-    createAction('receive inspect list')
+    createAction( 'request inspect list' ),
+    createAction( 'receive inspect list' ),
 )
+export default fetchInspectList;
