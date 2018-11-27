@@ -7,6 +7,7 @@ const Copy = require('copy-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const webpackConfigProd = {
+  mode: 'production',
   plugins: [
     // 定义环境变量为开发环境
     new webpack.DefinePlugin({

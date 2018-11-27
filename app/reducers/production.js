@@ -1,13 +1,15 @@
 import { handleActions } from 'redux-actions'
 import { hasResponseError } from 'utils'
 import moment from 'moment';
+import { fn_mes_array } from 'functions'
+
 const Mock = require('mockjs');
 var Random = Mock.Random;
 // import moment from 'moment'
 import { message } from 'antd'
 
-const BOMListState = {
-  productOrderList: [],
+const orderInitState = {
+  list: [],
   currentPage: 1,
   pageCount: 0,
   pageSize: 20,
@@ -26,8 +28,15 @@ export const productOrder = handleActions({
       return { ...state, loading: false }
     }
     else{
-        if(!gconfig.isDemo_dev){
-            return { obj:res.obj.objectlist, loading: false }
+        if (!gconfig.isDemo_dev) {
+            let data = res.data,
+                list = fn_mes_array.addKey(res.data.list, 'key');
+            let pagenation = {
+                page: data.page,
+                size: data.size,
+                total: data.total
+            }
+            return { ...state, list, loading: false, ...pagenation }
         }
         else{
             list=res.objectlist.map((item,index)=>{
@@ -65,28 +74,100 @@ export const productOrder = handleActions({
             list=Mock.mock(list)
             res.objectlist=list;
             res.totalcount=Mock.mock('@natural(0, 65)');
-            return { productOrderList:list,total:res.totalcount, loading: false }
+            return { list:list,total:res.totalcount, loading: false }
         }
     }
   },
+}, orderInitState)
 
 
-}, BOMListState)
 
-
-const DataList = JSON.parse(sessionStorage.getItem('MockTaskList'));
-const productTaskState = {
-  productTaskList:DataList?DataList.productTaskList:[],
+const taskInitState = {
+  list: [],
   currentPage: 1,
   pageCount: 0,
   pageSize: 20,
   totalCount: 0,
+  // loading:true
 }
 export const productTask = handleActions({
   'request task list'(state, action) {
     return { ...state, loading: true }
   },
   'receive task list'(state, action) {
+    const { req, res } = action.payload
+    let list=[];
+    if (hasResponseError(res)) {
+      message.error(res.msg)
+      return { ...state, loading: false }
+    }
+    else{
+        if (!gconfig.isDemo_dev) {
+            let data = res.data,
+                list = fn_mes_array.addKey(res.data.list, 'key');
+            let pagenation = {
+                page: data.page,
+                size: data.size,
+                total: data.total
+            }
+            return { ...state, list, loading: false, ...pagenation }
+        }
+        else{
+            list=res.objectlist.map((item,index)=>{
+                return{
+                    UUID:item.UUID,
+                    key:index,
+                    // WorkshopUUID:item.WorkshopUUID,
+                    ID: 'SC'+Random.now('yyyyMMdd')+'_'+Random.integer(5),
+                    // Name: item.Name,
+                    // Desc: item.Desc,
+                    // Note: item.Note,
+                    // ProductUUID: item.ProductUUID,
+                    // ProductModelID: item.ProductModelID,
+                    'ProductModelName|1': ['HDMI端子','RCA音视频端子','光纤端子','PCMCIA'], //产品名称
+                    'WorkshopName|1':['自动车间一','自动车间二','注塑车间','冲压车间'],
+                    PlanNumber: Mock.mock('@natural(5000, 50000)'), //计划产量
+                    ScheduleNumber:Mock.mock('@natural(5000, 50000)'),
+                    FinishNumber: item.FinishNumber, //实际产量
+                    RejectNumber: item.RejectNumber, //不合格数量
+                    IssuedDateTime: moment().
+                                        subtract(Mock.mock('@natural(0, 15)'), 'days').
+                                            format('YYYY-MM-DD HH:mm'), //下单日期
+                    PlanDeliverDate: moment().
+                                        add(Mock.mock('@natural(0, 15)'), 'days').
+                                            format('YYYY-MM-DD HH:mm'),//计划交期
+                    DeliverDateTime: item.DeliverDateTime, //实际交期
+                    PlanStartDateTime: item.PlanStartDateTime, //计划开始时间
+                    StartDateTime: item.StartDateTime, //实际开始时间
+                    // PlanFinishDateTime: item.PlanFinishDateTime.slice(0,10), //计划完成时间
+                    FinishDateTime: item.FinishDateTime, //实际完成时间
+                    UpdateDateTime: item.UpdateDateTime, //更新时间
+                    Status: Mock.mock('@natural(0, 3)')
+                }
+            })
+            list=Mock.mock(list)
+            res.objectlist=list;
+            res.totalcount=Mock.mock('@natural(0, 65)');
+            return { list:list,total:res.totalcount, loading: false }
+        }
+    }
+  },
+}, taskInitState)
+
+
+const DataList = JSON.parse(sessionStorage.getItem('MockTaskList'));
+const initJobState = {
+  list:DataList?DataList.productTaskList:[],
+  currentPage: 1,
+  pageCount: 0,
+  pageSize: 20,
+  totalCount: 0,
+}
+export const productJob = handleActions({
+  'request job list'(state, action) {
+    return { ...state, loading: true }
+  },
+  'receive job list'(state, action) {
     const { req, res } = action.payload
     console.log('receive task list',state,action)
     let list=[];
@@ -95,8 +176,15 @@ export const productTask = handleActions({
       return { ...state, loading: false }
     }
     else{
-        if(!gconfig.isDemo_dev){
-            return { obj:res.obj.objectlist, loading: false }
+        if (!gconfig.isDemo_dev) {
+            let data = res.data,
+                list = fn_mes_array.addKey(res.data.list, 'key');
+            let pagenation = {
+                page: data.page,
+                size: data.size,
+                total: data.total
+            }
+            return { ...state, list, loading: false, ...pagenation }
         }
         else{
 
@@ -164,12 +252,12 @@ export const productTask = handleActions({
             res.objectlist=list;
             res.totalcount=Mock.mock('@natural(0, 65)');
             sessionStorage.setItem('MockTaskList', JSON.stringify({ productTaskList:list}));
-            return { productTaskList:list,total:res.totalcount, loading: false }
+            return { list:list,total:res.totalcount, loading: false }
         }
     }
   },
 
-}, productTaskState)
+}, initJobState)
 
 const feedingState = {
   list:[],

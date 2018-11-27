@@ -1,5 +1,5 @@
-import React, { Component ,createElement} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import { Layout, Menu, Icon, Input, Row,
      Col, Avatar, Dropdown,AutoComplete,Button  } from 'antd';
 // import LOGO from '../../images/T-3.png';
@@ -10,14 +10,16 @@ import LOGO from '../../images/logo.png';
 import styles from './THeader.less';
 import HeaderSearch from '../../components/ant-design-pro/HeaderSearch';
 const Option = AutoComplete.Option;
-const { Header, Content, Footer, Sider } = Layout;
+const { Header } = Layout;
 const Search = Input.Search;
 
 const userMenu = (
     <Menu className="userlistMenu">
         <Menu.Item>
-            <Icon type="user"/>
-            <span className="itemTxt">个人中心</span>
+            <Link to="/setting/user_list">
+                <Icon type="user"/>
+                <span className="itemTxt">个人中心</span>
+            </Link>
         </Menu.Item>
         <Menu.Item>
             <Icon type="logout" />
@@ -29,27 +31,7 @@ const userMenu = (
         </Menu.Item>
     </Menu>
 )
-const setMenu = (
-    <Menu>
-        <Menu.Item >
-            <Icon type="arrows-alt" />
-            <span >全屏</span>
-        </Menu.Item>
-        <Menu.Item>
-            <Icon type="setting" />
-            <span>设置</span>
-        </Menu.Item>
-        <Menu.Item>
-            <Icon type="setting" />
-            <span>退出登录</span>
-        </Menu.Item>
-    </Menu>
-)
 
-
-function onSelect(value) {
-  console.log('onSelect', value);
-}
 
 function getRandomInt(max, min = 0) {
   return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
@@ -83,7 +65,7 @@ function renderOption(item) {
 }
 
 
-export default class THeader extends React.Component {
+export default class THeader extends Component {
     constructor( props ) {
         super( props );
         this.state={
@@ -176,7 +158,7 @@ export default class THeader extends React.Component {
         ];
 
         return (
-            <Header className="header">
+            <Header className={styles.header}>
               {/* <div className="logo" /> */}
               <Row gutter={16}>
                   <Col span={3}>
@@ -186,12 +168,12 @@ export default class THeader extends React.Component {
                       </div>
                   </Col>
                   <Col span={6}>
-                      <div className="header-title">
+                      <div className={styles.header_title}>
                             <span>智能制造执行系统</span>
                             {/* <img src={LOGO} style={{width:'100%',maxWidth:150}}/> */}
                       </div>
                   </Col>
-                  <Col span={9}>
+                  <Col span={11}>
                       {/* <heard-seach>
                           <Search
                               placeholder="输入..."
@@ -223,30 +205,16 @@ export default class THeader extends React.Component {
                         </AutoComplete> */}
                       {/* </div> */}
                   </Col>
-                  {/* <Col span={1}>
-                    <span className='menu-item'>
-                        <Dropdown overlay={setMenu}>
-                          <Icon type="appstore" className="header-menu-icon"/>
-                        </Dropdown>
-                    </span>
-                  </Col> */}
                   <Col span={3} style={{border:'solid 0px'}}>
-                      <div className="menu-item">
+                      <div className={styles.menu_item}>
                           <Dropdown overlay={userMenu}>
-                              <div>
-                                  <span style={{width:"40%"}}>
-                                      <span>
-                                        <Avatar size="small" icon="user"/>
-                                      </span>
-                                  </span>
-                                  <span style={{width:"60%",paddingLeft:"10%",color:'#fcfcfc',fontWeight:"bold"}}>
-                                    欢迎你,<span style={{color:'#ecb44c'}}>系统管理员!</span>
-                                  </span>
-                              </div>
+                            <span style={{color:'#fcfcfc',fontWeight:"bold"}}>
+                            欢迎你,<span style={{color:'#ecb44c'}}>系统管理员!</span>
+                            </span>
                           </Dropdown>
                       </div>
                   </Col>
-                  <Col span={1}>
+                  {/* <Col span={1}>
                     <div className="menu-item">
                           <span style={{width:"40%"}}>
                               <Icon type="exclamation-circle-o" className="header-menu-icon"/>
@@ -255,8 +223,8 @@ export default class THeader extends React.Component {
                             关于
                           </span>
                     </div>
-                  </Col>
-                  <Col span={1}>
+                  </Col> */}
+                  {/* <Col span={1}>
                     <div className="menu-item">
                           <span style={{width:"40%"}}>
                               <Icon type="logout" className="header-menu-icon"/>
@@ -265,7 +233,8 @@ export default class THeader extends React.Component {
                             退出
                           </span>
                     </div>
-                  </Col>
+                  </Col> */}
+
                   <Col span={1}>
                     <div className='menu-item'>
                         {

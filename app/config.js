@@ -4,13 +4,13 @@ export default (() => {
     // 本地开发打开的路径以及端口
     // global.linkUrl = 'http://localhost:9000/';
     // global.linkUrl = 'http://192.168.3.9/';
-    global.linkUrl = 'http://dev.mes.top-link.me/';
-    // global.linkUrl = '47.91.154.238/';
+    // global.linkUrl = 'http://dev.mes.top-link.me/';
+    global.linkUrl = 'http://localhost:3000/';
     // global.linkUrl = 'http://dev.mes.top-link.me/';
     if (process.env.NODE_ENV === 'production') { // 生产环境用不同的接口地址
       global.linkUrl = 'http://localhost:3000';
     }
-    global.isDemo_dev=true;
+    global.isDemo_dev=false;
     // 系统一二级菜单
     global.nav = [
       {
@@ -32,7 +32,10 @@ export default (() => {
         key: 'manufacture',
         children: [
           {
-            name:'订单排程', key: '/production/order',url:'production/order'
+            name:'订单管理', key: '/production/order',url:'production/order'
+          },
+          {
+            name:'生产任务', key: '/production/task',url:'production/task'
           },
           /*{
             name:'生产派工', key: 'task_dispatch',url:'task_dispatch'
@@ -97,11 +100,14 @@ export default (() => {
         url: '',
         key: 'TDevice',
         children: [
-          /*{
-            name:'设备类别', key: 'TDeviceCategory',url:'TDeviceCategory',
-          },*/
+          {
+            name:'设备类别', key: '/device/type',url:'/device/type',
+          },
           {
             name:'设备型号', key: '/device/model',url:'/device/model',
+          },
+          {
+            name:'设备品牌', key: '/device/brand',url:'/device/brand',
           },
           {
             name:'设备台账', key: '/device/instance',url:'/device/instance',

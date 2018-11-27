@@ -3,7 +3,8 @@ const {existsSync}=require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
 function resolve(relatedPath) {
@@ -18,7 +19,7 @@ const webpackConfigBase = {
   output: {
     path: resolve('../dist'),
     filename: '[name].[hash:4].js',
-    chunkFilename: 'chunks/[name].[hash:4].js',
+    chunkFilename: 'chunks/[name].[hash:4].js',//按需加载模块
     // publicPath:'http://localhost:3016/dist/'
     // publicPath:'../dist/'
   },
@@ -48,6 +49,30 @@ const webpackConfigBase = {
         loader: 'babel',
       },
       {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          // 'css-loader',
+          // 'postcss-loader',
+          // 'less-loader',
+          // { loader: 'style', options: { } },
+          { loader: 'css', options: {sourceMap: true,modules:false } },
+          // { loader: 'less', options: {sourceMap: true,modules:false } }
+        ],
+      },
+      {
+        test: /\.less$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          // 'css-loader',
+          // 'postcss-loader',
+          // 'less-loader',
+          // { loader: 'style', options: { } },
+          { loader: 'css', options: {sourceMap: true,modules:true } },
+          { loader: 'less', options: {sourceMap: true,modules:false } }
+        ],
+      },
+      /* {
         test: /\.css/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style',
@@ -65,7 +90,7 @@ const webpackConfigBase = {
               { loader: 'less', options: { sourceMap: true } },
           ]
         }),
-      },
+      }, */
       /*{
             test: /\.less$/,
             use: [
@@ -115,7 +140,13 @@ const webpackConfigBase = {
   },
   plugins: [
     // 提取css
-    new ExtractTextPlugin('style.[hash:4].css'),
+    // new ExtractTextPlugin('style.[hash:4].css'),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: "[name].css",
+      chunkFilename: "[id].css"
+    }),
     // 将打包后的资源注入到html文件内
     new HtmlWebpackPlugin({
       template: resolve('../app/index.html'),
@@ -124,6 +155,10 @@ const webpackConfigBase = {
     new ProgressBarPlugin()
   ],
   optimization:{
+    // minimize:true,
+    runtimeChunk: {
+      name: "manifest"
+    },
     splitChunks: {
       chunks: 'initial', // 只对入口文件处理
       "automaticNameDelimiter": "~",

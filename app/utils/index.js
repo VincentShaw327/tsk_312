@@ -12,7 +12,7 @@ const logOut = () => {
   hashHistory.push('/login')
 }
 
-export const createAjaxAction = (api, startAction, endAction) => (data, cb, reject) =>
+export const createAjaxAction = (api, startAction, endAction) => (data, cb, reject,tomock) =>
   (dispatch) => {
     let respon
     let newData = data
@@ -26,34 +26,54 @@ export const createAjaxAction = (api, startAction, endAction) => (data, cb, reje
       // newData.token = token || null
     }
     newData = isArray(newData) ? newData : [newData]
-    api(...newData)
-      .then(checkStatus) // eslint-disable-line no-use-before-define
-      .then(response => response.json())
-      .then((resp) => {
-        respon = resp
-        endAction && dispatch(endAction({ req: newData, res: resp }))
-      })
-      .then(() => {
-        switch (respon.err) {
-        case 0:
-          cb && cb(respon)
-          break
-        case 1:
-          if (typeof (reject) === 'function') {
-            reject(respon)
-          } else {
-            message.error(respon.msg)
+    if(!tomock){
+      api(...newData)
+        .then(checkStatus) // eslint-disable-line no-use-before-define
+        .then(response => response.json())
+        .then((resp) => {
+          respon = resp
+          endAction && dispatch(endAction({ req: newData, res: resp }))
+        })
+        .then(() => {
+          switch (respon.err) {
+          case 0:
+            cb && cb(respon)
+            break
+          case 1:
+            if (typeof (reject) === 'function') {
+              reject(respon)
+            } else {
+              message.error(respon.msg)
+            }
+            break
+          default:
+            console.log('status的返回值不是0或1')
+            // logOut()
           }
-          break
-        default:
-          console.log('status的返回值不是0或1')
-          // logOut()
-        }
-      })
-      .catch(catchError) // eslint-disable-line no-use-before-define
+        })
+        .catch(catchError) // eslint-disable-line no-use-before-define
+    }
+    else{
+      let list,obj={};
+      obj.objectlist=[];
+      obj.err=0;
+      obj.msg='OK';
+      let times=20;
+      console.log('newData',data,newData)
+      if(data.hasOwnProperty('num')){
+          times=data.num
+      }
+      for (var i = 0; i < times; i++) {
+          obj.objectlist.push({
+              UUID:i+1
+          })
+      }
+      endAction && dispatch(endAction({ req: newData, res: obj }));
+      cb&&cb(obj);
+    }
   }
 
-export const fakeAjaxAction = (api, startAction, endAction) => (data, cb, reject) =>
+export const fakeAjaxAction = (api, startAction, endAction) => (data, cb, reject,tomock) =>
   (dispatch) => {
     let respon
     let newData = data

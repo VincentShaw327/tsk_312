@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Layout, Menu, Icon } from 'antd';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { updateTabList } from 'actions/tabList';
@@ -6,6 +7,9 @@ import { updateBreadcrumbList } from 'actions/common';
 const SubMenu = Menu.SubMenu;
 const { Sider } = Layout;
 
+@connect(
+  (state, props) => ({ tabList: state.tabListResult }),
+)
 export default class LeftNav extends Component {
     constructor(props, context) {
         super(props, context);
@@ -29,9 +33,12 @@ export default class LeftNav extends Component {
 
     THandleClick = (e) => {
       this.props.history.push(e.key)
+      console.log('menu clicked',e)
       this.props.dispatch(updateTabList({ title: e.item.props.name, content: '', key: e.key }))
       this.props.dispatch(updateBreadcrumbList({ title: e.item.props.name,href:e.key }))
     }
+
+    handleopen =(e)=>console.log('opened',e)
 
     // 二级菜单的生成
     renderLeftNav(options) {
@@ -96,7 +103,9 @@ export default class LeftNav extends Component {
                 <Menu
                     theme="light"
                     mode="inline"
+                    selectedKeys={[this.props.tabList.activeKey]}
                     defaultSelectedKeys={['4']}
+                    onOpenChange={this.handleopen}
                     onClick={this.THandleClick}>
                     {
                         this.renderLeftNav(this.props.config.nav || [])}

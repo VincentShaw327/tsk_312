@@ -10,6 +10,7 @@ function resolve(relatedPath) {
   return path.join(__dirname, relatedPath)
 }
 const webpackConfigDev = {
+  mode: 'development',
   plugins: [
     // 定义环境变量为开发环境
     new webpack.DefinePlugin({
@@ -25,8 +26,8 @@ const webpackConfigDev = {
       // Options...
     })
   ],
-  devtool: 'source-map',
-  // devtool: 'inline-source-map',
+  // devtool: 'source-map',
+  devtool: 'inline-source-map',
   devServer: {
     contentBase: resolve('../app'),
     historyApiFallback: false,

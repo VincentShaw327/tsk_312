@@ -8,7 +8,7 @@ import * as device from './device'
 import * as factory from './factory'
 import * as Iot from './Iot'
 import * as maintain from './maintain'
-import * as manufacture from './manufacture'
+import * as production from './production'
 import * as mold from './mold'
 import * as crafts from './crafts'
 import * as product from './product'
@@ -29,7 +29,7 @@ export {
   factory,
   Iot,
   maintain,
-  manufacture,
+  production,
   mold,
   crafts,
   product,

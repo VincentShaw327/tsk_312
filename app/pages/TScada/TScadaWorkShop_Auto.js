@@ -23,6 +23,7 @@ import AM1 from '../../images/assets/timg.jpg'
         MockMqttData:state.MockMqttData
     }
 }, )
+
 export default class TScadaWorkShop_Auto extends Component {
 
     constructor( props ) {
@@ -370,7 +371,7 @@ export default class TScadaWorkShop_Auto extends Component {
           }];
         return (
             <PageHeaderLayout
-                title="车间监控"
+                // title="车间监控"
                 wrapperClassName="pageContent"
                 content={devStateView}
                 BreadcrumbList={Breadcrumb.BCList}>

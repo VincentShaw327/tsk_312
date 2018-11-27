@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import TableExport from 'tableexport';
-import './index.less'
+// import styles from 'style-loader!less-loader!css-loader?modules=false./index.less';
+import styles from './index.less'
 export default class tableExport extends Component {
 
     constructor(props) {
@@ -33,11 +34,11 @@ export default class tableExport extends Component {
     render() {
         const {children} = this.props;
         return (
-            <div className="ep-wrap">
-                <div className="btn-wrap">
-                    导出：<div className="ep-btn" ref={_btn=>this._btn=_btn}></div>
+            <div className={styles.ep_wrap}>
+                <div className={styles.btn_wrap}>
+                    导出：<div className={styles.ep_btn} ref={_btn=>this._btn=_btn}></div>
                 </div>
-                <div className="ep-table-box" ref={_tableBox=>this._tableBox=_tableBox} >
+                <div className={styles.ep_table_box} ref={_tableBox=>this._tableBox=_tableBox} >
                     {children}
                 </div>
             </div>

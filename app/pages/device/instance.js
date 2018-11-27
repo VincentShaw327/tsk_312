@@ -5,14 +5,14 @@
  **/
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hashHistory, Link } from 'react-router';
-import { Table, Menu, Icon, Badge,Popover,Breadcrumb, Dropdown,message,Divider,Popconfirm } from 'antd';
-import { fetchDeviceList } from 'actions/device';
+import { Table, Menu, Icon, Badge,Popover, Dropdown,message,Divider,Popconfirm } from 'antd';
+import { device_equipment_list,device_equipment_add,device_equipment_update,device_equipment_delete } from 'actions/device'
 import { TPostData,urlBase } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+import {fn_mes_trans} from 'functions'
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
@@ -47,7 +47,7 @@ export default class DeviceList extends Component {
         // this.getDevModelList();
         // this.getDevTypeList();
         // this.getTableList();
-        this.props.dispatch( fetchDeviceList( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( device_equipment_list( { }, ( respose ) => {} ) )
     }
 
     getDevModelList(){
@@ -128,24 +128,36 @@ export default class DeviceList extends Component {
 
     }
 
-    handleCreat=(data)=>{
-        let dat = {
-            ModelUUID: data.ModelUUID,
-            ID: data.strDeviceID,
-            Name: data.strDeviceName,
-            SN: data.strDeviceSN,
-            Label:data.strLabel
+    handleCreat = (data) => {
+        const addData = {
+            cols: fn_mes_trans.toCols(data)
         }
-        TPostData( this.url, "Add", dat,
-            ( res )=> {
-                message.success("创建成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("创建失败！");
-                console.log('err',err);
-            }
-        )
+        console.log('开始添加', addData);
+        this
+            .props
+            .dispatch(device_equipment_add(addData, (respose) => console.log('添加成功！', respose)))
+    }
+
+    handleDelete = (data) => {
+        const deleteData = {
+            uuids:[data.uObjectUUID]
+        }
+        console.log('开始删除', deleteData);
+        this
+            .props
+            .dispatch(device_equipment_delete(deleteData))
+    }
+
+    handleUpdate = (data) => {
+        let item=this.state.updateFromItem;
+        const editData = {
+            uuid:item.uObjectUUID,
+            cols: fn_mes_trans.toCols(data)
+        }
+        console.log('开始修改', editData);
+        this
+            .props
+            .dispatch(device_equipment_update(editData))
     }
 
     handleQuery=(data)=>{
@@ -154,46 +166,6 @@ export default class DeviceList extends Component {
         this.setState({keyWord,TypeUUID,ModelUUID,current:1},()=>{
             this.getTableList();
         });
-    }
-
-    handleUpdate=(data)=>{
-        let dat = {
-            UUID: this.state.updateFromItem.UUID,
-            ModelUUID: data.ModelUUID,
-            ID: data.DeviceID,
-            Name: data.strDeviceName,
-            SN: data.strDeviceSN,
-            Label:data.strLabel,
-            Desc: data.Desc,
-            Note: data.Note
-        }
-        TPostData( this.url, "Update", dat,
-            ( res )=> {
-                message.success("更新成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("更新失败！");
-                console.log('err',err);
-            }
-        )
-    }
-
-    handleDelete=(data)=>{
-        var dat = {
-            UUID: data.UUID,
-        }
-        // console.log("看看data",data);
-        TPostData( this.url, "Inactive", dat,
-            ( res )=> {
-                message.success("删除成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("删除失败！");
-                console.log('err',err);
-            }
-        )
     }
 
     handleTableChange=(pagination)=>{
@@ -232,7 +204,12 @@ export default class DeviceList extends Component {
             {
                 title: '序号',
                 dataIndex: 'key',
-                type: 'string'
+                width:50
+            },
+            {
+                title: 'ID',
+                dataIndex: 'uObjectUUID',
+                width:80
             },
             {
                 title: '图片',
@@ -254,11 +231,11 @@ export default class DeviceList extends Component {
             },
             {
                 title: '名称',
-                dataIndex: 'strDeviceName',
+                dataIndex: 'strEquipmentName',
                 type: 'string'
             }, {
                 title: '编号',
-                dataIndex: 'DeviceID',
+                dataIndex: 'strEquipmentCode',
                 type: 'string'
             }, {
                 title: '序列号',
@@ -273,8 +250,8 @@ export default class DeviceList extends Component {
                 dataIndex: 'DeviceModel',
                 type: 'string'
             },{
-                  title: '标签',
-                  dataIndex: 'Label',
+                  title: '品牌',
+                  dataIndex: 'brand',
                   type: 'string'
             },{
                 title: '操作',
@@ -295,72 +272,50 @@ export default class DeviceList extends Component {
             }
         ];
         //更新弹框数据项
-        const UFormItem= [{
-                name: 'strDeviceName',
-                label: '名称',
-                type: 'string',
-                placeholder: '请输入名称',
-                rules: [{ required: true, message: '请输入设备名称' }]
-              }, {
-                name: 'DeviceID',
-                label: '编号',
-                type: 'string',
-                placeholder: '请输入编号',
-                rules: [{ required: true, message: '请输入编号' }]
-              }, {
-                name: 'strDeviceSN',
-                label: '序列号',
-                type: 'string',
-                placeholder: '请输入序列号',
-                rules: [{ required: true, message: '请输入设备序列号' }]
-              },{
-                name: 'strLabel',
-                label: '标签',
-                type: 'string',
-                placeholder: '请输入标签',
-                rules: [{ required: true, message: '请输入标签' }]
-              },{
-                name: 'ModelUUID',
-                label: '设备型号',
-                type: 'select',
-                rules: [{ required: true, message: '请选择型号' }],
-                options:DeviceModelList
-              }
-        ];
-        //添加的弹出框菜单
-        const CFormItem= [
+        const UFormItem= [
             {
-                name: 'strDeviceName',
+                name: 'strEquipmentName',
                 label: '名称',
                 type: 'string',
                 placeholder: '请输入名称',
                 rules: [{ required: true, message: '请输入名称' }]
             },{
-                name: 'strDeviceID',
+                name: 'strEquipmentCode',
                 label: '编号',
                 type: 'string',
                 placeholder: '请输入编号',
                 rules: [{ required: true, message: '请输入编号' }]
-            }, {
-                name: 'strDeviceSN',
-                label: '序列号',
-                type: 'string',
-                placeholder: '请输入序列号',
-                rules: [{ required: true, message: '请输入序列号' }]
-            }, {
-                name: 'strLabel',
-                label: '标签',
-                type: 'string',
-                placeholder: '请输入标签',
-                rules: [{ required: true, message: '请输入标签' }]
-            }, {
+            }, /* {
                 name: 'ModelUUID',
                 label: '设备型号',
                 type: 'select',
                 defaultValue:'1',
                 rules: [{ required: true, message: '请选择设备型号' }],
                 options:DeviceModelList
-            }
+            } */
+        ];
+        //添加的弹出框菜单
+        const CFormItem= [
+            {
+                name: 'strEquipmentName',
+                label: '名称',
+                type: 'string',
+                placeholder: '请输入名称',
+                rules: [{ required: true, message: '请输入名称' }]
+            },{
+                name: 'strEquipmentCode',
+                label: '编号',
+                type: 'string',
+                placeholder: '请输入编号',
+                rules: [{ required: true, message: '请输入编号' }]
+            }, /* {
+                name: 'ModelUUID',
+                label: '设备型号',
+                type: 'select',
+                defaultValue:'1',
+                rules: [{ required: true, message: '请选择设备型号' }],
+                options:DeviceModelList
+            } */
         ];
         //查询的数据项
         const RFormItem= [
@@ -392,41 +347,41 @@ export default class DeviceList extends Component {
             title:"首页",
             href: '/',
             }, {
-            title: '生产资料',
-            href: '/',
+            title: '设备管理',
+            // href: '/',
             }, {
-            title: '物料类别',
+            title: '设备台帐',
         }];
 
         return (
-          <PageHeaderLayout title="设备列表" wrapperClassName="pageContent" BreadcrumbList={bcList}>
-              <div className="cardContent">
-                  {/* <Feature/> */}
-                  <StandardQForm
-                      FormItem={RFormItem}
-                      submit={this.handleQuery}
-                  />
-                  <CreateModal
-                      FormItem={CFormItem}
-                      submit={this.handleCreat.bind(this)}
-                  />
-                  <SimpleTable
-                      size="middle"
-                      loading={loading}
-                      data={Data}
-                      columns={Tcolumns}
-                      isHaveSelect={false}
-                      onChange={this.handleTableChange}
-                  />
-                  <UpdateModal
-                      title="编辑"
-                      FormItem={UFormItem}
-                      updateItem={updateFromItem}
-                      submit={this.handleUpdate.bind(this)}
-                      showModal={UModalShow}
-                      hideModal={this.toggleUModalShow}
-                  />
-              </div>
+          <PageHeaderLayout wrapperClassName="pageContent" BreadcrumbList={bcList}>
+                {/* <StandardQForm
+                    FormItem={RFormItem}
+                    submit={this.handleQuery}
+                /> */}
+                <div style={{marginBottom:15}}>
+                    <CreateModal
+                        FormItem={CFormItem}
+                        submit={this.handleCreat.bind(this)}
+                    />
+                </div>
+                <SimpleTable
+                    size="middle"
+                    loading={loading}
+                    data={Data}
+                    columns={Tcolumns}
+                    isHaveSelect={false}
+                    bordered
+                    onChange={this.handleTableChange}
+                />
+                <UpdateModal
+                    title="编辑"
+                    FormItem={UFormItem}
+                    updateItem={updateFromItem}
+                    submit={this.handleUpdate.bind(this)}
+                    showModal={UModalShow}
+                    hideModal={this.toggleUModalShow}
+                />
           </PageHeaderLayout>
         )
     }

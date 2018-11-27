@@ -7,12 +7,14 @@
  import { connect } from 'react-redux'
  import { hashHistory, Link } from 'react-router'
 import { Table, Menu, Icon, Badge,Popover, Dropdown,message,Divider,Popconfirm } from 'antd';
-import { fetchFeedingList } from 'actions/manufacture'
- import { TPostData,TPostMock } from 'utils/TAjax';
- import SimpleTable from 'components/TTable/SimpleTable';
+import { fetchFeedingList } from 'actions/production'
+import { TPostData,TPostMock } from 'utils/TAjax';
+import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {DropDownForm,SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+// console.log('SimpleTable======',SimpleTable)
+
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
@@ -346,7 +348,7 @@ export default class feeding extends Component {
 
         return (
             <PageHeaderLayout
-              title="投料计划"
+            //   title="投料计划"
               wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}
               >

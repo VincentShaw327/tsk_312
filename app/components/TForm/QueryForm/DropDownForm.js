@@ -91,7 +91,7 @@ export default class DropDownForm extends Component {
             width=350,
             position='leftBottom',
             isHaveSearch=true,
-            styles={
+            propStyles={
                 maxWidth:500
             }
         } = this.props;
@@ -146,8 +146,8 @@ export default class DropDownForm extends Component {
         )
 
         const dropFormClass = classnames({
-          'item': true,
-          'item-hidden': !this.state.visible
+          [styles.item]: true,
+          [styles.item_hidden]: !this.state.visible
         });
 
         const haveSearch=(
@@ -174,7 +174,7 @@ export default class DropDownForm extends Component {
         )
 
         return (
-            <div style={styles} className="wrap-drop-form">
+            <div style={propStyles} className={styles.wrap_drop_form}>
               {
                   isHaveSearch?
                     haveSearch:noSearch

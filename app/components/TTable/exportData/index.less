@@ -1,0 +1,59 @@
+@import "~antd/lib/style/themes/default.less";
+
+.standardTable {
+  background-color: #ffffff;
+  :global {
+    .ant-table-pagination {
+      margin-top: 24px;
+    }
+  }
+
+  .tableAlert {
+    margin-bottom: 16px;
+  }
+}
+
+.ep_wrap{
+  .operator{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .children{
+      width: 78%;
+
+    }
+    .btn_wrap{
+        width: 18%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        .ep_btn{
+            display: flex;
+        }
+    }
+  }
+  .ep_table_box{
+    background-color:white;
+  }
+  .tableexport-caption{
+      padding-top: 0;
+      padding-bottom:0;
+      color: rgba(0, 0, 0, 0.45);
+      text-align: inherit;
+      caption-side: inherit;
+      .button-default{
+          font-size: 16px;
+          color: #fffefe;
+          cursor: pointer;
+          line-height: 25px;
+          background-color: #4c90ff;
+          border: none;
+          margin: 1px;
+          border-radius: 4px;
+          width: 40px;
+      }
+      .button-default:hover{
+          background-color: #0c70b8;
+      }
+  }
+}

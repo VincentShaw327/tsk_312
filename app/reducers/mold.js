@@ -65,15 +65,35 @@ export const moldList = handleActions({
     },
     'success add mold instance'(state, action) {
         const { req, res } = action.payload
-
-        message.success("添加成功")
-        return {...state};
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list.push(data.obj)
+            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
     },
     'success update mold instance'(state, action) {
         const { req, res } = action.payload
-
-        message.success("编辑成功")
-        return {...state};
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list=state.list.filter((item)=>item.uObjectUUID!=data.uuid)
+            state.list.push(data.obj)            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
     },
     'success delete mold instance'(state, action) {
         const { req, res } = action.payload;

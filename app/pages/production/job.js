@@ -1,27 +1,50 @@
 import React, { Component } from 'react';
+import {Link,Route,Switch } from 'react-router-dom'
 import { connect } from 'react-redux';
-import {Table, Button,Radio, Row, Col, Divider,Select,
-     List, Card, DatePicker,Input,message,Form,Switch,Popconfirm,Modal } from 'antd';
-const Option = Select.Option;
-const FormItem = Form.Item;
-const confirm = Modal.confirm;
-import { fetchTaskList } from 'actions/manufacture';
+import {
+    Table,
+    Button,
+    Radio,
+    Row,
+    Col,
+    Divider,
+    Select,
+    Card,
+    DatePicker,
+    Input,
+    message,
+    Form,
+    //Switch,
+    Modal,
+    Icon,
+    Progress,
+    Dropdown
+} from 'antd';
+import { JobList } from 'actions/production';
 import { TPostData, urlBase,TAjax } from 'utils/TAjax';
 import { CModal } from 'components/TModal';
 import SimpleTable from 'components/TTable/SimpleTable';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+import Details from './workOrderDetail';
 import TableExport from 'tableexport';
+import styles from './common.less';
 
+const Option = Select.Option;
+const FormItem = Form.Item;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+const { Search, TextArea } = Input;
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 @connect( ( state, props ) => {
-    console.log( 'state', state )
+    // console.log( 'state', state )
     return {
         Breadcrumb:state.Breadcrumb,
-        productTask: state.productTask,
+        productJob: state.productJob,
     }
 }, )
-export default class App extends Component {
+export default class taskMonitor extends Component {
 
     constructor( props ) {
         super( props )
@@ -49,12 +72,14 @@ export default class App extends Component {
             submitModalShow:false,
             bordered:false,
             hasAddBtn:false,
+            showDetail:false,
             size:"small",
             subTableSize:"default",
             scroll:undefined,
             total:0,
             current:1,
-            pageSize:10
+            pageSize:10,
+            visible:false
         }
         this.url='/api/tmanufacture/manufacture';
     }
@@ -64,13 +89,25 @@ export default class App extends Component {
         // this.getProModelList();
         // this.getWorkCenterList();
         // this.getWorkshopList();
-        this.props.dispatch( fetchTaskList( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( JobList( {  }, ( respose ) => {} ) );
     }
 
     componentDidMount() {
         // console.log('查询',this.keyWordInput.value);
+        /*this.timer=setInterval(()=>{
+            this.props.dispatch( TaskList( {}, ( respose ) => {} ))
+        },5000)*/
+
     }
 
+    componentWillUnmount() {
+        // client.end()
+        clearInterval(this.timer)
+    }
+
+    toggleShow=()=>{
+      this.setState({showDetail:true});
+    }
 
     getDispatchLotList() {
         const {current,pageSize,ProModelID,WorkshopID,keyWord,dispatchLotState}=this.state;
@@ -90,7 +127,7 @@ export default class App extends Component {
             KeyWord: keyWord                        // 模糊查询                                                        // 是否插单
         }
         // "ListJobTask"
-        TPostData('/api/tmanufacture/manufacture/ListWorkOrder', "ListWorkOrder", dat,
+        TPostData('/api/tmanufacture/manufacture/taskMonitor', "ListWorkOrder", dat,
             ( res )=> {
                 console.log( "查询到派工单列表:", res );
                 var list = [],
@@ -119,7 +156,10 @@ export default class App extends Component {
                         UpdateDateTime: item.UpdateDateTime,
                         WorkstationID: item.WorkstationID,
                         WorkstationName: item.WorkstationName,
-                        WorkstationUUID: item.WorkstationUUID
+                        WorkstationUUID: item.WorkstationUUID,
+                        pro_progress:item.pro_progress,
+                        rej_progress:item.rej_progress,
+                        restTime:item.restTime
                     } )
                 } );
                 this.setState({dispatchLotList:list,total: totalcount, loading:false});
@@ -446,6 +486,24 @@ export default class App extends Component {
         });
     }
 
+    formClicked=(e)=>{
+      console.log('formClicked',e);
+      // this.stopPropagation(e);
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    showDropMenu=(e)=>{
+      this.setState({visible:true});
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    hideDropMenu=(e)=>{
+      console.log('hideDropMenu',e);
+      this.setState({visible:false})
+    }
+
     render() {
 
         const {
@@ -461,22 +519,26 @@ export default class App extends Component {
             submitModalShow,
             bordered,size,scroll,
             // total,
-            current,
-            pageSize,
+            current,pageSize,
             ProModelID,WorkshopID,keyWord,dispatchLotState,
             finishedNum,rejectNum
         }=this.state;
-        const {Breadcrumb}=this.props;
-        const { productTaskList, total, loading } = this.props.productTask;
-
+        const {Breadcrumb,children,form}=this.props;
+        const { list, total, loading } = this.props.productJob;
+        const {getFieldDecorator}=form;
         const columns = [
             {
-                title: '派工单号',
+                title: '工单号',
                 dataIndex: 'lotJobID',
                 key: 'lotJobID'
             },
+            /*{
+                title: '订单号',
+                dataIndex: 'orderID',
+                key: 'lotJobID'
+            },*/
             {
-                title: '产品名称',
+                title: '产品',
                 dataIndex: 'ProductModelName',
                 key: 'BNum',
             },
@@ -495,26 +557,6 @@ export default class App extends Component {
                 dataIndex: 'WorkstationName',
                 key: 'WorkstationName',
             },
-            /* {
-                title: '工作中心编码',
-                dataIndex: 'WorkstationID',
-                key: 'WorkstationName',
-            },*/
-            /*{
-              title: '计划产量',
-              dataIndex: 'PlanNumber',
-              type: 'sort'
-            },
-            {
-              title: '实际产量',
-              dataIndex: 'FinishNumber',
-              type: 'sort'
-            },
-            {
-              title: '次品数量',
-              dataIndex: 'RejectNumber',
-              type: 'sort'
-            },*/
             /*{
               title: '计划交期',
               dataIndex: 'PlanDeliverDateTime',
@@ -531,26 +573,57 @@ export default class App extends Component {
               type: 'sort'
             },
             {
-              title: '计划开始时间',
-              dataIndex: 'PlanStartDateTime',
-              type: 'string'
+              title: '当前产量',
+              dataIndex: 'FinishNumber',
+              type: 'sort'
             },
             /*{
-              title: '实际开始',
-              dataIndex: 'StartDateTime',
+              title: '次品数量',
+              dataIndex: 'RejectNumber',
+              type: 'sort'
+            },
+            {
+              title: '次品率',
+              dataIndex: 'rej_progress',
+              type: 'string',
+              render:(val,record)=>{
+                  return(<Progress type="circle" percent={val} width={40} />)
+              }
+            },*/
+            /*{
+              title: '派工时间',
+              dataIndex: 'PlanStartDateTime',
               type: 'string'
             },*/
+            /*{
+              title: '开始时间',
+              dataIndex: 'StartDateTime',
+              type: 'string'
+            },
+            {
+              title: '剩余时间(h)',
+              dataIndex: 'restTime',
+              type: 'string'
+            },
             {
               title: '计划完成时间',
               dataIndex: 'PlanFinishDateTime',
               type: 'string'
-            },
+            },*/
             /*{
               title: '实际完成',
               dataIndex: 'FinishDateTime',
               type: 'string'
+            },*/
+            {
+              title: '生产进度',
+              dataIndex: 'pro_progress',
+              type: 'string',
+              render:(val,record)=>{
+                  return(<Progress percent={val} />)
+              }
             },
-             */
+
             {
                 title: '派工单状态',
                 dataIndex: 'Status',
@@ -577,71 +650,11 @@ export default class App extends Component {
                 dataIndex: 'uMachineUUID',
                 type: 'operate', // 操作的类型必须为 operate
                 // multipleType: "dispatch",
-                render:(e1,record)=>{
+                render:(item,record)=>{
                     let operate='';
-
-                    if(record.hasOwnProperty('Status')&&record.Status==0){
-                        operate=(
-                            <span>
-                                <a onClick={this.toggleModalShow.bind(this,'submitModalShow',record)}>报工</a>
-                            </span>
-                        )
-                    }
-                    else if(record.hasOwnProperty('Status')&&record.Status==1){
-                        operate=(
-                            /*<span>
-                                <Popconfirm
-                                    placement="topLeft"
-                                    title="确定执行派工？"
-                                    onConfirm={this.handleDispatch.bind(this,record)}
-                                    okText="确定" cancelText="取消">
-                                    <a href="#">派工</a>
-                                </Popconfirm>
-                            </span>*/
-                            <span>
-                                {/* <Popconfirm
-                                    placement="topLeft"
-                                    title="确定取消派工？"
-                                    onConfirm={this.handleCancel.bind(this,record)}
-                                    okText="确定" cancelText="取消">
-                                    <a href="#">取消派工</a>
-                                </Popconfirm>
-                                <span className="ant-divider"></span> */}
-                            <a onClick={this.toggleModalShow.bind(this,'startModalShow',record)}>开始生产</a>
-                            </span>
-                        )
-                    }
-                    else if(record.hasOwnProperty('Status')&&record.Status==2){
-                        operate=(
-                            <span>
-                                {/* <Popconfirm
-                                    placement="topLeft"
-                                    title="确定取消派工？"
-                                    onConfirm={this.handleCancel.bind(this,record)}
-                                    okText="确定" cancelText="取消">
-                                    <a href="#">取消派工</a>
-                                </Popconfirm> */}
-                                <a onClick={this.toggleModalShow.bind(this,'pauseModalShow',record)}>暂停生产</a>
-                                <span className="ant-divider"></span>
-                                <a onClick={this.toggleModalShow.bind(this,'stopModalShow',record)}>停止生产</a>
-                                <span className="ant-divider"></span>
-                                <a onClick={this.toggleModalShow.bind(this,'submitModalShow',record)}>报工</a>
-                            </span>
-                        )
-                    }
-                    else if(record.hasOwnProperty('Status')&&record.Status==3){
-                        operate=(
-                            <span>
-                                <a onClick={this.toggleModalShow.bind(this,'startModalShow',record)}>开始生产</a>
-                                <span className="ant-divider"></span>
-                            <a onClick={this.toggleModalShow.bind(this,'stopModalShow',record)}>停止生产</a>
-                                <span className="ant-divider"></span>
-                            <a onClick={this.toggleModalShow.bind(this,'submitModalShow',record)}>报工</a>
-                            </span>
-                        )
-                    }
-                    else operate=(<span>无</span>)
-                    return operate;
+                    // return (<a onClick={this.toggleShow}>工单详情</a>)
+                    // return (<a href="/workorder_detail">工单详情</a>)
+                    return (<Link to={`/production/job/job_detail/${record.UUID}`}>工单详情</Link>)
                 }
             }
         ];
@@ -910,7 +923,7 @@ export default class App extends Component {
 
         let Data={
             // list:dispatchLotList,
-            list:productTaskList,
+            list:list,
             pagination:{total,current,pageSize}
         };
 
@@ -923,92 +936,273 @@ export default class App extends Component {
             }, {
             title: '物料类别',
         }];
-        return (
-            <PageHeaderLayout title="生产派工" wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
-                <div className="cardContent">
-                    <StandardQForm
-                        FormItem={RFormItem}
-                        submit={this.handleQuery}
-                    />
-                    <div style={{margin:'20px 0',overflow:'auto',zoom:1}}>
-                        <div style={{float:'right'}}>
+
+        const Info = ({ title, value, bordered }) => (
+          <div
+            className={styles.headerInfo}
+            >
+            <span>{title}</span>
+            <p>{value}</p>
+            {bordered && <em />}
+          </div>
+        );
+
+        const extraContent = (
+          <div className={styles.extraContent}>
+            <RadioGroup defaultValue="all">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="progress">进行中</RadioButton>
+              <RadioButton value="waiting">等待中</RadioButton>
+            </RadioGroup>
+            <Search style={{width:120}} placeholder="请输入" onSearch={() => ({})} />
+          </div>
+        );
+
+        const formItemLayout = {
+          labelCol: {
+            xs: { span: 24 },
+            sm: { span: 8 },
+          },
+          wrapperCol: {
+            xs: { span: 24 },
+            sm: { span: 16 },
+          },
+        };
+
+        const filterForm=(
+            <Form
+              // onSubmit={this.handleSubmit}
+              style={{padding:20}}
+              onClick={this.formClicked}
+              >
+              <FormItem
+                {...formItemLayout}
+                label="日期"
+               >
+                {getFieldDecorator('date', {
+                  rules: [{
+                    type: 'date', message: '请选择日期',
+                  }, {
+                    required: true, message: 'Please input your E-mail!',
+                  }],
+                })(
+                  <RangePicker  />
+                )}
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+                label="工作中心"
+               >
+                {getFieldDecorator('workcenter', {
+                  rules: [{
+                    type: 'string', message: 'The input is not valid E-mail!',
+                  }, {
+                    required: true, message: 'Please input your E-mail!',
+                  }],
+                })(
+                  <Select defaultValue="01" >
+                    <Option value="01">ST-01</Option>
+                    <Option value="02">ST-02</Option>
+                    <Option value="03">ST-03</Option>
+                    <Option value="04">ST-04</Option>
+                    <Option value="05">ST-05</Option>
+                  </Select>
+                )}
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+                label="模具"
+               >
+                {getFieldDecorator('mould', {
+                  rules: [{
+                    type: 'string', message: 'The input is not valid E-mail!',
+                  }, {
+                    required: true, message: 'Please input your E-mail!',
+                  }],
+                })(
+                  <Select defaultValue="01" >
+                    <Option value="01">M-01</Option>
+                    <Option value="02">M-02</Option>
+                    <Option value="03">M-03</Option>
+                    <Option value="04">M-04</Option>
+                    <Option value="05">M-05</Option>
+                  </Select>
+                )}
+              </FormItem>
+              <FormItem
+                {...formItemLayout}
+                label="产品"
+               >
+                {getFieldDecorator('product', {
+                  rules: [{
+                    type: 'email', message: 'The input is not valid E-mail!',
+                  }, {
+                    required: true, message: 'Please input your E-mail!',
+                  }],
+                })(
+                  <Input />
+                )}
+              </FormItem>
+              <FormItem {...formItemLayout}>
+                <Button type="primary" >确定</Button>
+                <Button type="default" style={{marginLeft:20}}>取消</Button>
+              </FormItem>
+            </Form>
+        )
+
+        // className="cardContent"
+        const workOrderList=(
+            <div onClick={this.hideDropMenu}>
+              {/* <Card bordered={false}>
+                <Row>
+                  <Col sm={8} xs={24}>
+                    <Info title="我的待办" value="8个任务" bordered />
+                  </Col>
+                  <Col sm={8} xs={24}>
+                    <Info title="本周任务平均处理时间" value="32分钟" bordered />
+                  </Col>
+                  <Col sm={8} xs={24}>
+                    <Info title="本周完成任务数" value="24个任务" />
+                  </Col>
+                </Row>
+              </Card> */}
+              <div className="cardContent">
+                {/* <StandardQForm
+                    FormItem={RFormItem}
+                    submit={this.handleQuery}
+                /> */}
+                <div style={{marginBottom:10,overflow:'auto',zoom:1}}>
+                    <Row>
+                      <Col span={8}>
+                        <div style={{float:'left'}}>
                             <Form layout="inline">
                                 <FormItem label="导出">
                                     <div className="exportMenuWrap" id="exportDispatchMenu" style={{display:'flex'}}></div>
                                 </FormItem>
-                                <FormItem label="边框">
+                                {/* <FormItem label="边框">
                                     <Switch checked={bordered} onChange={this.handleToggleBorder.bind(this)} />
                                 </FormItem>
                                 <FormItem label="大小">
                                     <Radio.Group size="default" value={size} onChange={this.handleSizeChange.bind(this)}>
-                                        {/* <Radio.Button value="biger">大</Radio.Button> */}
                                         <Radio.Button value="default">大</Radio.Button>
                                         <Radio.Button value="middle">中</Radio.Button>
                                         <Radio.Button value="small">小</Radio.Button>
                                     </Radio.Group>
-                                </FormItem>
+                                </FormItem> */}
                             </Form>
                         </div>
-                    </div>
-                    <div id="dispatchTableWrap">
-                        {/* <Table
-                            dataSource={dispatchLotList}
-                            columns={columns}
-                            loading={this.state.loading}
-                            bordered={bordered}
-                            size={size}
-                            scroll={scroll}
-                            // expandedRowRender={this.renderSubTable.bind(this)}
-                            // rowSelection={this.state.isSelection?rowSelection:null}
-                            // pagination={pagination}
-                            // hideDefaultSelections={true}
-                            // onExpand={this.handleExpand}
-                        /> */}
-                        <SimpleTable
-                            loading={loading}
-                            data={Data}
-                            columns={columns}
-                            bordered={bordered}
-                            size={size}
-                            onChange={this.handleTableChange}
-                        />
-                    </div>
-                    <CModal
-                        FormItem={DFormItem}
-                        submit={this.handleDispatch.bind(this)}
-                        isShow={DModalShow}
-                        hideForm={this.toggleModalShow.bind(this)}
-                    />
-                    <CModal
-                        title="开始生产"
-                        FormItem={SFormItem}
-                        submit={this.StartWorkOrder}
-                        isShow={startModalShow}
-                        hideForm={this.hideModal}
-                    />
-                    <CModal
-                        title="暂停生产"
-                        FormItem={PFormItem}
-                        submit={this.PauseWorkOrder}
-                        isShow={pauseModalShow}
-                        hideForm={this.hideModal}
-                    />
-                    <CModal
-                        title="停止生产"
-                        FormItem={StopFormItem}
-                        submit={this.StopWorkOrder}
-                        isShow={stopModalShow}
-                        hideForm={this.hideModal}
-                    />
-                    <CModal
-                        title="生产报工"
-                        FormItem={SubmitFormItem}
-                        submit={this.SubmitWorkOrder}
-                        isShow={submitModalShow}
-                        hideForm={this.hideModal}
+                      </Col>
+                      <Col span={15}>
+                        <div>
+                          <RadioGroup defaultValue="all">
+                            <RadioButton value="all">全部</RadioButton>
+                            <RadioButton value="nstart">未开始</RadioButton>
+                            <RadioButton value="cancel">已取消</RadioButton>
+                            <RadioButton value="producting">生产中</RadioButton>
+                            <RadioButton value="completed">已完成</RadioButton>
+                          </RadioGroup>
+                          <Search style={{width:200,marginLeft:20}} placeholder="请输入" onSearch={() => ({})} />
+                        </div>
+                      </Col>
+                      <Col span={1}>
+                        <Dropdown
+                          overlay={filterForm}
+                          visible={this.state.visible}
+                          trigger={['click']}
+                          onClick={this.showDropMenu}
+                          >
+                          <a className="ant-dropdown-link" >
+                            {/* Hover me <Icon type="down" /> */}
+                            <Icon  type="filter" theme="outlined" />
+                          </a>
+                        </Dropdown>
+                      </Col>
+                    </Row>
+
+                </div>
+                <div id="dispatchTableWrap">
+                    {/* <Table
+                        dataSource={dispatchLotList}
+                        columns={columns}
+                        loading={this.state.loading}
+                        bordered={bordered}
+                        size={size}
+                        scroll={scroll}
+                        // expandedRowRender={this.renderSubTable.bind(this)}
+                        // rowSelection={this.state.isSelection?rowSelection:null}
+                        // pagination={pagination}
+                        // hideDefaultSelections={true}
+                        // onExpand={this.handleExpand}
+                    /> */}
+                    <SimpleTable
+                        loading={loading}
+                        data={Data}
+                        columns={columns}
+                        bordered={bordered}
+                        size={size}
+                        onChange={this.handleTableChange}
                     />
                 </div>
+              </div>
+              <CModal
+                  FormItem={DFormItem}
+                  submit={this.handleDispatch.bind(this)}
+                  isShow={DModalShow}
+                  hideForm={this.toggleModalShow.bind(this)}
+              />
+              <CModal
+                  title="开始生产"
+                  FormItem={SFormItem}
+                  submit={this.StartWorkOrder}
+                  isShow={startModalShow}
+                  hideForm={this.hideModal}
+              />
+              <CModal
+                  title="暂停生产"
+                  FormItem={PFormItem}
+                  submit={this.PauseWorkOrder}
+                  isShow={pauseModalShow}
+                  hideForm={this.hideModal}
+              />
+              <CModal
+                  title="停止生产"
+                  FormItem={StopFormItem}
+                  submit={this.StopWorkOrder}
+                  isShow={stopModalShow}
+                  hideForm={this.hideModal}
+              />
+              <CModal
+                  title="生产报工"
+                  FormItem={SubmitFormItem}
+                  submit={this.SubmitWorkOrder}
+                  isShow={submitModalShow}
+                  hideForm={this.hideModal}
+              />
+            </div>
+        );
+
+        const action=(
+          <Button type="primary">
+            <Link to='/task_monitor'>返回</Link>
+          </Button>
+        )
+
+        return (
+            <PageHeaderLayout
+            //   title="生产派工"
+              action={children?action:''}
+              wrapperClassName="pageContent"
+              BreadcrumbList={Breadcrumb.BCList}
+              >
+                <Switch>
+                    <Route path='/production/job/job_detail/:id' component={Details} />
+                    <Route path='/production/job' component={()=>workOrderList} />
+                </Switch>
+                {/* {
+                  children?children:workOrderList
+                } */}
             </PageHeaderLayout>
         )
     }
 }
+taskMonitor = Form.create()(taskMonitor);

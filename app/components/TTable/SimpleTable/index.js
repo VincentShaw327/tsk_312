@@ -3,7 +3,7 @@ import { Table, Alert } from 'antd';
 import styles from './index.less';
 
 
-class SimpleTable extends PureComponent {
+export default class SimpleTable extends PureComponent {
   constructor(props) {
     super(props);
     const { columns } = props;
@@ -58,4 +58,4 @@ class SimpleTable extends PureComponent {
   }
 }
 
-export default SimpleTable;
+// export default SimpleTable;

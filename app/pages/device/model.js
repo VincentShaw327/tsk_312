@@ -7,12 +7,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { hashHistory, Link } from 'react-router'
 import { Table, Menu, Icon, Badge,Popover, Dropdown,message,Divider,Popconfirm } from 'antd';
-import { fetchDeviceModelList } from 'actions/device';
+import { device_model_list,device_model_add,device_model_update,device_model_delete } from 'actions/device'
 import { TPostData,urlBase } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal,UpdateModal } from 'components/TModal';
 import {SimpleQForm,StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
+import {fn_mes_trans} from 'functions'
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
@@ -21,7 +22,7 @@ import PageHeaderLayout from '../../base/PageHeaderLayout';
         deviceModel: state.deviceModel,
     }
 }, )
-export default class DeviceList extends Component {
+export default class model extends Component {
 
     constructor( props ) {
         super( props )
@@ -41,7 +42,7 @@ export default class DeviceList extends Component {
     componentWillMount() {
         // this.getDevTypelist();
         // this.getTableList();
-        this.props.dispatch( fetchDeviceModelList( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( device_model_list( { }, ( respose ) => {} ) )
     }
 
     getTableList(que){
@@ -110,25 +111,36 @@ export default class DeviceList extends Component {
 
     }
 
-    handleCreat=(data)=>{
-        let dat = {
-            Name: data.Name,
-            ID: data.Number,
-            TypeUUID: data.TypeUUID,
-            CategoryUUID: -1,
-            VendorUUID: -1,
-            Path :data.Image
+    handleCreat = (data) => {
+        const addData = {
+            cols: fn_mes_trans.toCols(data)
         }
-        TPostData( this.url, "Add", dat,
-            ( res )=> {
-                message.success("创建成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("创建失败！");
-                console.log('err',err);
-            }
-        )
+        console.log('开始添加', addData);
+        this
+            .props
+            .dispatch(device_model_add(addData, (respose) => console.log('添加成功！', respose)))
+    }
+
+    handleDelete = (data) => {
+        const deleteData = {
+            uuids:[data.uObjectUUID]
+        }
+        console.log('开始删除', deleteData);
+        this
+            .props
+            .dispatch(device_model_delete(deleteData))
+    }
+
+    handleUpdate = (data) => {
+        let item=this.state.updateFromItem;
+        const editData = {
+            uuid:item.uObjectUUID,
+            cols: fn_mes_trans.toCols(data)
+        }
+        console.log('开始修改', editData);
+        this
+            .props
+            .dispatch(device_model_update(editData))
     }
 
     handleQuery=(data)=>{
@@ -138,48 +150,6 @@ export default class DeviceList extends Component {
             // this.getTableList({keyWord,TypeUUID});
             this.getTableList();
         });
-    }
-
-    handleUpdate=(data)=>{
-        let dat = {
-            UUID: this.state.updateFromItem.UUID,
-            Name: data.Name,
-            ID: data.Number,
-            TypeUUID: data.TypeUUID,
-            Desc: data.Desc,
-            Note: '-',
-            CategoryUUID: -1,
-            VendorUUID: -1,
-            Path :data.Image
-        }
-
-        TPostData( this.url, "Update", dat,
-            ( res )=> {
-                message.success("更新成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("更新失败！");
-                console.log('err',err);
-            }
-        )
-    }
-
-    handleDelete=(data)=>{
-        var dat = {
-            UUID: data.UUID,
-        }
-        // console.log("看看data",data);
-        TPostData( this.url, "Inactive", dat,
-            ( res )=> {
-                message.success("删除成功！");
-                this.getTableList();
-            },
-            ( err )=> {
-                message.error("删除失败！");
-                console.log('err',err);
-            }
-        )
     }
 
     handleTableChange=(pagination)=>{
@@ -217,7 +187,12 @@ export default class DeviceList extends Component {
             {
                 title: '序号',
                 dataIndex: 'key',
-                type: 'string'
+                width:50
+            },
+            {
+                title: 'ID',
+                dataIndex: 'uObjectUUID',
+                width:80
             },
             {
                 title: '图片',
@@ -239,12 +214,12 @@ export default class DeviceList extends Component {
             },
             {
                 title: '型号',
-                dataIndex: 'Name',
+                dataIndex: 'strModelName',
                 type: 'string'
             },
             {
                 title: '编号',
-                dataIndex: 'Number',
+                dataIndex: 'strModelCode',
                 type: 'string'
             },
             {
@@ -253,18 +228,19 @@ export default class DeviceList extends Component {
                 type: 'string'
             },
             {
-                title: '备注',
-                dataIndex: 'Desc',
+                title: '品牌',
+                dataIndex: 'breand',
                 type: 'string'
             },
             {
-                title: '更新时间',
-                dataIndex: 'UpdateDateTime',
+                title: '备注',
+                dataIndex: 'strModelNote',
                 type: 'string'
             },
             {
                 title: '操作',
                 dataIndex: 'UUID',
+                width:150,
                 render:(UUID,record)=>{
                     return <span>
                         <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
@@ -283,33 +259,28 @@ export default class DeviceList extends Component {
         //更新弹框数据项
         const UFormItem= [
             {
-                name: 'Name',
+                name: 'strModelName',
                 label: '型号名称',
                 type: 'string',
                 placeholder: '请输入型号名称',
                 rules: [ { required: true, message: '名称不能为空' } ],
             },
             {
-                name: 'Number',
+                name: 'strModelCode',
                 label: '型号编号',
                 type: 'string',
                 placeholder: '请输入型号编号',
                 rules: [ { required: true, message: '编号不能为空' } ],
             },
-            {
+            /* {
                 name: 'TypeUUID',
                 label: '设备类别',
-                type: 'select',
                 rules: [ { required: true, message: '请选择类别' } ],
-                options: DeviceTypeList
-            },
+                type: 'select',
+                options: DeviceTypeList,
+            }, */
             {
-                name: 'Desc',
-                label: '备注',
-                type: 'string',
-            },
-            {
-                name: 'Image',
+                name: 'strModelImage',
                 label: '图片',
                 type: 'antUpload',
                 url: '/api/tupload/do',
@@ -318,26 +289,26 @@ export default class DeviceList extends Component {
         //添加的弹出框菜单
         const CFormItem= [
             {
-                name: 'Name',
+                name: 'strModelName',
                 label: '型号名称',
                 type: 'string',
                 placeholder: '请输入型号名称',
                 rules: [ { required: true, message: '名称不能为空' } ],
             },
             {
-                name: 'Number',
+                name: 'strModelCode',
                 label: '型号编号',
                 type: 'string',
                 placeholder: '请输入型号编号',
                 rules: [ { required: true, message: '编号不能为空' } ],
             },
-            {
+            /* {
                 name: 'TypeUUID',
                 label: '设备类别',
                 rules: [ { required: true, message: '请选择类别' } ],
                 type: 'select',
                 options: DeviceTypeList,
-            },
+            }, */
             {
                 name: 'Image',
                 label: '图片',
@@ -368,38 +339,39 @@ export default class DeviceList extends Component {
             title:"首页",
             href: '/',
             }, {
-            title: '生产资料',
-            href: '/',
+            title: '设备管理',
+            // href: '/',
             }, {
-            title: '物料类别',
+            title: '设备型号',
         }];
         return (
-            <PageHeaderLayout title="设备型号" wrapperClassName="pageContent" BreadcrumbList={bcList}>
-                <div className="cardContent">
-                    <SimpleQForm
-                        FormItem={RFormItem}
-                        submit={this.handleQuery}
-                    />
+            <PageHeaderLayout wrapperClassName="pageContent" BreadcrumbList={bcList}>
+                {/* <SimpleQForm
+                    FormItem={RFormItem}
+                    submit={this.handleQuery}
+                /> */}
+                <UpdateModal
+                    FormItem={UFormItem}
+                    updateItem={updateFromItem}
+                    submit={this.handleUpdate.bind(this)}
+                    showModal={UModalShow}
+                    hideModal={this.toggleUModalShow}
+                />
+                <div style={{marginBottom:15}}>
                     <CreateModal
                         FormItem={CFormItem}
                         submit={this.handleCreat.bind(this)}
                     />
-                    <SimpleTable
-                        size="middle"
-                        loading={loading}
-                        data={Data}
-                        columns={Tcolumns}
-                        isHaveSelect={false}
-                        onChange={this.handleTableChange}
-                    />
-                    <UpdateModal
-                        FormItem={UFormItem}
-                        updateItem={updateFromItem}
-                        submit={this.handleUpdate.bind(this)}
-                        showModal={UModalShow}
-                        hideModal={this.toggleUModalShow}
-                    />
                 </div>
+                <SimpleTable
+                    size="middle"
+                    bordered
+                    loading={loading}
+                    data={Data}
+                    columns={Tcolumns}
+                    isHaveSelect={false}
+                    onChange={this.handleTableChange}
+                />
             </PageHeaderLayout>
         )
     }

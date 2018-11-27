@@ -9,22 +9,15 @@ import {
     Radio,
     Row,
     Col,
-    Divider,
-    Select,
-    List,
-    Card,
-    DatePicker,
-    Input,
     message,
     Alert,
     Tag,
-    Tooltip,
     Form,
     Switch,
     Popconfirm,
     Modal
 } from 'antd';
-import { fetchOrderList } from 'actions/manufacture';
+import { TaskList } from 'actions/production';
 import {TPostData, urlBase,TAjax} from 'utils/TAjax';
 import {CModal} from 'components/TModal';
 import SimpleTable from 'components/TTable/SimpleTable';
@@ -33,16 +26,14 @@ import PageHeaderLayout from '../../base/PageHeaderLayout';
 import styles from './common.less';
 // import TableExport from 'tableexport';
 import {TableExport} from  'components/Export';
-const FormItem = Form.Item;
-const Option = Select.Option;
-const ButtonGroup = Button.Group;
-const confirm = Modal.confirm;
+import {fn_mes_trans} from 'functions'
+
 
 
 @connect( ( state, props ) => {
     return {
         Breadcrumb:state.Breadcrumb,
-        productOrder: state.productOrder,
+        productTask: state.productTask,
     }
 }, )
 export default class order extends Component {
@@ -78,7 +69,7 @@ export default class order extends Component {
             orderState:'-1',
             ProModelID: '-1',
             keyWord: '',
-            bordered: false,
+            bordered: true,
             size: "small",
             subTableSize: "default",
             scroll: undefined,
@@ -97,7 +88,7 @@ export default class order extends Component {
         // this.getWorkCenterList();
         // this.getWorkshopList();
 
-        this.props.dispatch( fetchOrderList( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( TaskList( {}, ( respose ) => {} ) )
     }
 
     componentDidMount() {
@@ -752,127 +743,127 @@ export default class order extends Component {
             pageSize,
             unscheduledNum
         } = this.state;
-        const { productOrderList, total, loading } = this.props.productOrder;
+        const { list, total, loading } = this.props.productTask;
         const {Breadcrumb}=this.props;
 
         const columns = [
-                {
-                    title: '订单号',
-                    dataIndex: 'ID',
-                    type: 'string'
-                },
-                {
-                    title: '产品名称',
-                    dataIndex: 'ProductModelName',
-                    type: 'string',
-                    /*type: 'filter',
-                    filters: [
-                        {
-                            text: 'HDMI接口',
-                            value: 'HDMI接口'
-                        },
-                        {
-                            text: 'USB接口',
-                            value: 'USB接口'
-                        },
-                    ],
-                    filteredValue: filteredInfo.productName || null,
-                    onFilter: ( value, record ) => record.productName.includes( value ),
-                    sorter: (a, b) => a.name.length - b.name.length,
-                    sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,*/
-                },
-                /*{
-                    title: '所属车间',
-                    dataIndex: 'WorkshopName',
-                    type: 'sort'
-                },*/
-                {
-                    title: '计划产量',
-                    dataIndex: 'PlanNumber',
-                    type: 'sort'
-                },
-                {
-                    title: '已排产量',
-                    dataIndex: 'ScheduleNumber',
-                    type: 'sort'
-                },
-                {
-                    title: '下单日期',
-                    dataIndex: 'IssuedDateTime',
-                    type: 'string'
-                },
-                {
-                    title: '计划交期',
-                    dataIndex: 'PlanDeliverDate',
-                    type: 'string'
-                },
-                /*{
-                    title: '计划完成时间',
-                    dataIndex: 'PlanFinishDateTime',
-                    type: 'string'
-                },*/
-                {
-                    title: '订单状态',
-                    dataIndex: 'Status',
-                    type: 'string',
-                    width: 120,
-                    render: ( e1, record ) => {
-                        /*let statusText='';
-                        statusText=e1==0?'已取消':
-                            e1==1?'未生产':
-                            e1==2?'生产中':
-                            e1==3?'已完成':e1;
-                            // e1==4?'执行中':
-                            // e1==5?'已完成':
-                            // e1==6?'生产中':
-                            // e1==9?'生产挂起':
-                            // e1==10?'已完成':
-                            // e1==11?'11':e1;
-                        return  <span className="stateBotton">{statusText}</span>*/
+            {
+                title: '',
+                dataIndex: 'key',
+                width:30
+            },
+            {
+                title: 'ID',
+                dataIndex: 'uObjectUUID',
+                width:50
+            },
+            {
+                title: '订单号',
+                dataIndex: 'ID',
+                type: 'string'
+            },
+            {
+                title: '产品名称',
+                dataIndex: 'ProductModelName',
+                type: 'string',
+                /*type: 'filter',
+                filters: [
+                    {
+                        text: 'HDMI接口',
+                        value: 'HDMI接口'
+                    },
+                    {
+                        text: 'USB接口',
+                        value: 'USB接口'
+                    },
+                ],
+                filteredValue: filteredInfo.productName || null,
+                onFilter: ( value, record ) => record.productName.includes( value ),
+                sorter: (a, b) => a.name.length - b.name.length,
+                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,*/
+            },
+            {
+                title: '计划产量',
+                dataIndex: 'PlanNumber',
+                type: 'sort'
+            },
+            {
+                title: '已排产量',
+                dataIndex: 'ScheduleNumber',
+                type: 'sort'
+            },
+            {
+                title: '下单日期',
+                dataIndex: 'IssuedDateTime',
+                type: 'string'
+            },
+            {
+                title: '计划交期',
+                dataIndex: 'PlanDeliverDate',
+                type: 'string'
+            },
+            {
+                title: '订单状态',
+                dataIndex: 'Status',
+                type: 'string',
+                width: 120,
+                render: ( e1, record ) => {
+                    /*let statusText='';
+                    statusText=e1==0?'已取消':
+                        e1==1?'未生产':
+                        e1==2?'生产中':
+                        e1==3?'已完成':e1;
+                        // e1==4?'执行中':
+                        // e1==5?'已完成':
+                        // e1==6?'生产中':
+                        // e1==9?'生产挂起':
+                        // e1==10?'已完成':
+                        // e1==11?'11':e1;
+                    return  <span className="stateBotton">{statusText}</span>*/
 
-                    let status='';
-                        status=e1==0?(<span className="orderCancelled">已取消</span>):
-                            e1==1?(<span className="Unproduced">未生产</span>):
-                            e1==2?(<span className="Inproduction">生产中</span>):
-                            e1==3?(<span className="Completed">已完成</span>):
-                            // e1==4?(<span className="Submited">已报工(4)</span>):
-                            // e1==5?(<span>生产完成(5)</span>):
-                            // e1==6?(<span>生产中(6)</span>):
-                            // e1==9?(<span>生产挂起(9)</span>):
-                            // e1==10?(<span>已完成(10)</span>):
-                            // e1==11?(<span>暂停中(11)</span>):
-                            <span>{e1}</span>
-                        return  status;
-                    }
-                },
-                {
-                    title: '操作',
-                    dataIndex: 'uMachineUUID',
-                    type: 'operate', // 操作的类型必须为 operate
-                    multipleType: "orderList",
-                    // width: 200,
-                    render:(e1,record,e3)=>{
-                        // console.log("行数据",e1,e2,e3);
-                        let operate='';
-                        if(record.hasOwnProperty &&(record.Status==1||record.Status==2)){
-                            operate=(
-                                <span>
-                                    <a onClick={this.toggleSModalShow.bind(this, record)}>排产</a>
-                                    <span className="ant-divider"></span>
-                                    <Popconfirm
-                                        placement="topLeft"
-                                        title="确定取消订单？"
-                                        onConfirm={this.handleProfinish.bind(this,record)}
-                                        okText="确定" cancelText="取消">
-                                        <a href="#">完成生产</a>
-                                    </Popconfirm>
-                                </span>
-                            );
-                        }
-                        else operate=(<span>无</span>)
-                        return operate;
-                    }
+                let status='';
+                    status=e1==0?(<span className="orderCancelled">已取消</span>):
+                        e1==1?(<span className="Unproduced">未生产</span>):
+                        e1==2?(<span className="Inproduction">生产中</span>):
+                        e1==3?(<span className="Completed">已完成</span>):
+                        // e1==4?(<span className="Submited">已报工(4)</span>):
+                        // e1==5?(<span>生产完成(5)</span>):
+                        // e1==6?(<span>生产中(6)</span>):
+                        // e1==9?(<span>生产挂起(9)</span>):
+                        // e1==10?(<span>已完成(10)</span>):
+                        // e1==11?(<span>暂停中(11)</span>):
+                        <span>{e1}</span>
+                    return  status;
                 }
+            },
+            {
+                title: '操作',
+                dataIndex: 'uMachineUUID',
+                type: 'operate', // 操作的类型必须为 operate
+                multipleType: "orderList",
+                // width: 200,
+                render:(e1,record,e3)=>{
+                    // console.log("行数据",e1,e2,e3);
+                    let operate='';
+                    if(record.hasOwnProperty &&(record.Status==1||record.Status==2)){
+                        operate=(
+                            <span>
+                                <a onClick={this.toggleSModalShow.bind(this, record)}>排产</a>
+                                <span className="ant-divider"></span>
+                                <Popconfirm
+                                    placement="topLeft"
+                                    title="确定取消订单？"
+                                    onConfirm={this.handleProfinish.bind(this,record)}
+                                    okText="确定" cancelText="取消">
+                                    <a href="#">完成生产</a>
+                                </Popconfirm>
+                            </span>
+                        );
+                    }
+                    else operate=(<span>无</span>)
+                    return operate;
+                }
+            }
         ];
 
         const UFormItem = [
@@ -1186,7 +1177,7 @@ export default class order extends Component {
         )
 
         let Data={
-            list:productOrderList,
+            list:list,
             pagination:{total,current,pageSize}
         };
 
@@ -1204,7 +1195,7 @@ export default class order extends Component {
             <PageHeaderLayout 
             // title="任务排程" 
             wrapperClassName="pageContent" BreadcrumbList={Breadcrumb.BCList}>
-                <Card bordered={false}>
+                {/* <Card bordered={false}> */}
                     <div>
                         <Row>
                             <Col span={6}></Col>
@@ -1236,7 +1227,7 @@ export default class order extends Component {
                     <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate.bind(this)} isShow={UModalShow} hideForm={this.toggleUModalShow.bind(this)}/>
                     <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul.bind(this)} isShow={SModalShow} hideForm={this.toggleSModalShow.bind(this)}/>
                     <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul.bind(this)} isShow={BSModalShow} hideForm={this.toggleBSModalShow.bind(this)}/>
-                </Card>
+                {/* </Card> */}
             </PageHeaderLayout>
         )
     }

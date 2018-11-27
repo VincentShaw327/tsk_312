@@ -42,7 +42,8 @@ import {
   device,
   deviceModel,
   deviceType,
-  DevCheck
+  DevCheck,
+  deviceBrand
 } from './device'
 // bom
 import {
@@ -58,8 +59,9 @@ import {
 import {
   productOrder,
   productTask,
+  productJob,
   Feeding
-} from './manufacture'
+} from './production'
 // bom
 import {
   moldList,
@@ -132,12 +134,15 @@ const rootReducer = combineReducers( {
     deviceModel,
     deviceType,
     DevCheck,
+    deviceBrand,
+    
     workshop,
     workshopType,
     factoryType,
     iot_list_data,
     productOrder,
     productTask,
+    productJob,
     Feeding,
 
     moldList,

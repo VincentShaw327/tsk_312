@@ -1,13 +1,13 @@
 
-import{
-    TFactoryType,
-    TWorkShopType,
-    TMaterialType,
-    TDeviceType,
-    // TWorkCenterType,
-    TAlarmType,
-    TDefectiveType
-}from './basic'
+// import{
+//     TFactoryType,
+//     TWorkShopType,
+//     TMaterialType,
+//     TDeviceType,
+//     // TWorkCenterType,
+//     TAlarmType,
+//     TDefectiveType
+// }from './basic'
 
 import * as scada  from './scada'
 import * as production  from './production'

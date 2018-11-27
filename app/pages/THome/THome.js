@@ -1,26 +1,39 @@
 import React, {Component} from 'react';
-import {List,Card,message,Tooltip,Icon,Tabs,
-    DatePicker,Row,Col,Divider} from 'antd';
-import ReactEcharts from 'echarts-for-react';
+import {
+    List,
+    Card,
+    message,
+    Tooltip,
+    Icon,
+    Tabs,
+    DatePicker,
+    Row,
+    Col,
+    Divider
+} from 'antd';
+// import ReactEcharts from 'echarts-for-react';
 import styles from "./THome.less";
 const TabPane = Tabs.TabPane;
 import moment from 'moment';
-// import echarts from 'echarts';
-import G2 from '@antv/g2';
+// import G2 from '@antv/g2';
 const {MonthPicker, RangePicker} = DatePicker;
-import {  yuan,
-  Bar,
-  Pie,
-  Gauge,
-  Radar,
-  MiniBar,
-  MiniArea,
-  MiniProgress,
-  ChartCard,
-  Field,
-  WaterWave,
-  TagCloud,
-  TimelineChart, } from 'components/ant-design-pro/Charts';
+import {
+    yuan,
+    Bar,
+    Pie,
+    Gauge,
+    Radar,
+    MiniBar,
+    MiniArea,
+    MiniProgress,
+    ChartCard,
+    Field,
+    WaterWave,
+    TagCloud,
+    TimelineChart,
+} from 'components/ant-design-pro/Charts';
+import Trend from 'components/ant-design-pro/Trend';
+import numeral from 'numeral';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 // import {NumberCard} from "../components/ChartCards";
@@ -199,221 +212,70 @@ export default class THome extends Component {
 
     render() {
 
-        const tabList = [
+        const bcList = [ 
             {
-                key: 'tab1',
-                tab: '订单量'
-            }, {
-                key: 'tab2',
-                tab: '返货量'
+                title: "首页",
+                href: '/',
             }
-        ];
-
-        const contentList = {
-            tab1: <p>content1</p>,
-            tab2: <p>content2</p>
-        };
-
-        const data = [
-            {
-                title: '总产量',
-                content: () => {
-                    return (
-                        <div>
-                            <div style={{fontSize:25,color:'#000000'}}>
-                                223433<span style={{marginLeft:8}}>pcs</span>
-                            </div>
-                            <div>周同比<span style={{marginLeft:8}}>12%<Icon style={{color:'#f01212'}} type="caret-up" /></span></div>
-                            <div>日同比<span style={{marginLeft:8}}>11%<Icon type="caret-down" /></span></div>
-                        </div>
-                    )
-                },
-                footer:()=>{
-                    return(
-                        <div>
-                            日均产量<span>234</span><span>pcs</span>
-                        </div>
-                    )
-                }
-            },
-            {
-                title: '出货量',
-                content: () => {
-                    return (
-                        <div>
-                            <div style={{fontSize:25,color:'#000000'}}>3451</div>
-                            <div style={{width:200}} id="miniChart0"></div>
-                        </div>
-                    )
-                },
-                footer:()=>{
-                    return(
-                        <div>
-                            日订单量<span>234</span><span>pcs</span>
-                        </div>
-                    )
-                }
-            },
-            {
-                title: '良品量',
-                content: () => {
-                    return (
-                        <div>
-                            <div style={{fontSize:25,color:'#000000'}}>351</div>
-                            <div style={{width:200}} id="miniChart1"></div>
-                        </div>
-                    )
-                },
-                footer:()=>{
-                    return(
-                        <div>
-                            日均良品率<span>93</span><span>%</span>
-                        </div>
-                    )
-                }
-            },
-            {
-                title: '机器故障率',
-                content: () => {
-                    return (
-                        <div>
-                            <div style={{fontSize:25,color:'#000000'}}>3%</div>
-                            <div id="miniChart2"></div>
-                        </div>
-                    )
-                },
-                footer:()=>{
-                    return(
-                        <div>
-                            故障率<span>3</span><span>%</span>
-                        </div>
-                    )
-                }
-            }
-        ];
-
-        const rankingList = ['HDMI端子', 'USB2.0', '光纤端子', 'RGB6Pin音视频端子', 'RGB3Pin音视频端子'];
-
-        const ExtraContent = (<div className="home-order-extra">
-            <div className="order-extra-cycle">
-                <a className="cycle-item">今日</a>
-                <a className="cycle-item">本周</a>
-                <a className="cycle-item">本月</a>
-                <a className="cycle-item">全年</a>
-            </div>
-            <RangePicker defaultValue={[
-                    moment('2015/01/01', dateFormat),
-                    moment('2015/01/01', dateFormat)
-                ]} format={dateFormat}/>
-        </div>);
-
-        const dateFormat = 'YYYY/MM/DD';
-
-        const salesData = [];
-        for (let i = 0; i < 12; i += 1) {
-          salesData.push({
-            x: `${i + 1}月`,
-            y: Math.floor(Math.random() * 1000) + 200,
-          });
-        }
-
-        const orderContent = (<div className="order-tend">
-            <Row>
-                <Col span={18}>
-                    {/* <div className="tend-charts" id="tend-charts">
-                        <ReactEcharts
-                            className='react_for_echarts'
-                            option={this.state.option}
-                            lazyUpdate={true}
-                            style={{height:350,border:'solid 0px'}}
-                            />
-                    </div> */}
-                    <Bar
-                      height={300}
-                      title="销售额趋势"
-                      data={salesData}
-                    />
-                </Col>
-                <Col span={6}>
-                    <div className="ranking">
-                        <List size="small" header={<div> 产品订单排名</div>}
-                            // footer={<div>Footer</div>}
-                            bordered="bordered" dataSource={rankingList} renderItem={(item, index) => (<List.Item>
-                                <span style={{
-                                        marginRight: 8
-                                    }}>{index}</span>
-                                {item}
-                            </List.Item>)}/>
-                    </div>
-                </Col>
-            </Row>
-            {/* <div className="tend-charts">
-              </div> */
-            }
-        </div>)
-
-        const bcList = [ {
-            title: "首页",
-            href: '/',
-          }
         ];
           
         return (
             <PageHeaderLayout
-                title={"首页"}
+                // title={"首页"}
                 // action={showDetal?HeadAction:''}
                 // content={showDetal?HeadContent:''}
                 wrapperClassName="pageContent"
                 BreadcrumbList={bcList}>
                 <div >
-                    {/* <List
-                        grid={{
-                            gutter: 16,
-                            xs: 1,
-                            sm: 2,
-                            md: 2,
-                            lg: 4,
-                            xl: 4,
-                            xxl: 4
-                        }}
-                        dataSource={data}
-                        renderItem={item => (
-                        <List.Item>
-                            <Card bodyStyle={{
-                                    // height: 150
-                                }}>
-                                <p>{item.title}</p>
-                                <div>
-                                    {item.content && item.content()}
-                                </div>
-                                <Divider/>
-                                <div>
-                                    {item.footer&&item.footer()}
-                                </div>
-                            </Card>
-                        </List.Item>)}/> */}
-                    {/* <Row>
-                        <Col  xl={6} lg={6} md={6} sm={24} xs={24}>
+                    <Row>
+                        <Col span={6}>
+                            <ChartCard
+                                title="销售额"
+                                action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+                                total={yuan(126560)}
+                                footer={<Field label="日均销售额" value={numeral(12423).format('0,0')} />}
+                                contentHeight={46}
+                                >
+                                <span>
+                                周同比
+                                <Trend flag="up" style={{ marginLeft: 8, color: 'rgba(0,0,0,.85)' }}>12%</Trend>
+                                </span>
+                                <span style={{ marginLeft: 16 }}>
+                                日环比
+                                <Trend flag="down" style={{ marginLeft: 8, color: 'rgba(0,0,0,.85)' }}>11%</Trend>
+                                </span>
+                            </ChartCard>
                         </Col>
-                        <Col  xl={18} lg={18} md={18} sm={24} xs={24}>
-                            <div style={{border:'solid 1px #e6e5e2',borderRadus:8,padding:16}}>
-                                <Bar height={295} title="销售额趋势" data={salesData} />
-                            </div>
+                        <Col span={6}>
+                        <ChartCard
+                            title="移动指标"
+                            avatar={
+                            <img
+                                style={{ width: 56, height: 56 }}
+                                src="https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png"
+                                alt="indicator"
+                            />
+                            }
+                            action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+                            total={yuan(126560)}
+                            footer={<Field label="日均销售额" value={numeral(12423).format('0,0')} />}
+                        />
                         </Col>
-                    </Row> */}
-                    <Card style={{width: '100%'}}
-                        // title={ExtraContent}
-                        // extra={ExtraContent}
-                        // tabList={tabList}
-                        // onTabChange={(key) => { this.onTabChange(key, 'key'); }}
-                      >
-                        <Tabs tabBarExtraContent={ExtraContent} defaultActiveKey="1">
-                            <TabPane tab="订单量" key="1">
-                                {orderContent}
-                            </TabPane>
-                            <TabPane tab="返货量" key="2">Content of Tab Pane 2</TabPane>
-                        </Tabs>
-                    </Card>
+                        <Col span={6}>
+                        <ChartCard
+                            title="移动指标"
+                            avatar={(
+                            <img
+                                alt="indicator"
+                                style={{ width: 56, height: 56 }}
+                                src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
+                            />
+                            )}
+                            action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+                            total={yuan(126560)}
+                        />
+                        </Col>
+                    </Row>
                 </div>
             </PageHeaderLayout>
             )

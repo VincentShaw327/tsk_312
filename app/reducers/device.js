@@ -1,230 +1,504 @@
 import { handleActions } from 'redux-actions'
 import { hasResponseError } from 'utils'
+import { fn_mes_array } from 'functions'
 const Mock = require('mockjs');
 var Random = Mock.Random;
 // import moment from 'moment'
 import { message } from 'antd'
 
 const DeviceListState = {
-  list: [],
-  currentPage: 1,
-  pageCount: 0,
-  pageSize: 20,
-  totalCount: 0,
+    list: [],
+    currentPage: 1,
+    pageCount: 0,
+    pageSize: 20,
+    totalCount: 0,
 }
 export const device = handleActions({
-  'request device list'(state, action) {
-    return { ...state, loading: true }
-  },
-  'receive device list'(state, action) {
-    const { req, res } = action.payload
-    console.log('receive device list',action)
-    let list=[];
-    if (hasResponseError(res)) {
-      message.error(res.msg)
-      return { ...state, loading: false }
-    }
-    else{
-        if(!gconfig.isDemo_dev){
-            return { obj:res.obj.objectlist, loading: false }
+    'request device equipment list'(state, action) {
+        return { ...state, loading: true }
+    },
+    'receive device equipment list'(state, action) {
+        const { req, res } = action.payload
+        let list = [];
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
         }
-        else{
-            list=res.objectlist.map((item,index)=>{
-                return{
-                    UUID:item.UUID,
-                    key:index,
-                    strDeviceName:'设备_'+index,
-
-                    DeviceID:'device_'+index,
-                    SN:Mock.mock('@string(5)'),
-                    Label:Mock.mock('@string(5)'),
-                    'DeviceType|1':['注塑类','冲压类','自动组装类'],
-                    DeviceModel:'device_model'+index,
-                    'TypeName|1':['注塑类','冲压类','自动组装类'], //类别名称
-                    'isQCheck|1':['是','否'],
-                    Hours:Mock.mock('@natural(0, 24)'),
-                    Desc:'-',
-                    Modifier:Mock.mock('@cname()'),
-                    Founder:Mock.mock('@cname()'),
-                    CreateTime:Random.datetime(),
-                    UpdateDateTime:Random.now(),
+        else {
+            if (!gconfig.isDemo_dev) {
+                let data = res.data,
+                    list = fn_mes_array.addKey(res.data.list, 'key');
+                let pagenation = {
+                    page: data.page,
+                    size: data.size,
+                    total: data.total
                 }
-            })
-            list=Mock.mock(list);
-            res.objectlist=list;
-            res.totalcount=Mock.mock('@natural(0, 65)');
-            return { list:list,total:res.totalcount, loading: false }
+                return { ...state, list, loading: false, ...pagenation }
+            }
+            else {
+                list = res.objectlist.map((item, index) => {
+                    return {
+                        UUID: item.UUID,
+                        key: index,
+                        'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
+
+                        // FactoryUUID: item.FactoryUUID,
+                        // TypeUUID: item.TypeUUID,
+                        // Name:item.Name,
+                        ID: 'devType_' + index,
+                        Number: 'ws_' + index,
+                        'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], //类别名称
+                        Desc: '-',
+                        Modifier: Mock.mock('@cname()'),
+                        Founder: Mock.mock('@cname()'),
+                        CreateTime: Random.datetime(),
+                        UpdateDateTime: Random.now(),
+                        // Note:item.Note,
+                        // TypeID:item.TypeID, //类别编号
+                    }
+                })
+                list = Mock.mock(list);
+                res.objectlist = list;
+                res.totalcount = Mock.mock('@natural(0, 65)');
+                return { list: list, total: res.totalcount, loading: false }
+            }
         }
-    }
-  },
+    },
+    'success delete device equipment'(state, action) {
+        const { req, res } = action.payload;
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            console.log('删除成功！', res);
+            message.success('删除成功！');
+            let data = res.data;
+            let list = state.list.filter((item) => (item.uObjectUUID != res.data.uuids[0]))
+            state.list = list;
+            return { ...state }
+        }
+    },
+    'success add device equipment'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list.push(data.obj)
+            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
+    'success update device equipment'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list=state.list.filter((item)=>item.uObjectUUID!=data.uuid)
+            state.list.push(data.obj)            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
 
 }, DeviceListState)
 
 const DeviceModelListState = {
-  list: [],
-  currentPage: 1,
-  pageCount: 0,
-  pageSize: 20,
-  totalCount: 0,
+    list: [],
+    currentPage: 1,
+    pageCount: 0,
+    pageSize: 20,
+    totalCount: 0,
 }
 export const deviceModel = handleActions({
-  'request device model list'(state, action) {
-    return { ...state, loading: true }
-  },
-  'receive device model list'(state, action) {
-    const { req, res } = action.payload
-    let list=[];
-    if (hasResponseError(res)) {
-      message.error(res.msg)
-      return { ...state, loading: false }
-    }
-    else{
-        if(!gconfig.isDemo_dev){
-            return { obj:res.obj.objectlist, loading: false }
+    'request device model list'(state, action) {
+        return { ...state, loading: true }
+    },
+    'receive device model list'(state, action) {
+        const { req, res } = action.payload
+        let list = [];
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
         }
-        else{
-            list=res.objectlist.map((item,index)=>{
-                return{
-                    UUID:item.UUID,
-                    index:index,
-                    Name:'型号_'+index,
-
-                    Number:'model_'+index,
-                    'TypeName|1':['注塑类','冲压类','自动组装类'], //类别名称
-                    'isQCheck|1':['是','否'],
-                    Hours:Mock.mock('@natural(0, 24)'),
-                    Desc:'-',
-                    Modifier:Mock.mock('@cname()'),
-                    Founder:Mock.mock('@cname()'),
-                    CreateTime:Random.datetime(),
-                    UpdateDateTime:Random.now(),
+        else {
+            if (!gconfig.isDemo_dev) {
+                let data = res.data,
+                    list = fn_mes_array.addKey(res.data.list, 'key');
+                let pagenation = {
+                    page: data.page,
+                    size: data.size,
+                    total: data.total
                 }
-            })
-            list=Mock.mock(list);
-            res.objectlist=list;
-            // res.totalcount=Mock.mock('@natural(0, 65)');
-            res.totalcount=20;
-            return { list:list,total:res.totalcount, loading: false }
+                return { ...state, list, loading: false, ...pagenation }
+            }
+            else {
+                list = res.objectlist.map((item, index) => {
+                    return {
+                        UUID: item.UUID,
+                        key: index,
+                        'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
+
+                        // FactoryUUID: item.FactoryUUID,
+                        // TypeUUID: item.TypeUUID,
+                        // Name:item.Name,
+                        ID: 'devType_' + index,
+                        Number: 'ws_' + index,
+                        'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], //类别名称
+                        Desc: '-',
+                        Modifier: Mock.mock('@cname()'),
+                        Founder: Mock.mock('@cname()'),
+                        CreateTime: Random.datetime(),
+                        UpdateDateTime: Random.now(),
+                        // Note:item.Note,
+                        // TypeID:item.TypeID, //类别编号
+                    }
+                })
+                list = Mock.mock(list);
+                res.objectlist = list;
+                res.totalcount = Mock.mock('@natural(0, 65)');
+                return { list: list, total: res.totalcount, loading: false }
+            }
         }
-    }
-  },
-
-
+    },
+    'success delete device model'(state, action) {
+        const { req, res } = action.payload;
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            console.log('删除成功！', res);
+            message.success('删除成功！');
+            let data = res.data;
+            let list = state.list.filter((item) => (item.uObjectUUID != res.data.uuids[0]))
+            state.list = list;
+            return { ...state }
+        }
+    },
+    'success add device model'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list.push(data.obj)
+            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
+    'success update device model'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list=state.list.filter((item)=>item.uObjectUUID!=data.uuid)
+            state.list.push(data.obj)            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
 }, DeviceModelListState)
 
 
 const DeviceTypeListState = {
-  deviceTypeList: [],
-  currentPage: 1,
-  pageCount: 0,
-  pageSize: 20,
-  totalCount: 0,
+    list: [],
+    currentPage: 1,
+    pageCount: 0,
+    pageSize: 20,
+    totalCount: 0,
+    loading: false
 }
 export const deviceType = handleActions({
-  'request device type list'(state, action) {
-      console.log('yuyu8979 gg')
-    return { ...state, loading: true }
-  },
-  'receive device type list'(state, action) {
-    const { req, res } = action.payload
-    let list=[];
-    if (hasResponseError(res)) {
-      message.error(res.msg)
-      return { ...state, loading: false }
-    }
-    else{
-        if(!gconfig.isDemo_dev){
-            return { obj:res.obj.objectlist, loading: false }
+    'request device type list'(state, action) {
+        return { ...state, loading: true }
+    },
+    'receive device type list'(state, action) {
+        const { req, res } = action.payload
+        let list = [];
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
         }
-        else{
-            list=res.objectlist.map((item,index)=>{
-                return{
-                    UUID:item.UUID,
-                    key:index,
-                    'Name|1':['注塑设备','冲压设备','自动组装设备'],
-
-                    // FactoryUUID: item.FactoryUUID,
-                    // TypeUUID: item.TypeUUID,
-                    // Name:item.Name,
-                    ID:'devType_'+index,
-                    Number:'ws_'+index,
-                    'TypeName|1':['自动组装车间','注塑车间','冲压车间'], //类别名称
-                    Desc:'-',
-                    Modifier:Mock.mock('@cname()'),
-                    Founder:Mock.mock('@cname()'),
-                    CreateTime:Random.datetime(),
-                    UpdateDateTime:Random.now(),
-                    // Note:item.Note,
-                    // TypeID:item.TypeID, //类别编号
+        else {
+            if (!gconfig.isDemo_dev) {
+                let data = res.data,
+                    list = fn_mes_array.addKey(res.data.list, 'key');
+                let pagenation = {
+                    page: data.page,
+                    size: data.size,
+                    total: data.total
                 }
-            })
-            list=Mock.mock(list);
-            res.objectlist=list;
-            res.totalcount=Mock.mock('@natural(0, 65)');
-            return { deviceTypeList:list,total:res.totalcount, loading: false }
+                return { ...state, list, loading: false, ...pagenation }
+            }
+            else {
+                list = res.objectlist.map((item, index) => {
+                    return {
+                        UUID: item.UUID,
+                        key: index,
+                        'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
+
+                        // FactoryUUID: item.FactoryUUID,
+                        // TypeUUID: item.TypeUUID,
+                        // Name:item.Name,
+                        ID: 'devType_' + index,
+                        Number: 'ws_' + index,
+                        'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], //类别名称
+                        Desc: '-',
+                        Modifier: Mock.mock('@cname()'),
+                        Founder: Mock.mock('@cname()'),
+                        CreateTime: Random.datetime(),
+                        UpdateDateTime: Random.now(),
+                        // Note:item.Note,
+                        // TypeID:item.TypeID, //类别编号
+                    }
+                })
+                list = Mock.mock(list);
+                res.objectlist = list;
+                res.totalcount = Mock.mock('@natural(0, 65)');
+                return { list: list, total: res.totalcount, loading: false }
+            }
         }
-    }
-  },
+    },
+    'success delete device type'(state, action) {
+        const { req, res } = action.payload;
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            console.log('删除成功！', res);
+            message.success('删除成功！');
+            let data = res.data;
+            let list = state.list.filter((item) => (item.uObjectUUID != res.data.uuids[0]))
+            state.list = list;
+            return { ...state }
+        }
+    },
+    'success add device type'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list.push(data.obj)
+            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
+    'success update device type'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list=state.list.filter((item)=>item.uObjectUUID!=data.uuid)
+            state.list.push(data.obj)            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
 
 
 }, DeviceTypeListState)
 
+
+const brandInitData = {
+    list: [],
+    currentPage: 1,
+    pageCount: 0,
+    pageSize: 20,
+    totalCount: 0,
+    loading: false
+}
+export const deviceBrand = handleActions({
+    'request device brand list'(state, action) {
+        return { ...state, loading: true }
+    },
+    'receive device brand list'(state, action) {
+        const { req, res } = action.payload
+        let list = [];
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            if (!gconfig.isDemo_dev) {
+                let data = res.data,
+                    list = fn_mes_array.addKey(res.data.list, 'key');
+                let pagenation = {
+                    page: data.page,
+                    size: data.size,
+                    total: data.total
+                }
+                return { ...state, list, loading: false, ...pagenation }
+            }
+            else {
+                list = res.objectlist.map((item, index) => {
+                    return {
+                        UUID: item.UUID,
+                        key: index,
+                        'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
+
+                        // FactoryUUID: item.FactoryUUID,
+                        // TypeUUID: item.TypeUUID,
+                        // Name:item.Name,
+                        ID: 'devType_' + index,
+                        Number: 'ws_' + index,
+                        'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], //类别名称
+                        Desc: '-',
+                        Modifier: Mock.mock('@cname()'),
+                        Founder: Mock.mock('@cname()'),
+                        CreateTime: Random.datetime(),
+                        UpdateDateTime: Random.now(),
+                        // Note:item.Note,
+                        // TypeID:item.TypeID, //类别编号
+                    }
+                })
+                list = Mock.mock(list);
+                res.objectlist = list;
+                res.totalcount = Mock.mock('@natural(0, 65)');
+                return { list: list, total: res.totalcount, loading: false }
+            }
+        }
+    },
+    'success delete device brand'(state, action) {
+        const { req, res } = action.payload;
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            console.log('删除成功！', res);
+            message.success('删除成功！');
+            let data = res.data;
+            let list = state.list.filter((item) => (item.uObjectUUID != res.data.uuids[0]))
+            state.list = list;
+            return { ...state }
+        }
+    },
+    'success add device brand'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list.push(data.obj)
+            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
+    'success update device brand'(state, action) {
+        const { req, res } = action.payload
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
+        }
+        else {
+            let data = res.data;
+                // list = fn_mes_array.addKey(res.data.list, 'key');
+            data.obj.key=data.uuid
+            state.list=state.list.filter((item)=>item.uObjectUUID!=data.uuid)
+            state.list.push(data.obj)            
+            message.success("添加成功")
+            return { ...state, loading: false }
+        }
+    },
+
+
+}, brandInitData)
+
 const devCheckState = {
-  list: [],
-  currentPage: 1,
-  pageCount: 0,
-  pageSize: 20,
-  totalCount: 0,
+    list: [],
+    currentPage: 1,
+    pageCount: 0,
+    pageSize: 20,
+    totalCount: 0,
 }
 export const DevCheck = handleActions({
-  'request device check list'(state, action) {
-    return { ...state, loading: true }
-  },
-  'receive device check list'(state, action) {
-    const { req, res } = action.payload
-    let list=[];
-    if (hasResponseError(res)) {
-      message.error(res.msg)
-      return { ...state, loading: false }
-    }
-    else{
-        if(!gconfig.isDemo_dev){
-            return { obj:res.obj.objectlist, loading: false }
+    'request device check list'(state, action) {
+        return { ...state, loading: true }
+    },
+    'receive device check list'(state, action) {
+        const { req, res } = action.payload
+        let list = [];
+        if (hasResponseError(res)) {
+            message.error(res.msg)
+            return { ...state, loading: false }
         }
-        else{
-            list=res.objectlist.map((item,index)=>{
-                return{
-                    UUID:item.UUID,
-                    key:index,
-                    'Name|1':['注塑设备','冲压设备','自动组装设备'],
+        else {
+            if (!gconfig.isDemo_dev) {
+                return { obj: res.obj.objectlist, loading: false }
+            }
+            else {
+                list = res.objectlist.map((item, index) => {
+                    return {
+                        UUID: item.UUID,
+                        key: index,
+                        'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
 
-                    DeviceName:"设备_"+index,
-                    DeviceID:"DEV_"+index,
+                        DeviceName: "设备_" + index,
+                        DeviceID: "DEV_" + index,
 
-                    checkItem:`项目_${Mock.mock('@natural(0, 10)')}`,
-                    // FactoryUUID: item.FactoryUUID,
-                    // TypeUUID: item.TypeUUID,
-                    // Name:item.Name,
-                    ID:'devType_'+index,
-                    Number:'ws_'+index,
-                    'TypeName|1':['自动组装车间','注塑车间','冲压车间'], //类别名称
-                    time:Random.datetime(),
-                    Desc:'-',
-                    Modifier:Mock.mock('@cname()'),
-                    Founder:Mock.mock('@cname()'),
-                    CreateTime:Random.datetime(),
-                    UpdateDateTime:Random.now(),
-                    // Note:item.Note,
-                    // TypeID:item.TypeID, //类别编号
-                }
-            })
-            list=Mock.mock(list);
-            res.objectlist=list;
-            res.totalcount=Mock.mock('@natural(0, 65)');
-            return { list:list,total:res.totalcount, loading: false }
+                        checkItem: `项目_${Mock.mock('@natural(0, 10)')}`,
+                        // FactoryUUID: item.FactoryUUID,
+                        // TypeUUID: item.TypeUUID,
+                        // Name:item.Name,
+                        ID: 'devType_' + index,
+                        Number: 'ws_' + index,
+                        'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], //类别名称
+                        time: Random.datetime(),
+                        Desc: '-',
+                        Modifier: Mock.mock('@cname()'),
+                        Founder: Mock.mock('@cname()'),
+                        CreateTime: Random.datetime(),
+                        UpdateDateTime: Random.now(),
+                        // Note:item.Note,
+                        // TypeID:item.TypeID, //类别编号
+                    }
+                })
+                list = Mock.mock(list);
+                res.objectlist = list;
+                res.totalcount = Mock.mock('@natural(0, 65)');
+                return { list: list, total: res.totalcount, loading: false }
+            }
         }
-    }
-  },
+    },
 
 
 }, DeviceTypeListState)
