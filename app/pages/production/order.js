@@ -1,64 +1,56 @@
 
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
     Table,
     Button,
     Icon,
-    Radio,
     Row,
     Col,
     message,
-    Alert,
-    Tag,
-    Form,
     Switch,
     Popconfirm,
-    Modal,Menu, Dropdown
+    Menu, Dropdown,
 } from 'antd';
 import { OrderList } from 'actions/production';
-import {TPostData, urlBase,TAjax} from 'utils/TAjax';
-import {CModal} from 'components/TModal';
+import { TPostData, urlBase, TAjax } from 'utils/TAjax';
+import { CModal } from 'components/TModal';
 // import SimpleTable from 'components/TTable/SimpleTable';
 import SimpleTable from 'components/TTable/exportData';
-import {SimpleQForm,StandardQForm,DropDownForm } from 'components/TForm';
+import { DropDownForm } from 'components/TForm';
+import { TableExport } from 'components/Export';
+import { fn_mes_trans } from 'functions'
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import styles from './common.less';
 // import TableExport from 'tableexport';
-import {TableExport} from  'components/Export';
-import {fn_mes_trans} from 'functions'
 
 
-
-@connect( ( state, props ) => {
-    return {
-        Breadcrumb:state.Breadcrumb,
-        productOrder: state.productOrder,
-    }
-}, )
+@connect( ( state, props ) => ( {
+    Breadcrumb: state.Breadcrumb,
+    productOrder: state.productOrder,
+} ) )
 export default class order extends Component {
-
-    constructor(props) {
-        super(props)
+    constructor( props ) {
+        super( props )
         this.state = {
             title: props.title,
-            productOrderList:[],
+            productOrderList: [],
             LotList: [],
             BSLotList: [],
             dispatchLotList: [],
             ProModelList: [],
-            workshopList:[],
-            lazyWSlist:[],
+            workshopList: [],
+            lazyWSlist: [],
             ProModelSList: [],
             WorkCenterList: [],
-            moldList:[],
+            moldList: [],
             selectedRow: [],
             selectedRowKeys: [],
-            unscheduledNum:0,
+            unscheduledNum: 0,
             selectedProductID: -1,
-            WorkshopID:-1,
-            currentItemWSID:-1,
+            WorkshopID: -1,
+            currentItemWSID: -1,
             updateFromItem: {},
             defaultBSLotList: [],
             defaultBSNumber: 0,
@@ -67,17 +59,17 @@ export default class order extends Component {
             UModalShow: false,
             SModalShow: false,
             BSModalShow: false,
-            orderState:'-1',
+            orderState: '-1',
             ProModelID: '-1',
             keyWord: '',
             bordered: true,
-            size: "small",
-            subTableSize: "default",
+            size: 'small',
+            subTableSize: 'default',
             scroll: undefined,
-            hasAddBtn:false,
-            total:0,
-            current:1,
-            pageSize:10,
+            hasAddBtn: false,
+            total: 0,
+            current: 1,
+            pageSize: 10,
         }
         this.url = '/api/tmanufacture/manufacture';
     }
@@ -89,7 +81,7 @@ export default class order extends Component {
         // this.getWorkCenterList();
         // this.getWorkshopList();
         // this._tableExport.export();
-        this.props.dispatch( OrderList( {}, ( respose ) => {} ) )
+        // this.props.dispatch( OrderList( {}, ( respose ) => {} ) )
     }
 
     componentDidMount() {
@@ -97,88 +89,96 @@ export default class order extends Component {
         /* setTimeout(()=>{
             this._tableExport.export();
         },2000) */
+        const { list } = this.props.productOrder;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( OrderList( {}, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
-    componentwillreceiveprops(){}
+    // componentwillreceiveprops() {}
 
     getProductOrder() {
-        const {current,pageSize,ProModelID,WorkshopID,keyWord,orderState}=this.state;
+        const {
+            current,
+            pageSize,
+            ProModelID,
+            WorkshopID,
+            keyWord,
+            orderState,
+        } = this.state;
         // let GlobalKeyword=this.props.GlobalKeyword;
         // this.setState({keyWord:this.keyWordInput.input.value});
 
-        var dat = {
-            PageIndex: current-1,
+        const dat = {
+            PageIndex: current - 1,
             PageSize: pageSize,
-            ProductModelUUID:ProModelID, //产品型号UUID
-            WorkshopUUID: WorkshopID,            // 车间UUID
-            WorkstationTypeUUID: -1, //工作中心类型UUID
-            Status: orderState, //生产订单状态
+            ProductModelUUID: ProModelID, // 产品型号UUID
+            WorkshopUUID: WorkshopID, // 车间UUID
+            WorkstationTypeUUID: -1, // 工作中心类型UUID
+            Status: orderState, // 生产订单状态
             // KeyWord: this.keyWordInput?this.keyWordInput.input.value:''
             // KeyWord: GlobalKeyword?GlobalKeyword:keyWord
-            KeyWord:keyWord
+            KeyWord: keyWord,
         }
-        TPostData( '/api/tmanufacture/manufacture/ListProductOrder', "ListProductOrder", dat,
+        TPostData(
+            '/api/tmanufacture/manufacture/ListProductOrder', 'ListProductOrder', dat,
             ( res ) => {
-                console.log( '查询到订单列表', res );
-                if(res.err==0){
-                    var list = [],
-                    Ui_list = res.obj.objectlist || [],
-                    totalCount = res.obj.totalcount;
-                    console.log('totalCount',totalCount)
+                if ( res.err === 0 ) {
+                    const list = [];
+                    const Ui_list = res.obj.objectlist || [];
+                    const totalCount = res.obj.totalcount;
                     Ui_list.forEach( ( item, index ) => {
                         list.push( {
                             key: index,
                             UUID: item.UUID,
-                            WorkshopUUID:item.WorkshopUUID,
+                            WorkshopUUID: item.WorkshopUUID,
                             ID: item.ID,
                             Name: item.Name,
                             Desc: item.Desc,
                             Note: item.Note,
                             ProductUUID: item.ProductUUID,
                             ProductModelID: item.ProductModelID,
-                            ProductModelName: item.ProductModelName, //产品名称
-                            WorkshopName:item.WorkshopName,
-                            PlanNumber: item.PlanNumber, //计划产量
-                            ScheduleNumber:item.ScheduleNumber,
-                            FinishNumber: item.FinishNumber, //实际产量
-                            RejectNumber: item.RejectNumber, //不合格数量
-                            IssuedDateTime: item.IssuedDateTime, //下单日期
-                            PlanDeliverDate: item.PlanDeliverDate, //计划交期
-                            DeliverDateTime: item.DeliverDateTime, //实际交期
-                            PlanStartDateTime: item.PlanStartDateTime, //计划开始时间
-                            StartDateTime: item.StartDateTime, //实际开始时间
-                            PlanFinishDateTime: item.PlanFinishDateTime.slice(0,10), //计划完成时间
-                            FinishDateTime: item.FinishDateTime, //实际完成时间
-                            UpdateDateTime: item.UpdateDateTime, //更新时间
-                            Status: item.Status
-                            //状态：0 - 冻结，1-活跃，拆分 2 - 已拆分，未排程 2 - 已排程，未投产  3 - 投产，生产中   4 - 完成生产  5 - 取消/变更
+                            ProductModelName: item.ProductModelName, // 产品名称
+                            WorkshopName: item.WorkshopName,
+                            PlanNumber: item.PlanNumber, // 计划产量
+                            ScheduleNumber: item.ScheduleNumber,
+                            FinishNumber: item.FinishNumber, // 实际产量
+                            RejectNumber: item.RejectNumber, // 不合格数量
+                            IssuedDateTime: item.IssuedDateTime, // 下单日期
+                            PlanDeliverDate: item.PlanDeliverDate, // 计划交期
+                            DeliverDateTime: item.DeliverDateTime, // 实际交期
+                            PlanStartDateTime: item.PlanStartDateTime, // 计划开始时间
+                            StartDateTime: item.StartDateTime, // 实际开始时间
+                            PlanFinishDateTime: item.PlanFinishDateTime.slice( 0, 10 ), // 计划完成时间
+                            FinishDateTime: item.FinishDateTime, // 实际完成时间
+                            UpdateDateTime: item.UpdateDateTime, // 更新时间
+                            Status: item.Status,
+                            // 状态：0 - 冻结，1-活跃，拆分 2 - 已拆分，未排程 2 - 已排程，未投产  3 - 投产，生产中   4 - 完成生产  5 - 取消/变更
                         } )
                     } )
-                    this.setState({productOrderList:list,total: totalCount,loading:false});
-                    if(this.state.hasAddBtn==false){
-                        let tableDom=document.getElementById("lotListTableWrap")
-                        .getElementsByClassName("ant-table-body")[0];
-                        let btnWrap=document.getElementById("exportLotListMenu");
-                        const btn=TableExport(tableDom.children[0]);
-                        let children= btn.selectors[0].children[0];
-                        let childNodes=children.getElementsByTagName('button');
-                        childNodes[0].innerHTML="xlsx";
-                        childNodes[1].innerHTML="csv";
-                        childNodes[2].innerHTML="txt";
-                        btnWrap.appendChild(children);
+                    this.setState( { productOrderList: list, total: totalCount, loading: false } );
+                    if ( this.state.hasAddBtn === false ) {
+                        const tableDom = document.getElementById( 'lotListTableWrap' )
+                            .getElementsByClassName( 'ant-table-body' )[0];
+                        const btnWrap = document.getElementById( 'exportLotListMenu' );
+                        const btn = TableExport( tableDom.children[0] );
+                        const children = btn.selectors[0].children[0];
+                        const childNodes = children.getElementsByTagName( 'button' );
+                        childNodes[0].innerHTML = 'xlsx';
+                        childNodes[1].innerHTML = 'csv';
+                        childNodes[2].innerHTML = 'txt';
+                        btnWrap.appendChild( children );
                     }
-                    this.setState({hasAddBtn:true});
+                    this.setState( { hasAddBtn: true } );
+                } else {
+                    message.error( '数据错误！' );
                 }
-                else{
-                    message.error("数据错误！");
-                }
-
             },
             ( error ) => {
                 message.info( error );
-            }
+            },
         );
-
     }
 
     getProModelList() {
@@ -186,16 +186,15 @@ export default class order extends Component {
             PageIndex: 0,
             PageSize: -1,
             TypeUUID: -1,
-            KeyWord: ""
+            KeyWord: '',
         }
-        TPostData('/api/TProduct/product_model', "ListActive", dat, (res) => {
-            var list = [],
-                slist = [];
-            console.log("查询到产品型号列表", res);
-            var data_list = res.obj.objectlist || [];
+        TPostData( '/api/TProduct/product_model', 'ListActive', dat, ( res ) => {
+            const list = [];
+            const slist = [];
+            const data_list = res.obj.objectlist || [];
             // var totalcount = res.obj.totalcount;
-            data_list.forEach((item, index) => {
-                list.push({
+            data_list.forEach( ( item, index ) => {
+                list.push( {
                     key: index,
                     UUID: item.UUID,
                     Name: item.Name,
@@ -203,37 +202,36 @@ export default class order extends Component {
                     Image: item.Image,
                     Number: item.ID,
                     SN: item.SN,
-                    Version: item.Version
-                })
-            })
-            data_list.forEach((item, index) => {
-                slist.push({key: index, value: item.UUID.toString(), text: item.Name})
-            })
-            this.setState({ProModelList: list, ProModelSList: slist});
-        }, (error) => {
-            message.info(error);
-        })
+                    Version: item.Version,
+                } )
+            } )
+            data_list.forEach( ( item, index ) => {
+                slist.push( { key: index, value: item.UUID.toString(), text: item.Name } )
+            } )
+            this.setState( { ProModelList: list, ProModelSList: slist } );
+        }, ( error ) => {
+            message.info( error );
+        } )
     }
 
     getSubTableData() {
-        var dat = {
-            PageIndex: 0,              // 分页参数
-            PageSize: -1,              // 分页参数
-            ProductOrderUUID: -1,      // 生产订单UUID
-            ProductModelUUID: -1,      // 生产订单产品型号UUID
-            WorkshopUUID: -1,          // 车间UUID
-            WorkstationTypeUUID: -1,   // 工作中心类型UUID
-            WorkstationUUID: -1,       // 工作中心UUID
-            MoldUUID: -1,              // 模具UUID
-            Status: -1,                // 派工单状态
-            KeyWord: ""                // 模糊查询
+        const dat = {
+            PageIndex: 0, // 分页参数
+            PageSize: -1, // 分页参数
+            ProductOrderUUID: -1, // 生产订单UUID
+            ProductModelUUID: -1, // 生产订单产品型号UUID
+            WorkshopUUID: -1, // 车间UUID
+            WorkstationTypeUUID: -1, // 工作中心类型UUID
+            WorkstationUUID: -1, // 工作中心UUID
+            MoldUUID: -1, // 模具UUID
+            Status: -1, // 派工单状态
+            KeyWord: '', // 模糊查询
         }
-        TPostData(this.url, "ListWorkOrder", dat, (res) => {
-            console.log('查询到派工单列表:', res);
-            var list = [],
-                Ui_list = res.obj.objectlist || [];
-            Ui_list.forEach((item, index) => {
-                list.push({
+        TPostData( this.url, 'ListWorkOrder', dat, ( res ) => {
+            const list = [];
+            const Ui_list = res.obj.objectlist || [];
+            Ui_list.forEach( ( item, index ) => {
+                list.push( {
                     key: index,
                     UUID: item.UUID,
                     LotUUID: item.LotUUID,
@@ -255,34 +253,34 @@ export default class order extends Component {
                     UpdateDateTime: item.UpdateDateTime,
                     WorkstationID: item.WorkstationID,
                     WorkstationName: item.WorkstationName,
-                    WorkstationUUID: item.WorkstationUUID
-                })
-            });
-            this.setState({dispatchLotList: list});
-        }, (error) => {
-            message.info(error);
-        })
+                    WorkstationUUID: item.WorkstationUUID,
+                } )
+            } );
+            this.setState( { dispatchLotList: list } );
+        }, ( error ) => {
+            message.info( error );
+        } )
     }
 
-    getWorkCenterList(record) {
-        let dat = {
-            'PageIndex': 0,
-            'PageSize': -1,
-            'TypeUUID': -1,
-            'ID': '',
-            'WorkshopUUID': record?record.WorkshopUUID:-1,//this.state.currentItemWSID, //所属车间UUID，不作为查询条件时取值设为-1
-            'KeyWord': ''
+    getWorkCenterList( record ) {
+        const dat = {
+            PageIndex: 0,
+            PageSize: -1,
+            TypeUUID: -1,
+            ID: '',
+            WorkshopUUID: record ? record.WorkshopUUID : -1, // this.state.currentItemWSID, //所属车间UUID，不作为查询条件时取值设为-1
+            KeyWord: '',
         }
 
-        TPostData('/api/TProcess/workcenter', "ListActive", dat, (res) => {
-            var list = [];
-            var Ui_list = res.obj.objectlist || [];
+        TPostData( '/api/TProcess/workcenter', 'ListActive', dat, ( res ) => {
+            const list = [];
+            const Ui_list = res.obj.objectlist || [];
             // console.log('查询到工作中心列表', Ui_list);
             // var totalcount = res.obj.objectlist.length;
             // creatKeyWord = res.obj.objectlist.length;
-            Ui_list.forEach((item, index) => {
-                list.push({key: index, value: item.UUID.toString(), text: item.Name})
-                /*list.push( {
+            Ui_list.forEach( ( item, index ) => {
+                list.push( { key: index, value: item.UUID.toString(), text: item.Name } )
+                /* list.push( {
                         key: index,
                         ID: item.ID,
                         UUID: item.UUID,
@@ -295,55 +293,54 @@ export default class order extends Component {
                         UpdateDateTime: item.UpdateDateTime,
                         Desc: item.Desc,
                         Note: item.Note
-                    } )*/
-            })
-            this.setState({WorkCenterList: list})
-        }, (error) => {
-            message.info(error);
-        })
-
+                    } ) */
+            } )
+            this.setState( { WorkCenterList: list } )
+        }, ( error ) => {
+            message.info( error );
+        } )
     }
 
-    getMoldList(record){
-        let dat = {
+    getMoldList( record ) {
+        const dat = {
             PageIndex: 0,
             PageSize: -1,
             ModelUUID: -1,
-            KeyWord: "",
-            StorageUUID:record?record.WorkshopUUID:-1
+            KeyWord: '',
+            StorageUUID: record ? record.WorkshopUUID : -1,
         }
-        TPostData('/api/TMold/mold', "ListActive", dat, (res) => {
-            var list = [];
-            var Ui_list = res.obj.objectlist || [];
-            Ui_list.forEach((item, index) => {
-                list.push({
+        TPostData( '/api/TMold/mold', 'ListActive', dat, ( res ) => {
+            const list = [];
+            const Ui_list = res.obj.objectlist || [];
+            Ui_list.forEach( ( item, index ) => {
+                list.push( {
                     key: index,
                     value: item.UUID.toString(),
-                    text: item.Name
-                })
-            })
+                    text: item.Name,
+                } )
+            } )
 
-            this.setState({moldList: list})
-        }, (error) => {
-            message.info(error);
-        })
+            this.setState( { moldList: list } )
+        }, ( error ) => {
+            message.info( error );
+        } )
     }
 
-    renderSubTable=(record)=> {
+    renderSubTable=( record ) => {
         // this.setState({loading:true});
-        let list = [];
-        console.log("record", record);
+        const list = [];
+        console.log( 'record', record );
         const subcolumns = [
             {
                 title: '派工单号',
                 dataIndex: 'lotJobID',
-                key: 'lotJobID'
+                key: 'lotJobID',
             }, {
                 title: '产品名称',
                 dataIndex: 'ProductModelName',
-                key: 'BNum'
+                key: 'BNum',
             },
-            /*{
+            /* {
                 title: '产品编码',
                 dataIndex: 'ProductModelID',
                 key: 'ProductModelIDe',
@@ -352,85 +349,68 @@ export default class order extends Component {
                 title: '产品序列号',
                 dataIndex: 'ProductModelSN',
                 key: 'ProductModelSN'
-            },*/
+            }, */
             {
                 title: '工作中心',
                 dataIndex: 'WorkstationName',
-                key: 'WorkstationName'
+                key: 'WorkstationName',
             }, {
                 title: '计划产量',
                 dataIndex: 'PlanNumber',
-                key: 'PlanNumber'
+                key: 'PlanNumber',
             }, {
                 title: '工单状态',
                 dataIndex: 'Status',
                 key: 'Status',
-                render: (e1, record) => {
+                render: ( e1 ) => {
                     // console.log('任务状态',record);
                     let status = '';
-                    status = e1 == 0
-                        ? (<span className="orderCancelled">已取消</span>)
-                        : e1 == 1
-                            ? (<span className="Unproduced">未生产</span>)
-                            : e1 == 2
-                                ? (<span className="Inproduction">生产中</span>)
-                                : e1 == 3
-                                    ? (<span className="Pausing">已暂停</span>)
-                                    : e1 == 4
-                                        ? (<span className="Submited">已报工</span>)
+                    status = e1 === 0
+                        ? ( <span className="orderCancelled">已取消</span> )
+                        : e1 === 1
+                            ? ( <span className="Unproduced">未生产</span> )
+                            : e1 === 2
+                                ? ( <span className="Inproduction">生产中</span> )
+                                : e1 === 3
+                                    ? ( <span className="Pausing">已暂停</span> )
+                                    : e1 === 4
+                                        ? ( <span className="Submited">已报工</span> )
                                         : <span>{e1}</span>;
-                                    // : e1 == 4
-                                    //     ? (<span>生产挂起(4)</span>)
-                                    //     : e1 == 5
-                                    //         ? (<span>生产完成(5)</span>)
-                                    //         : e1 == 6
-                                    //             ? (<span>生产中(6)</span>)
-                                    //             : e1 == 9
-                                    //                 ? (<span>生产挂起(9)</span>)
-                                    //                 : e1 == 10
-                                    //                     ? (<span>已完成(10)</span>)
-                                    //                     : e1 == 11
-                                    //                         ? (<span>暂停中(11)</span>)
-                                    //                         : <span>{e1}</span>
                     return status;
-                }
+                },
             }, {
                 title: '操作',
                 dataIndex: 'UUID',
                 type: 'operate',
-                render: (e1, record, e3) => {
+                render: ( e1, record, e3 ) => {
                     // console.log("record",record);
                     let operate = '';
-                    if (record.Status && record.Status == 1) {
-                        operate = (<span>
-                            {/* <a onClick={this.toggleSModalShow.bind(this,record)} href="#">排产</a>
-                                <span className="ant-divider"></span> */
-                            }
-                            <Popconfirm placement="topLeft" title="确定取消排产？" onConfirm={this.handleCancel.bind(this, record)} okText="确定" cancelText="取消">
+                    if ( record.Status && record.Status === 1 ) {
+                        operate = ( <span>
+                            <Popconfirm placement="topLeft" title="确定取消排产？" onConfirm={() => this.handleCancel( record )} okText="确定" cancelText="取消">
                                 <a href="#">取消排产</a>
                             </Popconfirm>
-                        </span>)
-                    } else
-                        operate = (<span>无</span>);
+                                    </span> )
+                    } else { operate = ( <span>无</span> ); }
                     return operate;
-                }
-            }
+                },
+            },
         ];
 
-        var dat = {
-            PageIndex: 0,              // 分页参数
-            PageSize: -1,              // 分页参数
-            ProductOrderUUID: record.UUID,      // 生产订单UUID
-            ProductModelUUID: -1,      // 生产订单产品型号UUID
-            WorkshopUUID: -1,          // 车间UUID
-            WorkstationTypeUUID: -1,   // 工作中心类型UUID
-            WorkstationUUID: -1,       // 工作中心UUID
-            MoldUUID: -1,              // 模具UUID
-            Status: -1,                // 派工单状态
-            KeyWord: ""                // 模糊查询
+        const dat = {
+            PageIndex: 0, // 分页参数
+            PageSize: -1, // 分页参数
+            ProductOrderUUID: record.UUID, // 生产订单UUID
+            ProductModelUUID: -1, // 生产订单产品型号UUID
+            WorkshopUUID: -1, // 车间UUID
+            WorkstationTypeUUID: -1, // 工作中心类型UUID
+            WorkstationUUID: -1, // 工作中心UUID
+            MoldUUID: -1, // 模具UUID
+            Status: -1, // 派工单状态
+            KeyWord: '', // 模糊查询
         }
 
-        /*TAjax('post',this.url+'/ListWorkOrder',"ListWorkOrder",dat,
+        /* TAjax('post',this.url+'/ListWorkOrder',"ListWorkOrder",dat,
             (res)=>{
                 console.log('1111',res);
                 let  Ui_list = res.obj.objectlist || [];
@@ -466,258 +446,253 @@ export default class order extends Component {
                 console.log('失败',res);
             },
             false
-        );*/
-         return (<Table
-                    columns={subcolumns}
-                    dataSource={list}
-                    bordered={false}
-                    pagination={false}
+        ); */
+         return ( <Table
+           columns={subcolumns}
+           dataSource={list}
+           bordered={false}
+           pagination={false}
                     // rowSelection={this.state.isSelection?rowSelection:null}
                     // loading={this.state.loading}
-                    size={this.state.size}/>);
+           size={this.state.size}
+         /> );
     }
 
-    toggleUModalShow(record) {
-        console.log("更新前", record);
-        this.setState({
+    toggleUModalShow( record ) {
+        console.log( '更新前', record );
+        this.setState( {
             UModalShow: !this.state.UModalShow,
-            updateFromItem: record
-        });
+            updateFromItem: record,
+        } );
     }
 
-    toggleSModalShow(record) {
-        console.log("更新前", record);
-        this.setState({SModalShow: !this.state.SModalShow});
-        if(record){
-            this.getWorkCenterList(record);
-            this.getMoldList(record);
-            this.setState({
+    toggleSModalShow( record ) {
+        console.log( '更新前', record );
+        this.setState( { SModalShow: !this.state.SModalShow } );
+        if ( record ) {
+            this.getWorkCenterList( record );
+            this.getMoldList( record );
+            this.setState( {
                 updateFromItem: record,
-                unscheduledNum:record?(record.PlanNumber-record.ScheduleNumber):0
-            });
+                unscheduledNum: record ? ( record.PlanNumber - record.ScheduleNumber ) : 0,
+            } );
         }
     }
 
-    toggleBSModalShow(record) {
-        const {selectedProductID, LotList, selectedRow} = this.state;
-        let filterList = [],
-            tempNumber = 0,
-            tempList = [];
-        console.log("批量操作前", LotList);
+    toggleBSModalShow( record ) {
+        const { selectedProductID, LotList, selectedRow } = this.state;
+        const filterList = [];
+        let tempNumber = 0;
+        let tempList = [];
         // console.log("批量操作前多选项",selectedRow);
-        console.log("批量操作前产品ID", selectedProductID);
-        LotList.forEach((item, index) => {
-            if (item.strStatus == 2 && item.ProductModelUUID == selectedProductID.toString()) {
-                filterList.push({key: index, value: item.UUID.toString(), text: item.strID})
+        LotList.forEach( ( item, index ) => {
+            if ( item.strStatus === 2 && item.ProductModelUUID === selectedProductID.toString() ) {
+                filterList.push( { key: index, value: item.UUID.toString(), text: item.strID } )
             }
-        });
-        tempList = selectedRow.map((item, index) => {
-            /*return{
+        } );
+        tempList = selectedRow.map( ( item, index ) => {
+            /* return{
                 key: index,
                 value: item.UUID.toString(),
                 text: item.strID
-            }*/
+            } */
             tempNumber += item.strPlanNumber;
             return item.UUID.toString();
-        })
-        console.log('defaultBSLot', tempList);
-        console.log('filterList', filterList);
+        } )
         // this.setState({BSModalShow:!this.state.BSModalShow,updateFromItem:record});
-        this.setState({
+        this.setState( {
             BSLotList: filterList,
             defaultBSLotList: tempList,
             defaultBSNumber: tempNumber,
-            BSModalShow: !this.state.BSModalShow
-        });
+            BSModalShow: !this.state.BSModalShow,
+        } );
     }
 
-    handleUpdate(data) {
-        const {updateFromItem} = this.state;
-        console.log('data', data);
-        console.log('updateFromItem', updateFromItem);
+    handleUpdate( data ) {
+        const { updateFromItem } = this.state;
+        console.log( 'data', data );
+        console.log( 'updateFromItem', updateFromItem );
 
-        let dat = {
-            UUID: updateFromItem.UUID, //加工订单UUID
-            ID: data.strID, //加工订单ID
-            Desc: data.strDesc, //加工订单描述
-            Note: data.strNote //加工订单备注
+        const dat = {
+            UUID: updateFromItem.UUID, // 加工订单UUID
+            ID: data.strID, // 加工订单ID
+            Desc: data.strDesc, // 加工订单描述
+            Note: data.strNote, // 加工订单备注
         }
-        TPostData(this.url, "UpdateLot", dat, (res) => {
+        TPostData( this.url, 'UpdateLot', dat, ( res ) => {
             // callback(data)
             this.getProductOrder();
-            message.success('更新成功');
-        }, (err) => {
-            console.log('err', err);
-            message.error('更新失败');
-        })
+            message.success( '更新成功' );
+        }, ( err ) => {
+            console.log( 'err', err );
+            message.error( '更新失败' );
+        } )
     }
 
-    handleProfinish(record){
-
-        TPostData(this.url, "CloseProductOrder", {UUID:record.UUID},
+    handleProfinish( record ) {
+        TPostData(
+            this.url, 'CloseProductOrder', { UUID: record.UUID },
             () => {
-                message.success('操作成功!');
+                message.success( '操作成功!' );
                 this.getProductOrder();
                 // this.renderSubTable(data);
                 // this.forceUpdate();
             },
-            (err) => {
-                message.error('操作失败！');
-            }
+            ( err ) => {
+                message.error( '操作失败！' );
+            },
         )
     }
 
-    handleSchedul=(data)=> {
-        const {updateFromItem} = this.state;
-        let dat = {
-            ProductOrderUUID: updateFromItem.UUID,                                  // 生产订单UUID
-            WorkstationUUID: data.WorkstationUUID,//data.WorkstationUUID[1],                                   // 工作中心UUID
-            MoldUUID: data.MoldUUID,//data.MoldUUID[1],                                              // 模具UUID
-            ScheduleNumber: data.Number,                                     // 排产数量
-            PlanStartDateTime: data.Date[0].format('YYYY-MM-DD hh:mm:ss'), //排程开始时间
-            PlanFinishDateTime: data.Date[1].format('YYYY-MM-DD hh:mm:ss'), //排程结束时间[]
-            ID: data.dispatchID,                                                             // 派工单编号
-            Insert: 0                                                         // 是否插单
+    handleSchedul = ( data ) => {
+        const { updateFromItem } = this.state;
+        const dat = {
+            ProductOrderUUID: updateFromItem.UUID, // 生产订单UUID
+            WorkstationUUID: data.WorkstationUUID, // data.WorkstationUUID[1],                                   // 工作中心UUID
+            MoldUUID: data.MoldUUID, // data.MoldUUID[1],                                              // 模具UUID
+            ScheduleNumber: data.Number, // 排产数量
+            PlanStartDateTime: data.Date[0].format( 'YYYY-MM-DD hh:mm:ss' ), // 排程开始时间
+            PlanFinishDateTime: data.Date[1].format( 'YYYY-MM-DD hh:mm:ss' ), // 排程结束时间[]
+            ID: data.dispatchID, // 派工单编号
+            Insert: 0, // 是否插单
         }
-        console.log( '看看dat',data, dat );
-
-        TPostData(this.url, "Schedule", dat, () => {
-            message.success('排程成功!');
+        TPostData( this.url, 'Schedule', dat, () => {
+            message.success( '排程成功!' );
             this.getProductOrder();
             // this.renderSubTable(data);
             this.forceUpdate();
-        }, (error) => {
-            message.error('排程失败！');
-        })
+        }, ( error ) => {
+            message.error( '排程失败！' );
+        } )
     }
 
-    handleBSchedul(data) {
-        const {updateFromItem} = this.state;
-        console.log("表单数据", data);
+    handleBSchedul( data ) {
+        const { updateFromItem } = this.state;
+        console.log( '表单数据', data );
 
-        let dat = {
+        const dat = {
             // LotUUID: data.UUID, 加工订单UUID
-            PlanNumber: data.Number, //排程产量
+            PlanNumber: data.Number, // 排程产量
             ID: data.dispatchID,
-            WorkstationUUID: data.WorkstationUUID, //工作中心UUID
+            WorkstationUUID: data.WorkstationUUID, // 工作中心UUID
             // MoldModelUUID: data.MoldModelUUID, 模具型号
-            PlanStartTime: data.PlanStartTime.format('YYYY-MM-DD hh:mm:ss'), //排程开始时间
-            PlanFinishTime: data.PlanFinishTime.format('YYYY-MM-DD hh:mm:ss'), //排程结束时间[]
+            PlanStartTime: data.PlanStartTime.format( 'YYYY-MM-DD hh:mm:ss' ), // 排程开始时间
+            PlanFinishTime: data.PlanFinishTime.format( 'YYYY-MM-DD hh:mm:ss' ), // 排程结束时间[]
             // LotList:updateFromItem.UUID,
             LotList: data.taskNuber
                 ? data.taskNuber
-                : [updateFromItem.UUID]
+                : [updateFromItem.UUID],
         }
         // console.log( '看看dat', dat );
-        TPostData(this.url, "Schedule", dat, function(res) {
-            message.success('批量排程成功');
-        })
+        TPostData( this.url, 'Schedule', dat, ( res ) => {
+            message.success( '批量排程成功' );
+        } )
     }
 
     clearSelectedRow() {
-        let clear = () => {
-            let row = this.state.selectedRow;
-            while (row && row.length > 0) {
+        const clear = () => {
+            const row = this.state.selectedRow;
+            while ( row && row.length > 0 ) {
                 row.shift();
             }
-            return;
         }
-        this.setState({selectedRow: [], selectedRowKeys: [], selectedProductID: -1});
+        this.setState( { selectedRow: [], selectedRowKeys: [], selectedProductID: -1 } );
     }
 
-    handleWSChange=(ele)=> {
-        this.setState({WorkshopID:ele});
+    handleWSChange=( ele ) => {
+        this.setState( { WorkshopID: ele } );
     }
 
-    handleProChange(ele) {
-        this.setState({ProModelID: ele});
+    handleProChange( ele ) {
+        this.setState( { ProModelID: ele } );
     }
 
-    handleStatusChange(ele) {
-        this.setState({orderState: ele});
+    handleStatusChange( ele ) {
+        this.setState( { orderState: ele } );
     }
 
-    handleCancel(data) {
-        console.log("取消排产的Data", data);
-        let dat = {
-            UUID: data.UUID, //订单UUID
+    handleCancel( data ) {
+        console.log( '取消排产的Data', data );
+        const dat = {
+            UUID: data.UUID, // 订单UUID
         }
-        TPostData(this.url, "UndoSchedule", dat, (res) => {
-            message.success("暂停排产成功！")
-            this.renderSubTable(data)
+        TPostData( this.url, 'UndoSchedule', dat, ( res ) => {
+            message.success( '暂停排产成功！' )
+            this.renderSubTable( data )
             this.forceUpdate();
-        }, (err) => {
-            message.error("暂停排产失败！")
-        })
+        }, ( err ) => {
+            message.error( '暂停排产失败！' )
+        } )
     }
 
     handleRetrieve() {
-        const {ProModelID, keyWord, orderState} = this.state;
-        console.log('查询', ProModelID, this.keyWordInput.input.value, orderState);
-        this.setState({keyWord: this.keyWordInput.input.value});
+        const { ProModelID, keyWord, orderState } = this.state;
+        console.log( '查询', ProModelID, this.keyWordInput.input.value, orderState );
+        this.setState( { keyWord: this.keyWordInput.input.value } );
         this.getProductOrder();
     }
 
-    handleClose(tag) {
-        const {selectedRow, selectedRowKeys} = this.state;
-        let tempSelectedRow = selectedRow,
-            tempselectedRowKeys = selectedRowKeys,
-            spliceRowIndex = 0,
-            spliceRowKeyIndex = 0;
+    handleClose( tag ) {
+        const { selectedRow, selectedRowKeys } = this.state;
+        const tempSelectedRow = selectedRow;
+        const tempselectedRowKeys = selectedRowKeys;
+        let spliceRowIndex = 0;
+        let spliceRowKeyIndex = 0;
 
-        spliceRowIndex = selectedRow.findIndex((ele, index) => {
-            return ele.UUID == tag.UUID;
-        });
-        spliceRowKeyIndex = selectedRowKeys.findIndex((ele, index) => {
-            return ele == tag.key;
-        });
-        tempSelectedRow.splice(spliceRowIndex, 1);
-        tempselectedRowKeys.splice(spliceRowKeyIndex, 1);
-        this.setState({selectedRow: tempSelectedRow, selectedRowKeys: tempselectedRowKeys});
-
+        spliceRowIndex = selectedRow.findIndex( ( ele, index ) => ele.UUID === tag.UUID );
+        spliceRowKeyIndex = selectedRowKeys.findIndex( ( ele, index ) => ele === tag.key );
+        tempSelectedRow.splice( spliceRowIndex, 1 );
+        tempselectedRowKeys.splice( spliceRowKeyIndex, 1 );
+        this.setState( { selectedRow: tempSelectedRow, selectedRowKeys: tempselectedRowKeys } );
     }
 
-    handleToggleBorder(value) {
-        console.log("ToggleBorder", value);
-        this.setState({bordered: value});
+    handleToggleBorder( value ) {
+        this.setState( { bordered: value } );
     }
 
-    handleScollChange(enable) {
-        console.log("enable", enable);
-        this.setState({
+    /* handleScollChange( enable ) {
+        this.setState( {
             scroll: enable
                 ? {
-                    scroll
+                    scroll,
                 }
-                : undefined
-        });
-    }
+                : undefined,
+        } );
+    } */
 
-    handleTableChange=(pagination)=>{
+    handleTableChange=( pagination ) => {
         // console.log('pagination',pagination);
-        const {current,pageSize}=pagination;
-        this.setState({current,pageSize,loading:true},()=>{
+        const { current, pageSize } = pagination;
+        this.setState( { current, pageSize, loading: true }, () => {
             this.getProductOrder();
-        });
+        } );
     }
 
-    handleQuery=(data)=>{
-        console.log("查询的值是:",data);
+    handleQuery = ( data ) => {
         // ProModelID,WorkshopID,keyWord,orderState
-        const {ProModelID,WorkshopID,keyWord,orderState}=data;
-        this.setState({ProModelID,WorkshopID,keyWord,orderState},()=>{
+        const {
+            ProModelID,
+            WorkshopID,
+            keyWord,
+            orderState,
+        } = data;
+        this.setState( {
+            ProModelID,
+            WorkshopID,
+            keyWord,
+            orderState,
+        }, () => {
             this.getProductOrder();
-        });
+        } );
     }
 
     render() {
-
         const {
             // productOrderList,
-            LotList,
+            // LotList,
             BSLotList,
             ProModelList,
-            ProModelSList,
+            // ProModelSList,
             workshopList,
             WorkCenterList,
             moldList,
@@ -731,15 +706,15 @@ export default class order extends Component {
             defaultBSNumber,
             bordered,
             size,
-            scroll,
+            // scroll,
             // loading,
             current,
             // total,
             pageSize,
-            unscheduledNum
+            unscheduledNum,
         } = this.state;
         const { list, total, loading } = this.props.productOrder;
-        const {Breadcrumb}=this.props;
+        const { Breadcrumb } = this.props;
         const menu = (
             <Menu>
               <Menu.Item>
@@ -758,17 +733,17 @@ export default class order extends Component {
                 {
                     title: '',
                     dataIndex: 'key',
-                    width:30
+                    width: 30,
                 },
                 {
                     title: 'ID',
                     dataIndex: 'uObjectUUID',
-                    width:50
+                    width: 50,
                 },
                 {
                     title: '订单号',
                     dataIndex: 'strOrderID',
-                    type: 'string'
+                    type: 'string',
                 },
                 {
                     title: '客户名称',
@@ -778,63 +753,44 @@ export default class order extends Component {
                 {
                     title: '下单日期',
                     dataIndex: 'IssuedDateTime',
-                    type: 'string'
+                    type: 'string',
                 },
                 {
                     title: '计划交期',
                     dataIndex: 'PlanDeliverDate',
-                    type: 'string'
+                    type: 'string',
                 },
-                /*{
+                /* {
                     title: '计划完成时间',
                     dataIndex: 'PlanFinishDateTime',
                     type: 'string'
-                },*/
+                }, */
                 {
                     title: '订单状态',
                     dataIndex: 'Status',
                     type: 'string',
                     width: 120,
                     render: ( e1, record ) => {
-                        /*let statusText='';
-                        statusText=e1==0?'已取消':
-                            e1==1?'未生产':
-                            e1==2?'生产中':
-                            e1==3?'已完成':e1;
-                            // e1==4?'执行中':
-                            // e1==5?'已完成':
-                            // e1==6?'生产中':
-                            // e1==9?'生产挂起':
-                            // e1==10?'已完成':
-                            // e1==11?'11':e1;
-                        return  <span className="stateBotton">{statusText}</span>*/
-
-                    let status='';
-                        status=e1==0?(<span className="orderCancelled">已取消</span>):
-                            e1==1?(<span className="Unproduced">未生产</span>):
-                            e1==2?(<span className="Inproduction">生产中</span>):
-                            e1==3?(<span className="Completed">已完成</span>):
-                            // e1==4?(<span className="Submited">已报工(4)</span>):
-                            // e1==5?(<span>生产完成(5)</span>):
-                            // e1==6?(<span>生产中(6)</span>):
-                            // e1==9?(<span>生产挂起(9)</span>):
-                            // e1==10?(<span>已完成(10)</span>):
-                            // e1==11?(<span>暂停中(11)</span>):
+                    let status = '';
+                        status = e1 === 0 ? ( <span className="orderCancelled">已取消</span> ) :
+                            e1 === 1 ? ( <span className="Unproduced">未生产</span> ) :
+                            e1 === 2 ? ( <span className="Inproduction">生产中</span> ) :
+                            e1 === 3 ? ( <span className="Completed">已完成</span> ) :
                             <span>{e1}</span>
-                        return  status;
-                    }
+                        return status;
+                    },
                 },
                 {
                     title: '操作',
                     dataIndex: 'uMachineUUID',
                     type: 'operate', // 操作的类型必须为 operate
-                    multipleType: "orderList",
+                    multipleType: 'orderList',
                     width: 120,
-                    render:(e1,record,e3)=>{
+                    render: ( e1, record, e3 ) => {
                         // console.log("行数据",e1,e2,e3);
-                        let operate='';
-                        if(record.hasOwnProperty('nOrderFlag') &&(record.nOrderFlag==1||record.nOrderFlag==2)){
-                            operate=(
+                        let operate = '';
+                        if ( record.nOrderFlag && ( record.nOrderFlag === 1 || record.nOrderFlag === 2 ) ) {
+                            operate = (
                                 <span>
                                     {/* <a onClick={this.toggleSModalShow.bind(this, record)}>排产</a>
                                     <span className="ant-divider"></span>
@@ -846,7 +802,7 @@ export default class order extends Component {
                                         <a href="#">完成生产</a>
                                     </Popconfirm> */}
                                     <a>删除</a>
-                                    <span className="ant-divider"></span>
+                                    <span className="ant-divider" />
                                     <Dropdown overlay={menu}>
                                         <a className="ant-dropdown-link" href="#">
                                             更多<Icon type="down" />
@@ -854,11 +810,10 @@ export default class order extends Component {
                                     </Dropdown>
                                 </span>
                             );
-                        }
-                        else operate=(<span>无</span>)
+                        } else operate = ( <span>无</span> )
                         return operate;
-                    }
-                }
+                    },
+                },
         ];
 
         const UFormItem = [
@@ -870,9 +825,9 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '请输入订单号'
-                    }
-                ]
+                        message: '请输入订单号',
+                    },
+                ],
             }, {
                 name: 'strDesc',
                 label: '订单描述',
@@ -881,15 +836,15 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '请输入订单描述'
-                    }
-                ]
+                        message: '请输入订单描述',
+                    },
+                ],
             }, {
                 name: 'strNote',
                 label: '订单备注',
                 type: 'string',
-                placeholder: '请输入计划产量'
-            }
+                placeholder: '请输入计划产量',
+            },
         ];
 
         const SFormItem = [
@@ -902,12 +857,12 @@ export default class order extends Component {
                     {
                         required: true,
                         message: '请输入排程产量',
-                        type:'number',
-                        min:1,
-                        max:unscheduledNum
-                    }
+                        type: 'number',
+                        min: 1,
+                        max: unscheduledNum,
+                    },
                 ],
-                help:(<span>未排数:<span style={{color:'#f5290d',fontWeight:'bolder'}}>{unscheduledNum}</span>,排产数不能超过未排数量不能少于等于0个</span>)
+                help: ( <span>未排数:<span style={{ color: '#f5290d', fontWeight: 'bolder' }}>{unscheduledNum}</span>,排产数不能超过未排数量不能少于等于0个</span> ),
             }, {
                 name: 'dispatchID',
                 label: '派工单号',
@@ -916,72 +871,72 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '派工单号不能为空'
-                    }
-                ]
-            },{
+                        message: '派工单号不能为空',
+                    },
+                ],
+            }, {
                 name: 'WorkstationUUID',
                 label: '工作中心',
                 // type: 'LazyCascader',
                 type: 'select',
-                options:WorkCenterList,
-                resetValue:(value)=>{
+                options: WorkCenterList,
+                resetValue: ( value ) => {
                     // console.log("选择的工作中心是：",value);
                 },
-                fetchParameter:{
-                    url:'/api/TProcess/workcenter',
-                    op:"ListActive",
+                fetchParameter: {
+                    url: '/api/TProcess/workcenter',
+                    op: 'ListActive',
                     obj: {
-                        'PageIndex': 0,
-                        'PageSize': -1,
-                        'TypeUUID': -1,
-                        'KeyWord':'',
-                        WorkshopUUID:updateFromItem.WorkshopUUID
+                        PageIndex: 0,
+                        PageSize: -1,
+                        TypeUUID: -1,
+                        KeyWord: '',
+                        WorkshopUUID: updateFromItem.WorkshopUUID,
                     },
-                    lazyItem:'WorkshopUUID',
+                    lazyItem: 'WorkshopUUID',
                 },
                 rules: [
                     {
                         required: true,
-                        message: '请选择工作中心'
-                    }
-                ]
-            },{
+                        message: '请选择工作中心',
+                    },
+                ],
+            }, {
                 name: 'MoldUUID',
                 label: '模具',
                 // type: 'LazyCascader',
                 type: 'select',
                 // options:this.state.lazyWSlist,
-                options:moldList,
-                resetValue:(value)=>{
+                options: moldList,
+                resetValue: ( value ) => {
                     // console.log("选择的工作中心是：",value);
                 },
-                fetchParameter:{
-                    url:'/api/TMold/mold',
-                    op:"ListActive",
+                fetchParameter: {
+                    url: '/api/TMold/mold',
+                    op: 'ListActive',
                     obj: {
                         PageIndex: 0,
                         PageSize: -1,
                         ModelUUID: -1,
-                        KeyWord: ""
+                        KeyWord: '',
                     },
                     // lazyItem:'WorkshopUUID'
-                    lazyItem:'StorageUUID'
+                    lazyItem: 'StorageUUID',
                 },
                 rules: [
                     {
                         required: true,
-                        message: '请选择模具'
-                    }
-                ]
+                        message: '请选择模具',
+                    },
+                ],
             },
             {
                 name: 'Date',
                 label: '日期',
                 type: 'rangeDate',
                 placeholder: '请输入计划产量',
-            }
-            /*{
+            },
+            /* {
                 name: 'PlanStartTime',
                 label: '起始时间',
                 type: 'date',
@@ -991,7 +946,7 @@ export default class order extends Component {
                 label: '结束时间',
                 type: 'date',
                 placeholder: '请输入计划产量'
-            }*/
+            } */
         ];
 
         const BSFormItem = [
@@ -1003,9 +958,9 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '派工单号不能为空'
-                    }
-                ]
+                        message: '派工单号不能为空',
+                    },
+                ],
             }, {
                 name: 'Number',
                 label: '数量',
@@ -1015,9 +970,9 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '数量不能为空'
-                    }
-                ]
+                        message: '数量不能为空',
+                    },
+                ],
             }, {
                 name: 'WorkstationUUID',
                 label: '工作中心',
@@ -1026,9 +981,9 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '请选择工作中心'
-                    }
-                ]
+                        message: '请选择工作中心',
+                    },
+                ],
             }, {
                 name: 'taskNuber',
                 label: '工单号',
@@ -1038,146 +993,158 @@ export default class order extends Component {
                 rules: [
                     {
                         required: true,
-                        message: '请选择模具型号'
-                    }
-                ]
+                        message: '请选择模具型号',
+                    },
+                ],
             },
-            /*{
+            /* {
                 name: 'Date',
                 label: '日期',
                 type: 'RangePicker',
                 placeholder: '请输入计划产量'
-            },*/
+            }, */
             {
                 name: 'PlanStartTime',
                 label: '起始时间',
                 type: 'date',
-                placeholder: '请输入计划产量'
+                placeholder: '请输入计划产量',
             }, {
                 name: 'PlanFinishTime',
                 label: '结束时间',
                 type: 'date',
-                placeholder: '请输入计划产量'
-            }
+                placeholder: '请输入计划产量',
+            },
         ];
 
-        //查询的数据项
-        const RFormItem= [
+        // 查询的数据项
+        const RFormItem = [
             {
                 name: 'keyWord',
                 label: '搜索内容',
                 type: 'string',
                 // width: 200,
                 placeholder: '请输入搜索内容',
-                defaultValue:this.state.keyWord
-            },{
+                defaultValue: this.state.keyWord,
+            }, {
                 name: 'WorkshopID',
                 label: '车间',
                 type: 'select',
                 defaultValue: '-1',
                 hasAllButtom: true,
                 // width: 180,
-                options:workshopList
-            },{
+                options: workshopList,
+            }, {
                 name: 'ProModelID',
                 label: '产品',
                 type: 'select',
                 defaultValue: '-1',
                 hasAllButtom: true,
                 // width: 200,
-                options: ProModelList
-            },{
+                options: ProModelList,
+            }, {
                 name: 'orderState',
                 label: '订单状态',
                 type: 'select',
                 defaultValue: '-1',
                 hasAllButtom: true,
                 // width: 180,
-                options:[
-                    /*{
+                options: [
+                    /* {
                         value:-1,
                         text:'全部',
                         key:'1'
-                    },*/
+                    }, */
                     {
-                        value:0,
-                        text:'已取消',
-                        key:'2'
+                        value: 0,
+                        text: '已取消',
+                        key: '2',
                     },
                     {
-                        value:1,
-                        text:'未就绪',
-                        key:'3'
+                        value: 1,
+                        text: '未就绪',
+                        key: '3',
                     },
                     {
-                        value:2,
-                        text:'未执行',
-                        key:'4'
+                        value: 2,
+                        text: '未执行',
+                        key: '4',
                     },
                     {
-                        value:3,
-                        text:'暂停中',
-                        key:'5'
+                        value: 3,
+                        text: '暂停中',
+                        key: '5',
                     },
                     {
-                        value:4,
-                        text:'执行中',
-                        key:'6'
+                        value: 4,
+                        text: '执行中',
+                        key: '6',
                     },
                     {
-                        value:5,
-                        text:'已完成',
-                        key:'7'
-                    }
-                ]
+                        value: 5,
+                        text: '已完成',
+                        key: '7',
+                    },
+                ],
             },
             // {type:'submit'}
         ];
 
         const rowSelection = {
-            onChange: (selectedRowKeys, selectedRows) => {
+            onChange: ( selectedRowKeys, selectedRows ) => {
                 // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-                if (selectedRows.length)
-                    this.setState({selectedRow: selectedRows, selectedRowKeys, selectedProductID: selectedRows[0].ProductModelUUID});
-                else
-                    this.setState({selectedRow: selectedRows, selectedRowKeys, selectedProductID: -1});
-                    // console.log('selectedRow: ', this.state.selectedRow);
+                if ( selectedRows.length ) {
+                    this.setState( {
+                        selectedRow: selectedRows,
+                        selectedRowKeys,
+                        selectedProductID: selectedRows[0].ProductModelUUID,
+                    } );
+                } else {
+                    this.setState( {
+                        selectedRow: selectedRows,
+                        selectedRowKeys,
+                        selectedProductID: -1,
+                    } );
                 }
-            ,
+                // console.log('selectedRow: ', this.state.selectedRow);
+            },
             selectedRowKeys,
             // selectedRowKeys:this.state.selectedRow,
             // selections:[true,true,true],
-            getCheckboxProps: (record, e2, e3) => {
+            getCheckboxProps: ( record, e2, e3 ) => {
                 // console.log('Disabled User',record);
                 // console.log('this.state.selectedProductID',this.state.selectedProductID);
-                if (this.state.selectedProductID == -1)
-                    return ({
-                        disabled: record.strStatus !== 1 && record.strStatus !== 2
-                    });
-                return ({
-                    disabled: (record.ProductModelUUID !== this.state.selectedProductID || (record.strStatus !== 2 && record.strStatus !== 1))
-                });
-            }
+                if ( this.state.selectedProductID === -1 ) {
+                    return ( {
+                        disabled: record.strStatus !== 1 && record.strStatus !== 2,
+                    } );
+                }
+                return ( {
+                    disabled: ( record.ProductModelUUID !== this.state.selectedProductID || ( record.strStatus !== 2 && record.strStatus !== 1 ) ),
+                } );
+            },
         };
 
         const AlertMessage = (
             <div>
                 <span>已选择
-                    <a style={{fontSize: 15,color: 'red'}}>{selectedRow.length}</a>项
+                    <a style={{ fontSize: 15, color: 'red' }}>{selectedRow.length}</a>项
                 </span>
                 <a
-                    style={{marginLeft: 20}}
-                    onClick={this.clearSelectedRow.bind(this)}>清除</a>
+                  style={{ marginLeft: 20 }}
+                  onClick={this.clearSelectedRow}
+                  onKeyDown={this.clearSelectedRow}
+                >清除
+                </a>
             </div>
         )
 
-        let Data={
-            list:list,
-            pagination:{total,current,pageSize}
+        const Data = {
+            list: list,
+            pagination: { total, current, pageSize },
         };
 
         const bcList = [{
-            title:"首页",
+            title: '首页',
             href: '/',
             }, {
             title: '生产管理',
@@ -1187,49 +1154,69 @@ export default class order extends Component {
         }];
 
         return (
-            <PageHeaderLayout 
-            // title="任务排程" 
-            wrapperClassName="pageContent" 
-            BreadcrumbList={Breadcrumb.BCList}>
+            <PageHeaderLayout
+            // title="任务排程"
+              wrapperClassName="pageContent"
+              BreadcrumbList={Breadcrumb.BCList}
+            >
                 {/* <Card bordered={false}> */}
-                    <div style={{marginBottom:6}}>
+                    <div style={{ marginBottom: 6 }}>
                         <Row>
                             <Col span={8}>
                                 <Button type="primary">创建</Button>
-                                <Button style={{marginLeft:6}}>导入</Button>
-                                <Button style={{marginLeft:6}}>拆分</Button>
-                                <Button style={{marginLeft:6}} type="danger">删除</Button>
+                                <Button style={{ marginLeft: 6 }}>导入</Button>
+                                <Button style={{ marginLeft: 6 }}>拆分</Button>
+                                <Button style={{ marginLeft: 6 }} type="danger">删除</Button>
                             </Col>
-                            <Col span={0}>
-                            </Col>
-                            <Col span={4}></Col>
+                            <Col span={0} />
+                            <Col span={4} />
                             <Col span={8}>
                                 <DropDownForm
-                                    FormItem={RFormItem}
+                                  FormItem={RFormItem}
                                 />
                             </Col>
-                            <Col span={1}></Col>
+                            <Col span={1} />
                             <Col span={3}>
-                                边框：<Switch checked={bordered} onChange={this.handleToggleBorder.bind(this)}/>
+                                边框：<Switch checked={bordered} onChange={this.handleToggleBorder} />
                             </Col>
                         </Row>
                     </div>
                     <SimpleTable
-                        ref={te=>this._tableExport=te}
+                      ref={te => this._tableExport = te}
                         // render={(<Button type="primary">创建</Button>)}
-                        expandedRowRender={this.renderSubTable}
+                      expandedRowRender={this.renderSubTable}
                         // rowSelection={rowSelection}
-                        selectable
-                        loading={loading}
-                        data={Data}
-                        columns={columns}
-                        bordered={bordered}
-                        size={size}
-                        onChange={this.handleTableChange}
+                      selectable
+                      loading={loading}
+                      data={Data}
+                      columns={columns}
+                      bordered={bordered}
+                      size={size}
+                      onChange={this.handleTableChange}
                     />
-                    <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate.bind(this)} isShow={UModalShow} hideForm={this.toggleUModalShow.bind(this)}/>
-                    <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul.bind(this)} isShow={SModalShow} hideForm={this.toggleSModalShow.bind(this)}/>
-                    <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul.bind(this)} isShow={BSModalShow} hideForm={this.toggleBSModalShow.bind(this)}/>
+                    <CModal
+                      FormItem={UFormItem}
+                      updateItem={updateFromItem}
+                      submit={this.handleUpdate}
+                      isShow={UModalShow}
+                      hideForm={this.toggleUModalShow}
+                    />
+                    <CModal
+                      title="任务排程"
+                      FormItem={SFormItem}
+                      updateItem={updateFromItem}
+                      submit={this.handleSchedul}
+                      isShow={SModalShow}
+                      hideForm={this.toggleSModalShow}
+                    />
+                    <CModal
+                      FormItem={BSFormItem}
+                      handleType="schedul"
+                      updateItem={updateFromItem}
+                      submit={this.handleBSchedul}
+                      isShow={BSModalShow}
+                      hideForm={this.toggleBSModalShow}
+                    />
                 {/* </Card> */}
             </PageHeaderLayout>
         )

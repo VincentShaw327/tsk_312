@@ -1,8 +1,9 @@
-import TDeviceList from './TDeviceList';
-import TDeviceModel from './TDeviceModel';
-import TDeviceType from './TDeviceType';
+import TDeviceList from './instance';
+import TDeviceModel from './model';
+import TDeviceType from './type';
+
 export {
     TDeviceList,
     TDeviceModel,
-    TDeviceType
+    TDeviceType,
 }

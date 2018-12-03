@@ -62,6 +62,11 @@ const webpackConfigBase = {
       },
       {
         test: /\.less$/,
+        // exclude:[/\.custom.less/],
+        // not:[
+        //   path.resolve(__dirname, "./app/test"),
+        //   path.resolve(__dirname, "./app/custom.less"),
+        // ],
         use: [
           MiniCssExtractPlugin.loader,
           // 'css-loader',

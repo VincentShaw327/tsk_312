@@ -4,8 +4,8 @@ export default (() => {
     // 本地开发打开的路径以及端口
     // global.linkUrl = 'http://localhost:9000/';
     // global.linkUrl = 'http://192.168.3.9/';
-    // global.linkUrl = 'http://dev.mes.top-link.me/';
-    global.linkUrl = 'http://localhost:3000/';
+    global.linkUrl = 'http://dev.mes.top-link.me/';
+    // global.linkUrl = 'http://localhost:3000/';
     // global.linkUrl = 'http://dev.mes.top-link.me/';
     if (process.env.NODE_ENV === 'production') { // 生产环境用不同的接口地址
       global.linkUrl = 'http://localhost:3000';
@@ -52,13 +52,16 @@ export default (() => {
         ],
       },
       {
-        name: '生产控制',
+        name: '工艺管理',
         icon: 'fund',
         url: '',
         key: 'TManufactureSetting',
         children: [
           {
-            name:'工艺配置', key: '/process/product',url:'/process/product'
+            name:'工艺路线', key: '/procession/route',url:'/process/product'
+          },
+          {
+            name:'工艺配置', key: '/procession/configlist',url:'/procession/configlist'
           },
           /* {
             name:'库存控制', key: 'task_dispatch',url:'task_dispatch'
@@ -169,7 +172,10 @@ export default (() => {
             name:'物料型号', key: '/material/material_model',url:'/material/material_model',
           },
           {
-            name:'产品型号', key: '/material/product_model',url:'/material/product_model',
+            name:'产品类别', key: '/product/category',url:'/product/category',
+          },
+          {
+            name:'产品列表', key: '/product/model',url:'/product/model',
           },
           {
             name:'BOM表', key: '/material/bom_list',url:'/material/bom_list',
@@ -183,10 +189,10 @@ export default (() => {
         key: 'TWorkCenter',
         children: [
           {
-            name:'工作中心类型', key: '/process/workcenter_type',url:'/process/centerType',
+            name:'工作中心类型', key: '/work/workCenter_type',url:'/process/workCenter_type',
           },
           {
-            name:'工作中心', key: '/process/workcenter',url:'/process/workcenter',
+            name:'工作中心', key: '/work/workCenter',url:'/work/workCenter',
           },
         ],
       },
@@ -263,3 +269,10 @@ export default (() => {
 export const prefix = global.gconfig.linkUrl
 // export const suffix = '.json'
 export const suffix = ''
+
+/* {
+  "compilerOptions": {
+      "experimentalDecorators": true,
+      "allowJs": true
+  }
+} */

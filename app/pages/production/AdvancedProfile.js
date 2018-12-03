@@ -89,7 +89,7 @@ const tabList = [
 ];
 
 const desc1 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       曲丽丽
       <Icon type="dingding-o" style={{ marginLeft: 8 }} />
@@ -122,14 +122,14 @@ const popoverContent = (
   </div>
 );
 
-const customDot = (dot, { status }) =>
-  status === 'process' ? (
+const customDot = ( dot, { status } ) =>
+  ( status === 'process' ? (
     <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>
       {dot}
     </Popover>
   ) : (
     dot
-  );
+  ) );
 
 const operationTabList = [
   {
@@ -162,11 +162,11 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     render: text =>
-      text === 'agree' ? (
+      ( text === 'agree' ? (
         <Badge status="success" text="成功" />
       ) : (
         <Badge status="error" text="驳回" />
-      ),
+      ) ),
   },
   {
     title: '操作时间',
@@ -180,10 +180,10 @@ const columns = [
   },
 ];
 
-@connect(({ profile, loading }) => ({
+@connect( ( { profile, loading } ) => ( {
   profile,
   loading: loading.effects['profile/fetchAdvanced'],
-}))
+} ) )
 class AdvancedProfile extends Component {
   state = {
     operationkey: 'tab1',
@@ -192,36 +192,36 @@ class AdvancedProfile extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
+    dispatch( {
       type: 'profile/fetchAdvanced',
-    });
+    } );
 
     this.setStepDirection();
-    window.addEventListener('resize', this.setStepDirection, { passive: true });
+    window.addEventListener( 'resize', this.setStepDirection, { passive: true } );
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.setStepDirection);
+    window.removeEventListener( 'resize', this.setStepDirection );
     this.setStepDirection.cancel();
   }
 
-  onOperationTabChange = key => {
-    this.setState({ operationkey: key });
+  onOperationTabChange = ( key ) => {
+    this.setState( { operationkey: key } );
   };
 
   @Bind()
-  @Debounce(200)
+  @Debounce( 200 )
   setStepDirection() {
     const { stepDirection } = this.state;
     const w = getWindowWidth();
-    if (stepDirection !== 'vertical' && w <= 576) {
-      this.setState({
+    if ( stepDirection !== 'vertical' && w <= 576 ) {
+      this.setState( {
         stepDirection: 'vertical',
-      });
-    } else if (stepDirection !== 'horizontal' && w > 576) {
-      this.setState({
+      } );
+    } else if ( stepDirection !== 'horizontal' && w > 576 ) {
+      this.setState( {
         stepDirection: 'horizontal',
-      });
+      } );
     }
   }
 

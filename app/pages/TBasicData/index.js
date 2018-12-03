@@ -6,6 +6,7 @@ import TMaterialType from './TMaterialType';
 import TAreaType from './TAreaType';
 import TAlarmType from './TAlarmType';
 import TDefectiveType from './TDefectiveType';
+
 export {
     TWorkShopType,
     TFactoryType,
@@ -14,5 +15,5 @@ export {
     TMaterialType,
     TAreaType,
     TAlarmType,
-    TDefectiveType
+    TDefectiveType,
 }

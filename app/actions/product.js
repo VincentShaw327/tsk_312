@@ -9,15 +9,58 @@ import {
     fakeAjaxAction,
 } from 'utils'
 
-/* 工艺列表请求 */
-export const requestProductModel = createAction( 'request product model list' );
-export const recevieProductModel = createAction( 'receive product model list' );
-export const fetchProductModel = !gconfig.isDemo_dev ? createAjaxAction(
-    product.product_model,
-    requestProductModel,
-    recevieProductModel,
+/* 产品类别 start */
+export const category_list = !gconfig.isDemo_dev ? createAjaxAction(
+    product.category_list,
+    createAction( 'request product category list' ),
+    createAction( 'receive product category list' ),
 ) : fakeAjaxAction(
-    product.product_model,
-    requestProductModel,
-    recevieProductModel,
+    product.category_list,
+    createAction( 'request product category list' ),
+    createAction( 'receive product category list' ),
 )
+
+export const category_add = createAjaxAction(
+    product.category_add,
+    null,
+    createAction( 'success add product category' ),
+);
+export const category_update = createAjaxAction(
+    product.category_add,
+    null,
+    createAction( 'success add product category' ),
+);
+export const category_delete = createAjaxAction(
+    product.category_add,
+    null,
+    createAction( 'success add product category' ),
+);
+/* 产品类别 end */
+
+
+/* 产品列表start */
+export const model_list = !gconfig.isDemo_dev ? createAjaxAction(
+    product.model_list,
+    createAction( 'request product model list' ),
+    createAction( 'receive product model list' ),
+) : fakeAjaxAction(
+    product.model_list,
+    createAction( 'request product model list' ),
+    createAction( 'receive product model list' ),
+)
+
+export const model_add = createAjaxAction(
+    product.model_add,
+    null,
+    createAction( 'success add product model' ),
+);
+export const model_update = createAjaxAction(
+    product.model_add,
+    null,
+    createAction( 'success add product model' ),
+);
+export const model_delete = createAjaxAction(
+    product.model_add,
+    null,
+    createAction( 'success add product model' ),
+);

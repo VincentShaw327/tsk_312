@@ -10,14 +10,15 @@ import * as Iot from './Iot'
 import * as maintain from './maintain'
 import * as production from './production'
 import * as mold from './mold'
-import * as crafts from './crafts'
+import * as procession from './procession'
 import * as product from './product'
 import * as report from './report'
 import * as user from './user'
-import * as warning from './warning'
-import * as wms from './wms'
 import * as mtrlloss from './mtrlloss'
 import * as quality from './quality'
+import * as warning from './warning'
+import * as wms from './wms'
+import * as work from './work'
 
 export {
   common,
@@ -31,12 +32,13 @@ export {
   maintain,
   production,
   mold,
-  crafts,
+  procession,
   product,
   report,
   user,
   warning,
   wms,
+  work,
   mtrlloss,
-  quality
+  quality,
 }

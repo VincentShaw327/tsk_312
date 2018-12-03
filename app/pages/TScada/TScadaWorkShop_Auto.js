@@ -1,73 +1,68 @@
 /**
  *这是设备列表页
  *添加日期:2017.12.20
- **/
-/******引入ant或其他第三方依赖文件*******************/
+ * */
+/** ****引入ant或其他第三方依赖文件****************** */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {Card,Row,Col,Progress,Divider,Tag,Spin,Alert,List,message} from 'antd';
-import { fetchWorkcenterList,mockMqttData } from 'actions/process'
-import { TPostData,urlBase } from 'utils/TAjax';
-import {  yuan,Pie} from 'components/ant-design-pro/Charts';
-import PageHeaderLayout from '../../base/PageHeaderLayout';
+import { Card, Row, Col, Progress, Tag, List, message } from 'antd';
+import { workcenter_list } from 'actions/work'
+import { TPostData, urlBase } from 'utils/TAjax';
+// import { yuan, Pie } from 'components/ant-design-pro/Charts';
 import mqtt from 'mqtt';
-
-var client
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 import AM1 from '../../images/assets/timg.jpg'
 
+let client
 
-@connect( ( state, props ) => {
-    return {
-        workcenter: state.workcenter,
-        Breadcrumb:state.Breadcrumb,
-        MockMqttData:state.MockMqttData
-    }
-}, )
 
+@connect( ( state, props ) => ( {
+    workCenter: state.workCenter,
+    Breadcrumb: state.Breadcrumb,
+    MockMqttData: state.MockMqttData,
+} ) )
 export default class TScadaWorkShop_Auto extends Component {
-
     constructor( props ) {
         super( props )
         this.state = {
-            //单台机台数据状态
+            // 单台机台数据状态
             // aEquipList: [],
-            aEquipList: props.workcenter.workcenterList,
-            stateCount:[],
+            aEquipList: props.workCenter.list,
+            stateCount: [],
             onLine: '-',
             warning: '-',
             allQuery: '-',
-            loading: false
+            loading: false,
         }
     }
-    //查询工作中心
+    // 查询工作中心
     componentWillMount() {
         // this.getWorkcenterList();
-        this.props.dispatch( fetchWorkcenterList( { num: 12 }, ( respose ) => {
-            console.log('workcenter  espose===',respose)
-            let InitstateCount=[
+        this.props.dispatch( workcenter_list( { num: 12 }, ( respose ) => {
+            console.log( 'workcenter  espose===', respose )
+            const InitstateCount = [
                 {
-                    x:'报警',
-                    y:0
+                    x: '报警',
+                    y: 0,
                 },
                 {
-                    x:'离线',
-                    y:respose.objectlist.length
+                    x: '离线',
+                    y: respose.objectlist.length,
                 },
                 {
-                    x:'运行',
-                    y:0
+                    x: '运行',
+                    y: 0,
                 },
                 {
-                    x:'待机',
-                    y:0
-                }
+                    x: '待机',
+                    y: 0,
+                },
             ];
-            this.setState({
-                aEquipList:respose.objectlist,
-                stateCount:InitstateCount
-            })
+            this.setState( {
+                aEquipList: respose.objectlist,
+                stateCount: InitstateCount,
+            } )
         } ) )
-
     }
 
     componentDidMount() {
@@ -83,119 +78,121 @@ export default class TScadaWorkShop_Auto extends Component {
 
     componentWillUnmount() {
         // client.end()
-        clearInterval(this.timer)
+        clearInterval( this.timer )
     }
 
-    /*shouldComponentUpdate(nextprops,nextstate,c){
+    /* shouldComponentUpdate(nextprops,nextstate,c){
         console.log('shouldComponentUpdate',nextprops,nextstate,c)
 
         if(nextprops.hasOwnProperty('workcenter')&&nextprops.workcenter.workcenterList.length>0){
             return true;
         }
-    }*/
+    } */
 
-    getWorkcenterList(){
+    getWorkcenterList() {
         // 获取相应车间的工作中心
-        let aEquipList = [];
-        let dat = {
+        const aEquipList = [];
+        const dat = {
             PageIndex: 0,
             PageSize: -1,
-            WorkshopUUID:1,  //所属车间UUID，不作为查询条件时取值设为-1
-            TypeUUID: -1,   //类型UUID，不作为查询条件时取值设为-1
-            KeyWord : ""
+            WorkshopUUID: 1, // 所属车间UUID，不作为查询条件时取值设为-1
+            TypeUUID: -1, // 类型UUID，不作为查询条件时取值设为-1
+            KeyWord: '',
         };
-        TPostData( '/wc_list01', "ListActive", dat,
-            ( res )=> {
-                console.log("工作中心列表===",res);
-                var Ui_list = res.obj.objectlist || [];
-                var totalcount = res.obj.objectlist.length;
-                Ui_list.forEach(( item, index )=> {
+        TPostData(
+            '/wc_list01',
+            'ListActive',
+            dat,
+            ( res ) => {
+                console.log( '工作中心列表===', res );
+                const Ui_list = res.obj.objectlist || [];
+                const totalcount = res.obj.objectlist.length;
+                Ui_list.forEach( ( item, index ) => {
                     aEquipList.push( {
                         key: index,
                         // ID: item.ID,
-                        ID: 'AUTO_SMT'+item.id,
+                        ID: `AUTO_SMT${item.id}`,
                         UUID: item.UUID,
                         WorkshopUUID: item.WorkshopUUID,
                         Name: item.Name,
-                        Image:item.Image,
-                        style: 'top-equip-light'
+                        Image: item.Image,
+                        style: 'top-equip-light',
                     } )
                 } );
-                //初始化设备状态图标
-                let InitstateCount=[
+                // 初始化设备状态图标
+                const InitstateCount = [
                     {
-                        x:'报警',
-                        y:0
+                        x: '报警',
+                        y: 0,
                     },
                     {
-                        x:'离线',
-                        y:aEquipList.length
+                        x: '离线',
+                        y: aEquipList.length,
                     },
                     {
-                        x:'运行',
-                        y:0
+                        x: '运行',
+                        y: 0,
                     },
                     {
-                        x:'待机',
-                        y:0
-                    }
+                        x: '待机',
+                        y: 0,
+                    },
                 ];
                 this.setState( {
                     aEquipList: aEquipList,
-                    stateCount:InitstateCount,
-                    loading: false
+                    stateCount: InitstateCount,
+                    loading: false,
                 } )
             },
-            ( error )=>{
+            ( error ) => {
                 message.error( error );
-                this.setState({loading:false});
-            }
+                this.setState( { loading: false } );
+            },
         )
-
     }
 
-    subscribeMQTT(){
-        //mqtt消息连接建立
+    subscribeMQTT() {
+        // mqtt消息连接建立
         client = mqtt.connect( 'ws://192.168.3.231:8083/mqtt' );
         // client = mqtt.connect( 'ws://47.91.154.238:8083/mqtt' );
 
         // client = mqtt.connect( 'mqtt://192.168.200.3:9011' );
-        client.on( 'connect', function () {
-            //订阅消息
+        client.on( 'connect', () => {
+            // 订阅消息
             client.subscribe( 'SOOT_TEST_ANDROID_MSG_TO_SERVER' )
             // client.subscribe( '0101/086325608001/201712290001/kanban/01/B' );
             // client.subscribe( "0101/086325608001/201712290001/kanban/01/A" );
             // client.subscribe( 'topstarltd/iec/app/#' )
         } )
         let renderaEquip = [];
-        client.on( 'message',( topic, payload )=> {
+        client.on( 'message', ( topic, payload ) => {
             // 接收到mqtt消息推送数据
             let mqttData = JSON.parse( payload ),
-                MList=[];
+                MList = [];
             // console.log( '接收到MQTT信息', mqttData );
 
-            if(mqttData.hasOwnProperty('nDeviceUUID')){
-                MList=this.state.aEquipList.map((item,index)=>{
-                    if(item.nDeviceUUID==mqttData.nDeviceUUID){
-                        item=Object.assign(item,mqttData)
+            if ( mqttData.hasOwnProperty( 'nDeviceUUID' ) ) {
+                MList = this.state.aEquipList.map( ( item, index ) => {
+                    if ( item.nDeviceUUID == mqttData.nDeviceUUID ) {
+                        item = Object.assign( item, mqttData )
                     }
                     return item;
-                })
-                this.setState({aEquipList:MList});
+                } )
+                this.setState( { aEquipList: MList } );
             }
 
             // 判断消息包内有数据的情况下,把数据更新至组件.
             if ( mqttData && Array.isArray( mqttData.data ) ) {
-                renderaEquip = this.state.aEquipList.map(( item, i )=> {
-                    //判断接受消息是哪一台机器
+                renderaEquip = this.state.aEquipList.map( ( item, i ) => {
+                    // 判断接受消息是哪一台机器
                     mqttData.data.forEach( ( mqttItem, index ) => {
                         if ( item.UUID == mqttItem.workstation ) {
                             item.key = i
                             item.Status = mqttItem.run_status
-                            item.prod_count = mqttItem.finished //产量
-                            item.prod_rate = mqttItem.capacity //产能
-                            item.plan = mqttItem.plan //计划
-                            item.product=mqttItem.product
+                            item.prod_count = mqttItem.finished // 产量
+                            item.prod_rate = mqttItem.capacity // 产能
+                            item.plan = mqttItem.plan // 计划
+                            item.product = mqttItem.product
                             // item.rej_count = mqttItem.data.rej_count //不良数
                             // item.rej_rate = mqttItem.data.rej_rate //不良率
                             // item.task_finish = mqttItem.task.task_finish //完成比例
@@ -204,16 +201,15 @@ export default class TScadaWorkShop_Auto extends Component {
                             // item.task_name = mqttItem.task.task_name //产品名称
                             return item;
                         }
-                        else {
+
                             return item
-                        }
                     } )
                     return item;
                 } )
                 // console.log( 'renderaEquip', renderaEquip );
 
                 this.setState( {
-                    loading: false, //加载完毕取消蒙城
+                    loading: false, // 加载完毕取消蒙城
                     aEquipList: renderaEquip,
                     // allQuery: renderaEquip.length,
                     // onLine: g,
@@ -221,40 +217,39 @@ export default class TScadaWorkShop_Auto extends Component {
                     // offLine: renderaEquip.length - w - g
                 } )
             }
-            if(mqttData&&mqttData.statics){
-                let Mstatics=mqttData.statics;
-                let MstateCount=[
+            if ( mqttData && mqttData.statics ) {
+                const Mstatics = mqttData.statics;
+                const MstateCount = [
                     {
-                        x:'报警',
-                        y:Mstatics.failure
+                        x: '报警',
+                        y: Mstatics.failure,
                     },
                     {
-                        x:'离线',
-                        y:Mstatics.offline
+                        x: '离线',
+                        y: Mstatics.offline,
                     },
                     {
-                        x:'运行',
-                        y:Mstatics.running
+                        x: '运行',
+                        y: Mstatics.running,
                     },
                     {
-                        x:'待机',
-                        y:Mstatics.stopped
-                    }
+                        x: '待机',
+                        y: Mstatics.stopped,
+                    },
                 ];
-                this.setState({stateCount:MstateCount});
+                this.setState( { stateCount: MstateCount } );
             }
         } );
-
     }
 
     render() {
         // console.log( '工作中心列表:', this.state.aEquipList );
         // const Dailychart = this.dailychart1;
         // const Barchart = this.barChart;
-        const{aEquipList}=this.state;
-        const {Breadcrumb,MockMqttData,}=this.props;
+        const { aEquipList } = this.state;
+        const { Breadcrumb, MockMqttData } = this.props;
         const ListHeader = (
-            <Row gutter={16} style={{fontSize:16}}>
+            <Row gutter={16} style={{ fontSize: 16 }}>
               <Col className="gutter-row" span={4}>
                 <div className="gutter-box">图片</div>
               </Col>
@@ -281,87 +276,87 @@ export default class TScadaWorkShop_Auto extends Component {
             </Row>
         );
 
-        const devStateView=(
+        const devStateView = (
             <Row>
                 <Col span={5}>
                     <Progress
-                        format={
-                            (percent, successPercent)=>(
+                      format={
+                            ( percent, successPercent ) => (
                                 <div>
                                     <a>3台</a>
-                                    <div style={{marginTop:12,fontSize:'14px'}}>运行中</div>
+                                    <div style={{ marginTop: 12, fontSize: '14px' }}>运行中</div>
                                 </div>
                             )
                         }
-                        percent={62}
-                        type='circle'
+                      percent={62}
+                      type="circle"
                     />
                 </Col>
                 <Col span={5}>
                     <Progress
-                        format={
-                            (percent, successPercent)=>(
+                      format={
+                            ( percent, successPercent ) => (
                                 <div>
                                     <a>0台</a>
-                                <div style={{marginTop:12,fontSize:'14px'}}>调机中</div>
+                                <div style={{ marginTop: 12, fontSize: '14px' }}>调机中</div>
                                 </div>
                             )
                         }
-                        percent={34}
-                        strokeColor="#1ccde6"
-                        type='circle'
+                      percent={34}
+                      strokeColor="#1ccde6"
+                      type="circle"
                     />
                 </Col>
                 <Col span={5}>
                     <Progress
-                        format={
-                            (percent, successPercent)=>(
+                      format={
+                            ( percent, successPercent ) => (
                                 <div>
                                     <a>0台</a>
-                                <div style={{marginTop:12,fontSize:'14px'}}>待机中</div>
+                                <div style={{ marginTop: 12, fontSize: '14px' }}>待机中</div>
                                 </div>
                             )
                         }
-                        percent={34}
-                        strokeColor="#18c81f"
-                        type='circle'
+                      percent={34}
+                      strokeColor="#18c81f"
+                      type="circle"
                     />
                 </Col>
                 <Col span={5}>
                     <Progress
-                        format={
-                            (percent, successPercent)=>(
+                      format={
+                            ( percent, successPercent ) => (
                                 <div>
                                     <a>0台</a>
-                                <div style={{marginTop:12,fontSize:'14px'}}>告警中</div>
+                                <div style={{ marginTop: 12, fontSize: '14px' }}>告警中</div>
                                 </div>
                             )
                         }
-                        percent={34}
-                        strokeColor="#f0200c"
-                        type='circle'
+                      percent={34}
+                      strokeColor="#f0200c"
+                      type="circle"
                     />
                 </Col>
                 <Col span={4}>
                     <Progress
-                        format={
-                            (percent, successPercent)=>(
+                      format={
+                            ( percent, successPercent ) => (
                                 <div>
                                     <a>9台</a>
-                                <div style={{marginTop:12,fontSize:'14px'}}>离线中</div>
+                                <div style={{ marginTop: 12, fontSize: '14px' }}>离线中</div>
                                 </div>
                             )
                         }
-                        percent={34}
-                        strokeColor="#6c6c6c"
-                        type='circle'
+                      percent={34}
+                      strokeColor="#6c6c6c"
+                      type="circle"
                     />
                 </Col>
             </Row>
         )
 
         const bcList = [{
-          title:"首页",
+          title: '首页',
           href: '/',
           }, {
           title: '车间监控',
@@ -372,43 +367,34 @@ export default class TScadaWorkShop_Auto extends Component {
         return (
             <PageHeaderLayout
                 // title="车间监控"
-                wrapperClassName="pageContent"
-                content={devStateView}
-                BreadcrumbList={Breadcrumb.BCList}>
-                <div style={{marginTop:15}}>
+              wrapperClassName="pageContent"
+              content={devStateView}
+              BreadcrumbList={Breadcrumb.BCList}
+            >
+                <div style={{ marginTop: 15 }}>
                     <Row gutter={16}>
                       <Col className="gutter-row" span={24}>
-                        <div className="gutter-box" style={{background: '#fff'}}>
+                        <div className="gutter-box" style={{ background: '#fff' }}>
                             <List
                                 // style={{width:'75%'}}
-                                header={ListHeader}
+                              header={ListHeader}
                                 // footer={<div>Footer</div>}
-                                loading={this.state.loading}
-                                bordered
-                                dataSource={this.state.aEquipList}
+                              loading={this.state.loading}
+                              bordered
+                              dataSource={this.state.aEquipList}
                                 // dataSource={this.props.MockMqttData.List}
-                                renderItem={item => {
-                                    let stateObj={};
-                                    if(item.task_progress &&item.task_progress >= 100)
-                                    stateObj={text:"已完成",color:'blue'};
-                                    else if(item.hasOwnProperty('nStatus')&&item.nStatus== 6)
-                                    stateObj={text:"生产中",color:'rgba(82, 196, 26, 0.84)'};
-                                    else if(item.hasOwnProperty('nStatus') &&item.nStatus== 9)
-                                    stateObj={text:"报警中",color:'#ffc069'};
-                                    else if(item.hasOwnProperty('nStatus')&&(item.nStatus==0||item.nStatus==1||item.nStatus==2))
-                                    stateObj={text:"待机中",color:'#4184de'};
-                                    else if(item.hasOwnProperty('nStatus')&&(item.nStatus==3||item.nStatus==4||item.nStatus==5||item.nStatus==7||item.nStatus==8))
-                                    stateObj={text:"调机中",color:'#4184de'};
+                              renderItem={( item ) => {
+                                    let stateObj = {};
+                                    if ( item.task_progress && item.task_progress >= 100 ) { stateObj = { text: '已完成', color: 'blue' }; } else if ( item.hasOwnProperty( 'nStatus' ) && item.nStatus == 6 ) { stateObj = { text: '生产中', color: 'rgba(82, 196, 26, 0.84)' }; } else if ( item.hasOwnProperty( 'nStatus' ) && item.nStatus == 9 ) { stateObj = { text: '报警中', color: '#ffc069' }; } else if ( item.hasOwnProperty( 'nStatus' ) && ( item.nStatus == 0 || item.nStatus == 1 || item.nStatus == 2 ) ) { stateObj = { text: '待机中', color: '#4184de' }; } else if ( item.hasOwnProperty( 'nStatus' ) && ( item.nStatus == 3 || item.nStatus == 4 || item.nStatus == 5 || item.nStatus == 7 || item.nStatus == 8 ) ) { stateObj = { text: '调机中', color: '#4184de' }; }
                                     // else if(item.hasOwnProperty('Status')&&item.Status== -1)
-                                    else
-                                    stateObj={text:"离线中",color:'#bfbfbf'};
+                                    else { stateObj = { text: '离线中', color: '#bfbfbf' }; }
 
-                                    return(
+                                    return (
                                             <List.Item>
-                                                <Row gutter={16} type="flex" justify="space-around" align="middle" style={{border:'solid 0px',width:'100%'}}>
+                                                <Row gutter={16} type="flex" justify="space-around" align="middle" style={{ border: 'solid 0px', width: '100%' }}>
                                                     <Col className="gutter-row" span={3}>
                                                         <div className="gutter-box">
-                                                            <img src={AM1} style={{width:"90%"}} />
+                                                            <img src={AM1} style={{ width: '90%' }} />
                                                             {/* <img src={urlBase+item.Image} style={{width:"100%"}} /> */}
                                                         </div>
                                                     </Col>
@@ -454,19 +440,22 @@ export default class TScadaWorkShop_Auto extends Component {
                                                             <Progress
                                                                 // type="dashboard"
                                                                 // width={25}
-                                                                status={
-                                                                    item.Status==1?"active":
-                                                                    item.Status==2?"exception":""
+                                                              status={
+                                                                    item.Status == 1 ? 'active' :
+                                                                    item.Status == 2 ? 'exception' : ''
                                                                 }
                                                                 // percent={parseFloat(((item.prod_count/item.plan )*100|| 0).toFixed(2))}
-                                                                percent={parseFloat(((item.nProductNow/item.nProductPlan )*100|| 0).toFixed(2))}
-                                                                strokeWidth={15}/>
+                                                              percent={parseFloat( ( ( item.nProductNow / item.nProductPlan ) * 100 || 0 ).toFixed( 2 ) )}
+                                                              strokeWidth={15}
+                                                            />
                                                         </div>
                                                     </Col>
                                                     <Col className="gutter-row" span={2}>
                                                         <Tag
-                                                            color={`${stateObj.color}`}
-                                                            style={{marginTop:30, fontSize: 'larger'}}>{stateObj.text}</Tag>
+                                                          color={`${stateObj.color}`}
+                                                          style={{ marginTop: 30, fontSize: 'larger' }}
+                                                        >{stateObj.text}
+                                                        </Tag>
                                                         &nbsp;&nbsp;
                                                         {/* <div>告警：{item.nError}</div> */}
                                                     </Col>
@@ -475,7 +464,7 @@ export default class TScadaWorkShop_Auto extends Component {
                                         )
                                     }
                                 }
-                                />
+                            />
                         </div>
                       </Col>
                       {/* <Col className="gutter-row" span={6}>

@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import { connect } from 'react-redux';
-// import { connect } from 'dva';
 import {
   Button,
   Menu,
@@ -17,7 +16,7 @@ import {
   Table,
   Tooltip,
   Divider,
-  Progress
+  Progress,
 } from 'antd';
 import classNames from 'classnames';
 import DescriptionList from 'components/ant-design-pro/DescriptionList';
@@ -92,7 +91,7 @@ const tabList = [
 ];
 
 const desc1 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       曲丽丽
       <Icon type="dingding-o" style={{ marginLeft: 8 }} />
@@ -114,7 +113,7 @@ const desc2 = (
 );
 
 const desc3 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       曲丽丽
       <Icon type="dingding-o" style={{ marginLeft: 8 }} />
@@ -124,7 +123,7 @@ const desc3 = (
 );
 
 const desc4 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       曲丽丽
       <Icon type="dingding-o" style={{ marginLeft: 8 }} />
@@ -135,7 +134,7 @@ const desc4 = (
 );
 
 const desc5 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     {/* <Fragment>
       曲丽丽
       <Icon type="dingding-o" style={{ marginLeft: 8 }} />
@@ -146,7 +145,7 @@ const desc5 = (
 );
 
 const Desc1 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Row>
       <Col span={5}>
         <Fragment>
@@ -194,7 +193,7 @@ const Desc1 = (
 );
 
 const Desc2 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Row>
       <Col span={4}>
         <Fragment>
@@ -289,7 +288,7 @@ const Desc2 = (
 // );
 
 const Desc3 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       <div>原料：<span>YL02346674</span></div>
       <div>重量：<span>146kg</span></div>
@@ -299,7 +298,7 @@ const Desc3 = (
 );
 
 const Desc4 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       <div>计划开始时间：<span>2018-10-23 07:00:00</span></div>
       <div>实际开始时间：<span>2018-10-23 07:56:00</span></div>
@@ -315,7 +314,7 @@ const Desc4 = (
 );
 
 const Desc5 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Row>
       <Col span={5}>
         <Fragment>
@@ -339,7 +338,7 @@ const Desc5 = (
         <div>当前产量：<span>34503</span></div>
         <div>目标产量：<span>40000</span></div>
         <div>剩余产量：<span>5497</span></div>
-        <Progress percent={67}/>
+        <Progress percent={67} />
       </Col>
       <Col span={8}>
         <Fragment>
@@ -361,7 +360,7 @@ const Desc5 = (
 );
 
 const Desc6 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       <div>样品数量：<span>30</span></div>
       <div>合格数量：<span>28</span></div>
@@ -377,7 +376,7 @@ const Desc6 = (
 );
 
 const Desc7 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Row>
       <Col span={8}>
         <Fragment>
@@ -425,7 +424,7 @@ const Desc7 = (
 );
 
 const Desc8 = (
-  <div className={classNames(styles.textSecondary, styles.stepDescription)}>
+  <div className={classNames( styles.textSecondary, styles.stepDescription )}>
     <Fragment>
       <div>入库数量：<span>136301</span></div>
       <div>入库前总数量：<span>4600</span></div>
@@ -446,14 +445,14 @@ const popoverContent = (
   </div>
 );
 
-const customDot = (dot, { status }) =>
-  status === 'process' ? (
+const customDot = ( dot, { status } ) =>
+  ( status === 'process' ? (
     <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>
       {dot}
     </Popover>
   ) : (
     dot
-  );
+  ) );
 
 const operationTabList = [
   {
@@ -486,11 +485,11 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     render: text =>
-      text === 'agree' ? (
+      ( text === 'agree' ? (
         <Badge status="success" text="成功" />
       ) : (
         <Badge status="error" text="驳回" />
-      ),
+      ) ),
   },
   {
     title: '操作时间',
@@ -504,11 +503,11 @@ const columns = [
   },
 ];
 
-@connect(({ profile, loading }) => ({
+@connect( ( { profile, loading } ) => ( {
   profile,
   // loading: loading.effects['profile/fetchAdvanced'],
   loading: false,
-}))
+} ) )
 class AdvancedProfile extends Component {
   state = {
     operationkey: 'tab1',
@@ -517,43 +516,43 @@ class AdvancedProfile extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
+    dispatch( {
       type: 'profile/fetchAdvanced',
-    });
+    } );
 
     this.setStepDirection();
-    window.addEventListener('resize', this.setStepDirection, { passive: true });
+    window.addEventListener( 'resize', this.setStepDirection, { passive: true } );
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.setStepDirection);
+    window.removeEventListener( 'resize', this.setStepDirection );
     this.setStepDirection.cancel();
   }
 
-  onOperationTabChange = key => {
-    this.setState({ operationkey: key });
+  onOperationTabChange = ( key ) => {
+    this.setState( { operationkey: key } );
   };
 
   @Bind()
-  @Debounce(200)
+  @Debounce( 200 )
   setStepDirection() {
     const { stepDirection } = this.state;
     const w = getWindowWidth();
-    if (stepDirection !== 'vertical' && w <= 576) {
-      this.setState({
+    if ( stepDirection !== 'vertical' && w <= 576 ) {
+      this.setState( {
         stepDirection: 'vertical',
-      });
-    } else if (stepDirection !== 'horizontal' && w > 576) {
-      this.setState({
+      } );
+    } else if ( stepDirection !== 'horizontal' && w > 576 ) {
+      this.setState( {
         stepDirection: 'horizontal',
-      });
+      } );
     }
   }
 
   render() {
     const { stepDirection, operationkey } = this.state;
     const { profile, loading } = this.props;
-    /*const { advancedOperation1, advancedOperation2, advancedOperation3 } = profile;
+    /* const { advancedOperation1, advancedOperation2, advancedOperation3 } = profile;
     const contentList = {
       tab1: (
         <Table
@@ -579,7 +578,7 @@ class AdvancedProfile extends Component {
           columns={columns}
         />
       ),
-    };*/
+    }; */
 
     return (
       <PageHeaderLayout

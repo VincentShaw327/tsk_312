@@ -28,8 +28,8 @@ export const device = handleActions( {
         }
 
         if ( !gconfig.isDemo_dev ) {
-            let data = res.data,
-                list = fn_mes_array.addKey( res.data.list, 'key' );
+            const { data } = res;
+            const list = fn_mes_array.addKey( res.data.list, 'key' );
             const pagenation = {
                 page: data.page,
                 size: data.size,

@@ -15,7 +15,7 @@ import {
 } from './house'
 
 import {
-  loginResponse,Breadcrumb
+  loginResponse, Breadcrumb,
 } from './common'
 // basicData
 import {
@@ -25,51 +25,52 @@ import {
 // bom
 import {
   BomList,
-  bomItem_list_data
+  bomItem_list_data,
 } from './bom'
 // bom
 import {
   process,
   processItem,
-  workcenter,
-  workcenterType,
   MockMqttData,
+  processionRoute,
+  processionConfig,
   // StampingSet
   // processItemListData
-} from './crafts'
+} from './procession'
 // bom
 import {
   device,
   deviceModel,
   deviceType,
   DevCheck,
-  deviceBrand
+  deviceBrand,
 } from './device'
 // bom
 import {
   workshop,
   workshopType,
-  factoryType
+  factoryType,
 } from './factory'
 // bom
 import {
-  iot_list_data
+  iot_list_data,
 } from './Iot'
 // bom
 import {
   productOrder,
   productTask,
   productJob,
-  Feeding
+  Feeding,
 } from './production'
 // bom
 import {
   moldList,
-  moldModel
+  moldModel,
 } from './mold'
 // bom
 import {
-  productModel,
+  productCategory,
+  productList,
 } from './product'
 // bom
 import {
@@ -82,7 +83,7 @@ import {
 import {
   UserAccount,
   UserGroup,
-  UserAuth
+  UserAuth,
 } from './user'
 // bom
 import {
@@ -95,17 +96,19 @@ import {
   mtrlType,
 } from './wms'
 
-import{
-  MtrlLossCollate
+import {
+  MtrlLossCollate,
 } from './mtrlloss'
 
 import {
-    Inspect
-}from './quality'
+    Inspect,
+} from './quality'
 
 import {
-    Maintain
-}from './maintain'
+    Maintain,
+} from './maintain'
+
+import { workCenter } from './work'
 
 const rootReducer = combineReducers( {
     routing,
@@ -125,9 +128,10 @@ const rootReducer = combineReducers( {
     bomItem_list_data,
     process,
     processItem,
-    workcenter,
-    workcenterType,
+    workCenter,
     MockMqttData,
+    processionRoute,
+    processionConfig,
     // StampingSet,
 
     device,
@@ -135,7 +139,7 @@ const rootReducer = combineReducers( {
     deviceType,
     DevCheck,
     deviceBrand,
-    
+
     workshop,
     workshopType,
     factoryType,
@@ -147,7 +151,9 @@ const rootReducer = combineReducers( {
 
     moldList,
     moldModel,
-    productModel,
+    productCategory,
+    productList,
+
     productReportRata,
     deviceReportData,
     punchFreq,
@@ -163,7 +169,7 @@ const rootReducer = combineReducers( {
 
     Inspect,
 
-    Maintain
+    Maintain,
 } );
 
 export default rootReducer;

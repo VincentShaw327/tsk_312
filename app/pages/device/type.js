@@ -12,8 +12,8 @@ import { TPostData } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
 // import { SimpleQForm, StandardQForm } from 'components/TForm';
-import PageHeaderLayout from '../../base/PageHeaderLayout';
 import { fn_mes_trans } from 'functions'
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 @connect( ( state, props ) => ( {
     deviceType: state.deviceType,
@@ -24,11 +24,11 @@ export default class type extends Component {
         this.state = {
             tableDataList: [],
             updateFromItem: {},
-            total: 0,
+            // total: 0,
             current: 1,
             pageSize: 10,
             UModalShow: false,
-            loading: true,
+            // loading: true,
         }
         this.url = '/api/TDevice/device_type';
     }
@@ -56,9 +56,9 @@ export default class type extends Component {
             this.url, 'ListActive', dat,
             ( res ) => {
                 const list = [];
-                console.log( '查询到设备类别列表', res );
+                // console.log( '查询到设备类别列表', res );
                 const data_list = res.obj.objectlist || [];
-                const totalcount = res.obj.totalcount;
+                const { totalcount } = res.obj;
                 data_list.forEach( ( item, index ) => {
                     list.push( {
                         key: index,
@@ -85,7 +85,7 @@ export default class type extends Component {
         const addData = {
             cols: fn_mes_trans.toCols( data ),
         }
-        console.log( '开始添加', addData );
+        // console.log( '开始添加', addData );
         this
             .props
             .dispatch( device_type_add( addData, respose => console.log( '添加成功！', respose ) ) )
@@ -95,7 +95,7 @@ export default class type extends Component {
         const deleteData = {
             uuids: [data.uObjectUUID],
         }
-        console.log( '开始删除', deleteData );
+        // console.log( '开始删除', deleteData );
         this
             .props
             .dispatch( device_type_delete( deleteData ) )
@@ -177,14 +177,18 @@ export default class type extends Component {
                 dataIndex: 'uMachineUUID',
                 width: 120,
                 render: ( txt, record ) => ( <span>
-                    <a onClick={this.toggleUModalShow.bind( this, record )}>编辑</a>
+                    <a
+                      onKeyDown={() => this.toggleUModalShow( record )}
+                      onClick={() => this.toggleUModalShow( record )}
+                    >编辑
+                    </a>
                     <Divider type="vertical" />
                     <Popconfirm
                       placement="topRight"
-                        title="确定删除此项数据？"
-                      onConfirm={this.handleDelete.bind( this, record )}
+                      title="确定删除此项数据？"
+                      onConfirm={() => this.handleDelete( record )}
                       okText="确定"
-                                              cancelText="取消"
+                      cancelText="取消"
                     >
                         <a href="#">删除</a>
                     </Popconfirm>
@@ -256,25 +260,25 @@ export default class type extends Component {
                     /> */}
                     <div style={{ marginBottom: 15 }}>
                         <CreateModal
-                            FormItem={CFormItem}
-                            submit={this.handleCreat.bind( this )}
+                          FormItem={CFormItem}
+                          submit={this.handleCreat}
                         />
                     </div>
                     <SimpleTable
-                        size="middle"
-                        loading={loading}
-                        data={Data}
-                        columns={Tcolumns}
-                        isHaveSelect={false}
-                        bordered
-                        onChange={this.handleTableChange}
+                      size="middle"
+                      loading={loading}
+                      data={Data}
+                      columns={Tcolumns}
+                      isHaveSelect={false}
+                      bordered
+                      onChange={this.handleTableChange}
                     />
                     <UpdateModal
-                        FormItem={UFormItem}
-                        updateItem={updateFromItem}
-                        submit={this.handleUpdate.bind( this )}
-                        showModal={UModalShow}
-                        hideModal={this.toggleUModalShow}
+                      FormItem={UFormItem}
+                      updateItem={updateFromItem}
+                      submit={this.handleUpdate}
+                      showModal={UModalShow}
+                      hideModal={this.toggleUModalShow}
                     />
                 </div>
             </PageHeaderLayout>

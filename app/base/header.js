@@ -1,38 +1,23 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { Link, hashHistory } from 'react-router'
-import { Menu, Dropdown, Button, Modal, message } from 'antd'
+import { Menu, Dropdown, Button, Modal } from 'antd'
 
 const { confirm } = Modal
 
 // @connect((state, props) => ({ config: state.config }))
 export default class Header extends Component {
   // 初始化页面常量 绑定事件方法
-  constructor(props, context) {
-    super(props)
-    this.state = {
-      loading: false,
-      staff: {
-        onlineCount: '',
-        monthCount: '',
-        usertable: {
-          gxdwqc: '',
-          longmobile: '',
-          post: '',
-          shortmobile: '',
-          username: '',
-          userid: '',
-        },
-      },
-    }
-    this.handleLogout = this.handleLogout.bind(this)
+  constructor( props, context ) {
+    super( props )
+    // this.state = {}
+    this.handleLogout = this.handleLogout.bind( this )
   }
 
   // 登出
   handleLogout() {
     const { config } = this.props
     const self = this
-    confirm({
+    confirm( {
       title: '提示',
       content: '确认退出登录吗？',
       onOk() {
@@ -45,9 +30,9 @@ export default class Header extends Component {
         //     message.error(result.msg)
         //   }
         // }))
-        hashHistory.push('/login')
+        hashHistory.push( '/login' )
       },
-    })
+    } )
   }
   render() {
     const { staff } = this.state
@@ -65,7 +50,7 @@ export default class Header extends Component {
         </Menu.Item>
       </Menu>
     )
-    const username = sessionStorage.getItem('username')
+    const username = sessionStorage.getItem( 'username' )
     return (
       <header id="navbar">
         <div id="navbar-container" className="boxed">

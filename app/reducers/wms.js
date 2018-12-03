@@ -1,7 +1,9 @@
 import { handleActions } from 'redux-actions'
 import { hasResponseError } from 'utils'
-const Mock = require('mockjs');
-var Random = Mock.Random;
+
+const Mock = require( 'mockjs' );
+
+let Random = Mock.Random;
 // import moment from 'moment'
 import { message } from 'antd'
 
@@ -12,8 +14,8 @@ const materialModelState = {
   pageSize: 20,
   totalCount: 0,
 }
-export const mtrlModel = handleActions({
-  'request material model list'(state, action) {
+export const mtrlModel = handleActions( {
+  'request material model list'( state, action ) {
     return { ...state, loading: true }
   },
   'receive material model list'(state, action) {
@@ -23,7 +25,7 @@ export const mtrlModel = handleActions({
       message.error(res.msg)
       return { ...state, loading: false }
     }
-    else{
+    
         if(!gconfig.isDemo_dev){
             return { obj:res.obj.objectlist, loading: false }
         }
@@ -48,11 +50,11 @@ export const mtrlModel = handleActions({
             res.totalcount=Mock.mock('@natural(0, 65)');
             return { list:list,total:res.totalcount, loading: false }
         }
-    }
+    
   },
 
 
-}, materialModelState)
+}, materialModelState )
 
 
 const materialTypeState = {
@@ -62,8 +64,8 @@ const materialTypeState = {
   pageSize: 20,
   totalCount: 0,
 }
-export const mtrlType = handleActions({
-  'request material type list'(state, action) {
+export const mtrlType = handleActions( {
+  'request material type list'( state, action ) {
     return { ...state, loading: true }
   },
   'receive material type list'(state, action) {
@@ -77,7 +79,7 @@ export const mtrlType = handleActions({
         if(!gconfig.isDemo_dev){
             return { obj:res.obj.objectlist, loading: false }
         }
-        else{
+        
             list=res.objectlist.map((item,index)=>{
                 return{
                     UUID:item.UUID,
@@ -103,9 +105,9 @@ export const mtrlType = handleActions({
             res.objectlist=list;
             res.totalcount=Mock.mock('@natural(0, 65)');
             return { mtrlTypeList:list,total:res.totalcount, loading: false }
-        }
+        
     }
   },
 
 
-}, materialTypeState)
+}, materialTypeState )

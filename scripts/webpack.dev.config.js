@@ -24,14 +24,15 @@ const webpackConfigDev = {
     }),
     new webpack.HotModuleReplacementPlugin({
       // Options...
+      // multiStep:true
     })
   ],
-  // devtool: 'source-map',
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
+  // devtool: 'inline-source-map',
   devServer: {
     contentBase: resolve('../app'),
     historyApiFallback: false,
-    hot: false,
+    hot: true,
     host: '0.0.0.0',
     port: PORT,
   },

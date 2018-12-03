@@ -1,132 +1,133 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {Popover,Divider,Popconfirm } from 'antd';
-import { device_brand_list,device_brand_add,device_brand_update,device_brand_delete } from 'actions/device'
-import { TPostData,urlBase } from 'utils/TAjax';
+import { Popover, Divider, Popconfirm } from 'antd';
+import { urlBase } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
-import { CreateModal,UpdateModal } from 'components/TModal';
-import {SimpleQForm,StandardQForm } from 'components/TForm';
+import { CreateModal, UpdateModal } from 'components/TModal';
+import { fn_mes_trans } from 'functions';
+// import { SimpleQForm, StandardQForm } from 'components/TForm';
+import { device_brand_list, device_brand_add, device_brand_update, device_brand_delete } from 'actions/device'
 import PageHeaderLayout from '../../base/PageHeaderLayout';
-import {fn_mes_trans} from 'functions'
 
-@connect( ( state, props ) => {
-    console.log( 'state', state )
-    return {
-        Breadcrumb:state.Breadcrumb,
+@connect( ( state, props ) => ( {
+        Breadcrumb: state.Breadcrumb,
         deviceBrand: state.deviceBrand,
-    }
-}, )
+    } ) )
 export default class brand extends Component {
-
     constructor( props ) {
         super( props )
         this.state = {
-            tableDataList:[],
-            updateFromItem:{},
-            total:0,
-            current:1,
-            pageSize:10,
-            WorkshopUUID:-1,
-            UModalShow:false,
-            loading:true,
+            // tableDataList: [],
+            updateFromItem: {},
+            // total: 0,
+            current: 1,
+            pageSize: 10,
+            // WorkshopUUID: -1,
+            UModalShow: false,
+            // loading: true,
 
-            DeviceModelList:[],
-            DeviceTypeList:[],
-            ModelUUID:-1,
-            TypeUUID:-1
+            DeviceModelList: [],
+            DeviceTypeList: [],
+            // ModelUUID: -1,
+            // TypeUUID: -1,
         }
-        this.url='/api/TDevice/device'
+        this.url = '/api/TDevice/device'
     }
 
-    componentWillMount(){
+    componentWillMount() {
         // this.getDevModelList();
         // this.getDevTypeList();
         // this.getTableList();
         this.props.dispatch( device_brand_list( { }, ( respose ) => {} ) )
     }
 
-    handleCreat = (data) => {
+    handleCreat = ( data ) => {
         const addData = {
-            cols: fn_mes_trans.toCols(data)
+            cols: fn_mes_trans.toCols( data ),
         }
-        console.log('开始添加', addData);
+        // console.log( '开始添加', addData );
         this
             .props
-            .dispatch(device_brand_add(addData, (respose) => console.log('添加成功！', respose)))
+            .dispatch( device_brand_add( addData ) )
     }
 
-    handleDelete = (data) => {
+    handleDelete = ( data ) => {
         const deleteData = {
-            uuids:[data.uObjectUUID]
+            uuids: [data.uObjectUUID],
         }
-        console.log('开始删除', deleteData);
+        // console.log( '开始删除', deleteData );
         this
             .props
-            .dispatch(device_brand_delete(deleteData))
+            .dispatch( device_brand_delete( deleteData ) )
     }
 
-    handleUpdate = (data) => {
-        let item=this.state.updateFromItem;
+    handleUpdate = ( data ) => {
+        const item = this.state.updateFromItem;
         const editData = {
-            uuid:item.uObjectUUID,
-            cols: fn_mes_trans.toCols(data)
+            uuid: item.uObjectUUID,
+            cols: fn_mes_trans.toCols( data ),
         }
-        console.log('开始修改', editData);
+        // console.log( '开始修改', editData );
         this
             .props
-            .dispatch(device_brand_update(editData))
+            .dispatch( device_brand_update( editData ) )
     }
 
-    handleQuery=(data)=>{
-        console.log("查询的值是:",data);
-        const {keyWord,TypeUUID,ModelUUID}=data;
-        this.setState({keyWord,TypeUUID,ModelUUID,current:1},()=>{
+    handleQuery = ( data ) => {
+        // console.log( '查询的值是:', data );
+        // const { keyWord, TypeUUID, ModelUUID } = data;
+        this.setState( {
+            // keyWord,
+            // TypeUUID,
+            // ModelUUID,
+            current: 1,
+        }, () => {
             this.getTableList();
-        });
+        } );
     }
 
-    handleTableChange=(pagination)=>{
+    handleTableChange=( pagination ) => {
         // console.log('pagination',pagination);
-        const {current,pageSize}=pagination;
-        this.setState({current,pageSize,loading:true},()=>{
+        const { current, pageSize } = pagination;
+        this.setState( { current, pageSize }, () => {
             this.getTableList();
-        });
+        } );
     }
 
-    toggleUModalShow=(record)=>{
-        this.setState({UModalShow:!this.state.UModalShow,updateFromItem:record});
+    toggleUModalShow=( record ) => {
+        this.setState( { UModalShow: !this.state.UModalShow, updateFromItem: record } );
     }
 
 
     render() {
         // let Feature=this.feature;
         const {
-            tableDataList,
+            // tableDataList,
             DeviceModelList,
             DeviceTypeList,
             current,
             // loading,
             // total,
-            pageSize,updateFromItem,UModalShow
-        }=this.state;
-        const {Breadcrumb,detail}=this.props;
+            pageSize, updateFromItem, UModalShow,
+        } = this.state;
+        // const { Breadcrumb, detail } = this.props;
         const { list, total, loading } = this.props.deviceBrand;
-        let Data={
+        const Data = {
             // list:tableDataList,
-            list:list,
-            pagination:{total,current,pageSize}
+            list: list,
+            pagination: { total, current, pageSize },
         };
 
-        const Tcolumns= [
+        const Tcolumns = [
             {
                 title: '序号',
                 dataIndex: 'key',
-                width:50
+                width: 50,
             },
             {
                 title: 'ID',
                 dataIndex: 'uObjectUUID',
-                width:80
+                width: 80,
             },
             {
                 title: 'LOGO',
@@ -135,74 +136,78 @@ export default class brand extends Component {
                     // console.log('图片地址',e);
                     const content = (
                         <div>
-                          <img width="300"  src={urlBase+e}/>
+                          <img alt="这是图片" width="300" src={urlBase + e} />
                         </div>
                     );
                     return (
-                        <Popover placement="right"  content={content} trigger="hover">
+                        <Popover placement="right" content={content} trigger="hover">
                           {/* <Button>Right</Button> */}
-                          <img height='50' src={urlBase+e}/>
+                          <img alt="这是图片" height="50" src={urlBase + e} />
                         </Popover>
                     )
-                }
+                },
             },
             {
                 title: '名称',
                 dataIndex: 'strBrandName',
-                type: 'string'
+                type: 'string',
             }, {
                 title: '编号',
                 dataIndex: 'strBrandCode',
-                type: 'string'
-            },{
+                type: 'string',
+            }, {
                 title: '操作',
                 dataIndex: 'UUID',
-                render:(UUID,record)=>{
-                    return <span>
-                        <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
-                        <Divider type="vertical"/>
+                render: ( UUID, record ) => ( <span>
+                        <a
+                          onClick={() => this.toggleUModalShow( record )}
+                          onKeyDown={() => this.toggleUModalShow( record )}
+                        >编辑
+                        </a>
+                        <Divider type="vertical" />
                         <Popconfirm
-                            placement="topRight"
-                            title="确定删除此项数据？"
-                            onConfirm={this.handleDelete.bind(this,record)}
-                            okText="确定" cancelText="取消">
+                          placement="topRight"
+                          title="确定删除此项数据？"
+                          onConfirm={() => this.handleDelete( record )}
+                          okText="确定"
+                          cancelText="取消"
+                        >
                             <a href="#">删除</a>
                         </Popconfirm>
-                    </span>
-                }
-            }
+                                              </span> ),
+            },
         ];
-        //更新弹框数据项
-        const UFormItem= [
+        // 更新弹框数据项
+        const UFormItem = [
             {
                 name: 'strBrandName',
                 label: '名称',
                 type: 'string',
                 placeholder: '请输入名称',
-                rules: [{ required: true, message: '请输入名称' }]
-            },{
+                rules: [{ required: true, message: '请输入名称' }],
+            }, {
                 name: 'strBrandCode',
                 label: '编号',
                 type: 'string',
                 placeholder: '请输入编号',
-                rules: [{ required: true, message: '请输入编号' }]
-            }
+                rules: [{ required: true, message: '请输入编号' }],
+            },
         ];
-        //添加的弹出框菜单
-        const CFormItem= [
+        // 添加的弹出框菜单
+        const CFormItem = [
             {
                 name: 'strBrandName',
                 label: '名称',
                 type: 'string',
                 placeholder: '请输入名称',
-                rules: [{ required: true, message: '请输入名称' }]
-            },{
+                rules: [{ required: true, message: '请输入名称' }],
+            }, {
                 name: 'strBrandCode',
                 label: '编号',
                 type: 'string',
                 placeholder: '请输入编号',
-                rules: [{ required: true, message: '请输入编号' }]
-            } /* {
+                rules: [{ required: true, message: '请输入编号' }],
+            }, /* {
                 name: 'ModelUUID',
                 label: '设备型号',
                 type: 'select',
@@ -211,13 +216,13 @@ export default class brand extends Component {
                 options:DeviceModelList
             } */
         ];
-        //查询的数据项
-        const RFormItem= [
+        // 查询的数据项
+        const RFormItem = [
             {
                 name: 'keyWord',
                 label: '搜索内容',
                 type: 'string',
-                placeholder: '请输入要搜索的内容'
+                placeholder: '请输入要搜索的内容',
             }, {
                 name: 'TypeUUID',
                 label: '设备类别',
@@ -225,7 +230,7 @@ export default class brand extends Component {
                 hasAllButtom: true,
                 defaultValue: '-1',
                 width: 150,
-                options:DeviceTypeList
+                options: DeviceTypeList,
             }, {
                 name: 'ModelUUID',
                 label: '设备型号',
@@ -233,12 +238,12 @@ export default class brand extends Component {
                 hasAllButtom: true,
                 defaultValue: '-1',
                 width: 200,
-                options:DeviceModelList
-            }
+                options: DeviceModelList,
+            },
         ];
 
         const bcList = [{
-            title:"首页",
+            title: '首页',
             href: '/',
             }, {
             title: '设备管理',
@@ -253,28 +258,28 @@ export default class brand extends Component {
                     FormItem={RFormItem}
                     submit={this.handleQuery}
                 /> */}
-                <div style={{marginBottom:15}}>
+                <div style={{ marginBottom: 15 }}>
                     <CreateModal
-                        FormItem={CFormItem}
-                        submit={this.handleCreat.bind(this)}
+                      FormItem={CFormItem}
+                      submit={() => this.handleCreat( )}
                     />
                 </div>
                 <SimpleTable
-                    size="middle"
-                    loading={loading}
-                    data={Data}
-                    columns={Tcolumns}
-                    isHaveSelect={false}
-                    bordered
-                    onChange={this.handleTableChange}
+                  size="middle"
+                  loading={loading}
+                  data={Data}
+                  columns={Tcolumns}
+                  isHaveSelect={false}
+                  bordered
+                  onChange={this.handleTableChange}
                 />
                 <UpdateModal
-                    title="编辑"
-                    FormItem={UFormItem}
-                    updateItem={updateFromItem}
-                    submit={this.handleUpdate.bind(this)}
-                    showModal={UModalShow}
-                    hideModal={this.toggleUModalShow}
+                  title="编辑"
+                  FormItem={UFormItem}
+                  updateItem={updateFromItem}
+                  submit={() => this.handleUpdate( )}
+                  showModal={UModalShow}
+                  hideModal={this.toggleUModalShow}
                 />
           </PageHeaderLayout>
         )

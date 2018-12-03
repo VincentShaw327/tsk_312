@@ -6,7 +6,7 @@
     "es6": true
   },
   "settings": {
-    "import/core-modules": ["components", "actions", "api", "reducers", "utils", "constants"]
+    "import/core-modules": ["components", "actions", "api", "reducers", "utils", "constants","functions"]
   },
   "parser": "babel-eslint",
   "parserOptions": {
@@ -56,12 +56,16 @@
     "jsx-a11y/click-events-have-key-events": 1,
     "linebreak-style": "off",
     "space-in-parens": ["error", "always"],
-    "camelcase": [0, {"properties": "never"}]
+    "camelcase": [0, {"properties": "never"}],
+    "no-nested-ternary": 0,
+    "no-shadow":"warn"
   },
   "plugins": [
     "jsx-a11y"
   ],
   "globals": {
-    "gconfig": true
+    "gconfig": true,
+    "innerHeight":true,
+    "scroll":true
 }
 }

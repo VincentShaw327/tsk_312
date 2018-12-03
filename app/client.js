@@ -7,7 +7,7 @@ import configure from './store/configureStore';
 import './index.css';
 import './test/iconfont.css';
 // import './test/iconfont.js';
-import './custom.less';
+// import './custom.less';
 
 const store = configure( { config: global.gconfig } );
 ReactDOM.render(

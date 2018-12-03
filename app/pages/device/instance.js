@@ -10,34 +10,33 @@ import { device_equipment_list, device_equipment_add, device_equipment_update, d
 import { TPostData, urlBase } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
-import { SimpleQForm, StandardQForm } from 'components/TForm';
-import PageHeaderLayout from '../../base/PageHeaderLayout';
+// import { SimpleQForm, StandardQForm } from 'components/TForm';
 import { fn_mes_trans } from 'functions'
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
-@connect( ( state, props ) => {
-    console.log( 'state', state )
-    return {
+@connect( ( state, props ) =>
+    // console.log( 'state', state )
+     ( {
         Breadcrumb: state.Breadcrumb,
         device: state.device,
-    }
-} )
+    } ) )
 export default class DeviceList extends Component {
     constructor( props ) {
         super( props )
         this.state = {
-            tableDataList: [],
+            // tableDataList: [],
             updateFromItem: {},
-            total: 0,
+            // total: 0,
             current: 1,
             pageSize: 10,
-            WorkshopUUID: -1,
+            // WorkshopUUID: -1,
             UModalShow: false,
-            loading: true,
+            // loading: true,
 
             DeviceModelList: [],
             DeviceTypeList: [],
-            ModelUUID: -1,
-            TypeUUID: -1,
+            // ModelUUID: -1,
+            // TypeUUID: -1,
         }
         this.url = '/api/TDevice/device'
     }
@@ -51,10 +50,10 @@ export default class DeviceList extends Component {
 
     getDevModelList() {
         TPostData(
- '/api/TDevice/device_model', 'ListActive', { PageIndex: 0, PageSize: -1, ParentUUID: -1 },
+            '/api/TDevice/device_model', 'ListActive', { PageIndex: 0, PageSize: -1, ParentUUID: -1 },
             ( res ) => {
-                let Ui_list = res.obj.objectlist || [],
-                    list = [];
+                const Ui_list = res.obj.objectlist || [];
+                const list = [];
                 Ui_list.forEach( ( item, index ) => {
                     list.push( { key: index, value: item.UUID.toString(), text: item.Name } )
                 } );
@@ -68,10 +67,10 @@ export default class DeviceList extends Component {
 
     getDevTypeList() {
         TPostData(
- '/api/TDevice/device_type', 'ListActive', { PageIndex: 0, PageSize: -1, ParentUUID: -1 },
+            '/api/TDevice/device_type', 'ListActive', { PageIndex: 0, PageSize: -1, ParentUUID: -1 },
             ( res ) => {
-                let Ui_list = res.obj.objectlist || [],
-                    list = [];
+                const Ui_list = res.obj.objectlist || [];
+                const list = [];
                 Ui_list.forEach( ( item, index ) => {
                     list.push( { key: index, value: item.UUID.toString(), text: item.Name } )
                 } );
@@ -83,9 +82,9 @@ export default class DeviceList extends Component {
         )
     }
 
-    getTableList( que ) {
-        const { 
-current, pageSize, keyword, TypeUUID, ModelUUID
+    /* getTableList( que ) {
+        const {
+current, pageSize, keyword, TypeUUID, ModelUUID,
  } = this.state;
         const dat = {
             PageIndex: current - 1, // 分页：页序号，不分页时设为0
@@ -99,10 +98,10 @@ current, pageSize, keyword, TypeUUID, ModelUUID
         TPostData(
  this.url, 'ListActive', dat,
             ( res ) => {
-                let list = [];
-                console.log( '查询到设备列表', res );
-                let data_list = res.obj.objectlist || [];
-                let totalcount = res.obj.totalcount;
+                const list = [];
+                // console.log( '查询到设备列表', res );
+                const data_list = res.obj.objectlist || [];
+                const { totalcount } = res.obj;
                 data_list.forEach( ( item, index ) => {
                     list.push( {
                         key: index,
@@ -125,23 +124,23 @@ current, pageSize, keyword, TypeUUID, ModelUUID
                 message.info( error );
             },
         )
-    }
+    } */
 
     handleCreat = ( data ) => {
         const addData = {
             cols: fn_mes_trans.toCols( data ),
         }
-        console.log( '开始添加', addData );
+        // console.log( '开始添加', addData );
         this
             .props
-            .dispatch( device_equipment_add( addData, respose => console.log( '添加成功！', respose ) ) )
+            .dispatch( device_equipment_add( addData ) )
     }
 
     handleDelete = ( data ) => {
         const deleteData = {
             uuids: [data.uObjectUUID],
         }
-        console.log( '开始删除', deleteData );
+        // console.log( '开始删除', deleteData );
         this
             .props
             .dispatch( device_equipment_delete( deleteData ) )
@@ -153,26 +152,29 @@ current, pageSize, keyword, TypeUUID, ModelUUID
             uuid: item.uObjectUUID,
             cols: fn_mes_trans.toCols( data ),
         }
-        console.log( '开始修改', editData );
+        // console.log( '开始修改', editData );
         this
             .props
             .dispatch( device_equipment_update( editData ) )
     }
 
     handleQuery=( data ) => {
-        console.log( '查询的值是:', data );
-        const { keyWord, TypeUUID, ModelUUID } = data;
-        this.setState( {
- keyWord, TypeUUID, ModelUUID, current: 1 
-}, () => {
+        // console.log( '查询的值是:', data );
+        // const { keyWord, TypeUUID, ModelUUID } = data;
+        /* this.setState({
+            keyWord,
+            TypeUUID,
+            ModelUUID,
+            current: 1,
+        }, () => {
             this.getTableList();
-        } );
+        }); */
     }
 
     handleTableChange=( pagination ) => {
         // console.log('pagination',pagination);
         const { current, pageSize } = pagination;
-        this.setState( { current, pageSize, loading: true }, () => {
+        this.setState( { current, pageSize }, () => {
             this.getTableList();
         } );
     }
@@ -185,7 +187,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID
     render() {
         // let Feature=this.feature;
         const {
-            tableDataList,
+            // tableDataList,
             DeviceModelList,
             DeviceTypeList,
             current,
@@ -193,7 +195,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID
             // total,
             pageSize, updateFromItem, UModalShow,
         } = this.state;
-        const { Breadcrumb, detail } = this.props;
+        // const { Breadcrumb, detail } = this.props;
         const { list, total, loading } = this.props.device;
         const Data = {
             // list:tableDataList,
@@ -219,13 +221,13 @@ current, pageSize, keyword, TypeUUID, ModelUUID
                     // console.log('图片地址',e);
                     const content = (
                         <div>
-                            <img width="300" src={urlBase + e} />
+                            <img alt="这是图片" width="300" src={urlBase + e} />
                         </div>
                     );
                     return (
                         <Popover placement="right" content={content} trigger="hover">
                             {/* <Button>Right</Button> */}
-                            <img height="50" src={urlBase + e} />
+                            <img alt="这是图片" height="50" src={urlBase + e} />
                         </Popover>
                     )
                 },
@@ -257,17 +259,19 @@ current, pageSize, keyword, TypeUUID, ModelUUID
             }, {
                 title: '操作',
                 dataIndex: 'UUID',
-                render: ( UUID, record ) => <span>
-                        <a onClick={this.toggleUModalShow.bind(this,record)}>编辑</a>
-                        <Divider type="vertical"/>
+                render: ( UUID, record ) => ( <span>
+                        <a onClick={() => {}} onKeyDown={() => this.toggleUModalShow( record )}>编辑</a>
+                        <Divider type="vertical" />
                         <Popconfirm
-                            placement="topRight"
-                            title="确定删除此项数据？"
-                            onConfirm={this.handleDelete.bind(this,record)}
-                            okText="确定" cancelText="取消">
+                          placement="topRight"
+                          title="确定删除此项数据？"
+                          onConfirm={() => this.handleDelete( record )}
+                          okText="确定"
+                          cancelText="取消"
+                        >
                             <a href="#">删除</a>
                         </Popconfirm>
-                    </span>,
+                                              </span> ),
             },
         ];
         // 更新弹框数据项
@@ -317,7 +321,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID
             } */
         ];
         // 查询的数据项
-        const RFormItem = [
+        /* const RFormItem = [
             {
                 name: 'keyWord',
                 label: '搜索内容',
@@ -340,7 +344,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID
                 width: 200,
                 options: DeviceModelList,
             },
-        ];
+        ]; */
 
         const bcList = [{
             title: '首页',
@@ -361,7 +365,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID
                 <div style={{ marginBottom: 15 }}>
                     <CreateModal
                       FormItem={CFormItem}
-                      submit={this.handleCreat.bind( this )}
+                      submit={() => this.handleCreat( )}
                     />
                 </div>
                 <SimpleTable
@@ -377,7 +381,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID
                   title="编辑"
                   FormItem={UFormItem}
                   updateItem={updateFromItem}
-                  submit={this.handleUpdate.bind( this )}
+                  submit={() => this.handleUpdate()}
                   showModal={UModalShow}
                   hideModal={this.toggleUModalShow}
                 />
