@@ -13,7 +13,7 @@ import { CreateModal, UpdateModal } from 'components/TModal';
 import { TPostData, TAjax } from 'utils/TAjax';
 // import { SimpleQForm, StandardQForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
-import Config from './configRoute'
+import Config from './edit'
 
 @connect( ( state, props ) => ( {
     Breadcrumb: state.Breadcrumb,
@@ -244,7 +244,7 @@ export default class route extends Component {
                     编辑
                     </a>
                     <Divider type="vertical" />
-                    <Link to="/procession/route/config">配置</Link>
+                    <Link to={`/procession/route/config/${record.uObjectUUID}`}>配置</Link>
                     {/* <a onClick={this.showModal}>配置</a> */}
                     <Divider type="vertical" />
                     <Popconfirm
@@ -356,7 +356,7 @@ export default class route extends Component {
         return (
             <PageHeaderLayout wrapperClassName="pageContent" BreadcrumbList={bcList}>
                 <Switch>
-                    <Route path="/procession/route/config" component={Config} />
+                    <Route path="/procession/route/config/:id" component={Config} {...this.props} />
                     <Route path="/procession/route" component={routeList} />
                 </Switch>
             </PageHeaderLayout>

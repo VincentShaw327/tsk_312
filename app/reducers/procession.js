@@ -1,3 +1,5 @@
+/* eslint no-prototype-builtins: 0 */
+/* eslint no-useless-return: 0 */
 import { message } from 'antd'
 import { handleActions } from 'redux-actions'
 import { hasResponseError } from 'utils'
@@ -6,6 +8,45 @@ import Mock from 'mockjs'
 // import moment from 'moment'
 // const Mock = require( 'mockjs' );
 const { Random } = Mock;
+
+const toName = ( item ) => {
+    let name = '';
+    switch ( item ) {
+        case 'strConfigName':
+            name = '名称'
+            break;
+        case 'strConfigNote':
+            name = '配置'
+            break;
+        case 'fConfigRateHours':
+            name = '标准工时'
+            break;
+        case 'fConfigMaxHours':
+            name = '最大工时'
+            break;
+        case 'fConfigMinHours':
+            name = '最小工时'
+            break;
+        case 'strConfigCode':
+            name = '配置编码'
+            break;
+        case 'strMaterialCode':
+            name = '物料编码'
+            break;
+        case 'nMaterialCount':
+            name = '物料数量'
+            break;
+        case 'fMaterialUseRate':
+            name = '材料利用率'
+            break;
+        case 'fMaterialGoodRate':
+            name = '良品率'
+            break;
+        default:
+            break;
+    }
+    return name;
+}
 
 /* 工艺路线reducer start */
 const initRouteState = {
@@ -69,6 +110,11 @@ export const processionRoute = handleActions( {
 const initConfigState = {
     list: [],
     loading: false,
+    activeKey: 'base',
+    uuid: -1,
+    routeConfig: [],
+    materialInConfig: [],
+    materialOutConfig: [],
 }
 export const processionConfig = handleActions( {
     'request procession config list'( state, action ) {
@@ -118,6 +164,104 @@ export const processionConfig = handleActions( {
         res.objectlist = list;
         res.totalcount = Mock.mock( '@natural(0, 65)' );
         return { list: list, total: res.totalcount, loading: false }
+    },
+    'update config menu key'( state, action ) {
+        state.activeKey = action.payload
+        return { ...state }
+    },
+    'set config id'( state, action ) {
+        state.uuid = action.payload
+        return { ...state }
+    },
+    'receive procession route config'( state, action ) {
+        const { req, res } = action.payload
+        const obj = res.data.list[0];
+        const keys = Object.keys( obj );
+        state.routeConfig = [];
+        keys.forEach( ( item, index ) => {
+            if ( item !== 'uObjectUUID' && item !== 'uObjectParentUUID' && item !== 'uProcedureUUID' ) {
+                state.routeConfig.push( {
+                    id: obj.uObjectUUID,
+                    key: index,
+                    [item]: obj[item],
+                    name: toName( item ),
+                    name_en: item,
+                    value: obj[item],
+                    editing: false,
+                } )
+            }
+        } )
+        // console.log( 'action', state, action )
+        // state.activeKey = action.payload
+        return { ...state }
+    },
+    'receive procession material_in config'( state, action ) {
+        const { req, res } = action.payload
+        const obj = res.data.list[0];
+        const keys = Object.keys( obj );
+        state.materialInConfig = [];
+        keys.forEach( ( item, index ) => {
+            if ( item !== 'uObjectUUID' && item !== 'uObjectParentUUID' && item !== 'uConfigUUID' ) {
+                state.materialInConfig.push( {
+                    id: obj.uObjectUUID,
+                    key: index,
+                    [item]: obj[item],
+                    name: toName( item ),
+                    name_en: item,
+                    value: obj[item],
+                    editing: false,
+                } )
+            }
+        } )
+        // console.log( 'action', state, action )
+        // state.activeKey = action.payload
+        return { ...state }
+    },
+    'receive procession material_out config'( state, action ) {
+        const { req, res } = action.payload
+        const obj = res.data.list[0];
+        const keys = Object.keys( obj );
+        state.materialOutConfig = [];
+        keys.forEach( ( item, index ) => {
+            if ( item !== 'uObjectUUID' && item !== 'uObjectParentUUID' && item !== 'uConfigUUID' ) {
+                state.materialOutConfig.push( {
+                    id: obj.uObjectUUID,
+                    key: index,
+                    [item]: obj[item],
+                    name: toName( item ),
+                    name_en: item,
+                    value: obj[item],
+                    editing: false,
+                } )
+            }
+        } )
+        // console.log( 'action', state, action )
+        // state.activeKey = action.payload
+        return { ...state }
+    },
+    'start edit procession config'( state, action ) {
+        const { id, key } = action.payload
+        state.routeConfig.forEach( ( item, index ) => {
+            if ( item.key === key ) {
+                item.editing = true
+            }
+        } )
+        return { ...state }
+    },
+    'end edit procession config'( state, action ) {
+        const { id, key, keyname } = action.payload
+        const recive_data = action.payload.data.obj
+        console.log( 'action', action )
+        state.routeConfig.forEach( ( item, index ) => {
+            if ( item.key === key ) {
+                item.editing = false
+            }
+            if ( item.name_en === keyname ) {
+                item.value = recive_data[keyname]
+            }
+        } )
+        // state.routeConfig[keyname] = recive_data[keyname]
+        return { ...state }
     },
 
 }, initConfigState )

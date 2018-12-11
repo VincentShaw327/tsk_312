@@ -16,3 +16,6 @@ export const config_list = ajax.fetchJSONByPost( 'api/procession/config/list' )
 export const config_add = ajax.fetchJSONByPost( 'api/procession/config/add' )
 export const config_update = ajax.fetchJSONByPost( 'api/procession/config/update' )
 export const config_delete = ajax.fetchJSONByPost( 'api/procession/config/delete' )
+
+export const material_in = ajax.fetchJSONByPost( 'api/procession/material_in/list' )
+export const material_out = ajax.fetchJSONByPost( 'api/procession/material_out/list' )

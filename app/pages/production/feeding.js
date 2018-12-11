@@ -35,8 +35,8 @@ export default class feeding extends Component {
     }
 
     componentWillMount() {
-      // this.getTableList();
-      this.props.dispatch( fetchFeedingList( { current: 1 }, ( respose ) => {} ) )
+    //   this.getTableList();
+      this.props.dispatch( fetchFeedingList( { current: 1 }, ( respose ) => {}, null, true ) )
     }
 
     getTableList( que ) {

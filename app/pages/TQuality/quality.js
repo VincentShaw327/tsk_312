@@ -2,7 +2,7 @@
  *这是检验记录页
  *添加日期:2018.10.24
  *添加人:shaw
- **/
+ * */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -16,25 +16,25 @@ import {
   message,
   Divider,
   Popconfirm,
-  Card,Row,Col
+  Card,
+  Row, Col,
 } from 'antd';
 import { fetchInspectList } from 'actions/quality';
 import { TPostData, TPostMock } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
-import { SimpleQForm, StandardQForm,DropDownForm } from 'components/TForm';
+import { SimpleQForm, StandardQForm, DropDownForm } from 'components/TForm';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
-import {TableExport} from  'components/Export';
+import { TableExport } from 'components/Export';
 
 @connect( ( state, props ) => {
     console.log( 'state', state )
     return {
-        Breadcrumb:state.Breadcrumb,
+        Breadcrumb: state.Breadcrumb,
         Inspect: state.Inspect,
     }
-}, )
+} )
 export default class quality extends Component {
-
     constructor( props ) {
         super( props )
         this.state = {
@@ -52,29 +52,30 @@ export default class quality extends Component {
 
     componentWillMount() {
         // this.getTableList();
-        this.props.dispatch( fetchInspectList( { current: 1 }, ( respose ) => {} ) )
+        this.props.dispatch( fetchInspectList( { current: 1 }, ( respose ) => {}, () => '', true ) )
     }
 
     getTableList( que ) {
         const { current, pageSize, keyWord } = this.state;
         const dat = {
-            PageIndex: current - 1, //分页：页序号，不分页时设为0
-            PageSize: pageSize, //分页：每页记录数，不分页时设为-1
-            ParentUUID: -1, //保留字段，取值设为-1
+            PageIndex: current - 1, // 分页：页序号，不分页时设为0
+            PageSize: pageSize, // 分页：每页记录数，不分页时设为-1
+            ParentUUID: -1, // 保留字段，取值设为-1
             KeyWord: keyWord,
         }
 
-        TPostMock( '/factory_type', "ListActive", dat,
+        TPostMock(
+ '/factory_type', 'ListActive', dat,
             ( res ) => {
-                var list = [];
-                console.log( "查询到工厂类别列表", res );
-                var data_list = res.obj.objectlist || [];
-                var totalcount = res.obj.totalcount;
+                const list = [];
+                console.log( '查询到工厂类别列表', res );
+                const data_list = res.obj.objectlist || [];
+                const totalcount = res.obj.totalcount;
                 data_list.forEach( ( item, index ) => {
                     list.push( {
                         key: index,
                         UUID: item.UUID,
-                        ParentUUID: item.ParentUUID, //保留字段
+                        ParentUUID: item.ParentUUID, // 保留字段
                         Name: item.Name,
                         Number: item.ID,
                         Founder: item.Founder,
@@ -82,7 +83,7 @@ export default class quality extends Component {
                         Renewing: item.Renewing,
                         UpdateDateTime: item.UpdateDateTime,
                         Note: item.Note,
-                        Status: 1
+                        Status: 1,
                     } )
                 } )
                 this.setState( { tableDataList: list, total: totalcount, loading: false } );
@@ -90,69 +91,71 @@ export default class quality extends Component {
             ( error ) => {
                 message.error( error );
                 this.setState( { loading: true } );
-            }
+            },
         )
-
     }
 
     handleCreat = ( data ) => {
-        let dat = {
+        const dat = {
             Name: data.Name,
             ID: data.Number,
-            ParentUUID: -1, //保留字段，取值设为-1
+            ParentUUID: -1, // 保留字段，取值设为-1
         }
-        TPostData( this.url, "Add", dat,
+        TPostData(
+ this.url, 'Add', dat,
             ( res ) => {
-                message.success( "创建成功！" );
+                message.success( '创建成功！' );
                 this.getTableList();
             },
             ( err ) => {
-                message.error( "创建失败！" );
+                message.error( '创建失败！' );
                 console.log( 'err', err );
-            }
+            },
         )
     }
 
     handleUpdate = ( data ) => {
-        let dat = {
+        const dat = {
             UUID: this.state.updateFromItem.UUID,
-            ParentUUID: -1, //保留字段，取值设为-1
+            ParentUUID: -1, // 保留字段，取值设为-1
             Name: data.Name,
             ID: data.Number,
             Desc: data.Desc,
             Note: '-',
         }
         console.log( 'dat', dat, this.state.updateFromItem.UUID )
-        TPostData( this.url, "Update", dat,
+        TPostData(
+ this.url, 'Update', dat,
             ( res ) => {
-                message.success( "更新成功！" );
+                message.success( '更新成功！' );
                 this.getTableList();
             },
             ( err ) => {
-                message.error( "更新失败！", err );
+                message.error( '更新失败！', err );
                 console.log( 'err', err );
-            }
+            },
         )
     }
 
     handleDelete = ( data ) => {
-        var dat = {
+        const dat = {
             UUID: data.UUID,
         }
-        TPostData( this.url, "Inactive", dat,
+        TPostData(
+ this.url, 'Inactive', dat,
             ( res ) => {
-                message.success( "删除成功！" );
+                message.success( '删除成功！' );
                 this.getTableList();
             },
             ( err ) => {
-                message.error( "删除失败！" );
+                message.error( '删除失败！' );
                 console.log( 'err', err );
-            }
+            },
         )
     }
 
     handleQuery = ( data ) => {
-        console.log( "查询的值是:", data );
+        console.log( '查询的值是:', data );
         const { keyWord, TypeUUID } = data;
         this.setState( { keyWord, TypeUUID }, () => {
             this.getTableList();
@@ -163,7 +166,6 @@ export default class quality extends Component {
         // console.log('pagination',pagination);
         const { current, pageSize } = pagination;
         this.setState( { current, pageSize, loading: true }, () => {
-
             this.getTableList();
         } );
     }
@@ -180,95 +182,93 @@ export default class quality extends Component {
             // total,
             pageSize,
             updateFromItem,
-            UModalShow
+            UModalShow,
         } = this.state;
-        const {Breadcrumb}=this.props;
+        const { Breadcrumb } = this.props;
         const { list, total, loading } = this.props.Inspect;
 
-        let Data = {
+        const Data = {
             // list:tableDataList,
             list: list,
-            pagination: { total, current, pageSize }
+            pagination: { total, current, pageSize },
         };
 
-        //table表格表头参数
+        // table表格表头参数
         const Tcolumns = [
             {
                 title: '序号',
                 dataIndex: 'key',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '工单号',
                 dataIndex: 'workOrder',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '产品图号',
                 dataIndex: 'productDraw',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '检验图纸',
                 dataIndex: 'inspectDraw',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '检验类别',
                 dataIndex: 'inspectType',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '工作中心',
                 dataIndex: 'center',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '检验时间',
                 dataIndex: 'inspectTime',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '检验人',
                 dataIndex: 'Inspector',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '样品数量',
                 dataIndex: 'samples',
-                type: 'string'
+                type: 'string',
             },
-            /*{
+            /* {
                 title: '合格数量',
                 dataIndex: 'qualified',
                 type: 'string'
-            },*/
+            }, */
             {
                 title: '不良数量',
                 dataIndex: 'defective',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '合格率',
                 dataIndex: 'PassRate',
-                type: 'string'
+                type: 'string',
             },
             {
                 title: '是否通过',
                 dataIndex: 'Renewing',
-                render:(item)=>{
-                    return item==0?<Icon
-                            type="check"
-                            theme="outlined"
-                            style={{color:'green'}}
-                            />:
+                render: item => ( item == 0 ? <Icon
+                  type="check"
+                  theme="outlined"
+                  style={{ color: 'green' }}
+                /> :
                             <Icon type="close"
-                                theme="outlined"
-                                style={{color:'red'}}
-                            />
-                }
+                              theme="outlined"
+                              style={{ color: 'red' }}
+                            /> ),
             },
-            /*{
+            /* {
                 title: '修改时间',
                 dataIndex: 'UpdateDateTime',
                 type: 'string'
@@ -289,11 +289,11 @@ export default class quality extends Component {
                         </Popconfirm>
                     </span>
                 }
-            }*/
+            } */
         ];
 
-        //查询的数据项
-        const RFormItem= [
+        // 查询的数据项
+        const RFormItem = [
             {
                 name: 'keyWord',
                 label: '搜索内容',
@@ -301,85 +301,85 @@ export default class quality extends Component {
                 // width: 200,
                 placeholder: '请输入搜索内容',
                 // defaultValue:this.state.keyWord
-            },{
+            }, {
                 name: 'orderState',
                 label: '订单状态',
                 type: 'select',
                 defaultValue: '-1',
                 hasAllButtom: true,
                 // width: 180,
-                options:[
-                    /*{
+                options: [
+                    /* {
                         value:-1,
                         text:'全部',
                         key:'1'
-                    },*/
+                    }, */
                     {
-                        value:0,
-                        text:'已取消',
-                        key:'2'
+                        value: 0,
+                        text: '已取消',
+                        key: '2',
                     },
                     {
-                        value:1,
-                        text:'未就绪',
-                        key:'3'
+                        value: 1,
+                        text: '未就绪',
+                        key: '3',
                     },
                     {
-                        value:2,
-                        text:'未执行',
-                        key:'4'
+                        value: 2,
+                        text: '未执行',
+                        key: '4',
                     },
                     {
-                        value:3,
-                        text:'暂停中',
-                        key:'5'
+                        value: 3,
+                        text: '暂停中',
+                        key: '5',
                     },
                     {
-                        value:4,
-                        text:'执行中',
-                        key:'6'
+                        value: 4,
+                        text: '执行中',
+                        key: '6',
                     },
                     {
-                        value:5,
-                        text:'已完成',
-                        key:'7'
-                    }
-                ]
+                        value: 5,
+                        text: '已完成',
+                        key: '7',
+                    },
+                ],
             },
             // {type:'submit'}
         ];
-        
-        const bcList = [ {
-            title: "首页",
+
+        const bcList = [{
+            title: '首页',
             href: '/',
           }, {
             title: '基础数据',
             href: '/',
           }, {
             title: '工厂类别',
-          } ];
+          }];
 
         return (
-            <PageHeaderLayout title="品质检验记录" wrapperClassName="pageContent"
-              BreadcrumbList={Breadcrumb.BCList}>
-                <div style={{backgroundColor:'white',padding:15}}>
+            <PageHeaderLayout title="品质检验记录"
+              wrapperClassName="pageContent"
+              BreadcrumbList={Breadcrumb.BCList}
+            >
+                <div style={{ backgroundColor: 'white', padding: 15 }}>
                     <Row>
-                        <Col span={8}></Col>
+                        <Col span={8} />
+                        <Col span={8} />
                         <Col span={8}>
-                            
-                        </Col>
-                        <Col span={8}>
-                            <DropDownForm FormItem={RFormItem}/>
+                            <DropDownForm FormItem={RFormItem} />
                         </Col>
                     </Row>
                     <TableExport>
                         <SimpleTable
-                            size="middle"
-                            loading={loading}
-                            data={Data}
-                            columns={Tcolumns}
-                            isHaveSelect={false}
-                            onChange={this.handleTableChange}
+                          size="middle"
+                          loading={loading}
+                          data={Data}
+                          columns={Tcolumns}
+                          isHaveSelect={false}
+                          onChange={this.handleTableChange}
                         />
                     </TableExport>
                     {/* <UpdateModal

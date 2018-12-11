@@ -3,7 +3,7 @@ const {existsSync}=require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
@@ -91,38 +91,11 @@ const webpackConfigBase = {
         loader: ExtractTextPlugin.extract({
           fallback: 'style',
           use: [
-              { loader: 'css', options: {sourceMap: true,modules:false } },
-              { loader: 'less', options: { sourceMap: true } },
+              { loader: 'css', options: {sourceMap: true,modules:true } },
+              { loader: 'less', options: { sourceMap: true,modules:false } },
           ]
         }),
       }, */
-      /*{
-            test: /\.less$/,
-            use: [
-              'style-loader',
-                { loader: 'css-loader', options: { importLoaders: 1 } },
-              'less-loader'
-            ]
-      },*/
-      /*{
-          test: /\.less$/,
-          use: [
-            {
-                loader: "style-loader" // creates style nodes from JS strings
-            },
-            {
-                loader: "css-loader" ,options: {sourceMap: true,modules:true }// translates CSS into CommonJS
-            },
-            {
-                loader: "less-loader",options: { sourceMap: true } // compiles Less to CSS
-            },
-         ]
-      },*/
-      /*{
-        // test: /\.less$/,
-        test: /.less$/,
-        loader: "style-loader!css-loader!less-loader?modules"
-      },*/
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url',
@@ -140,7 +113,6 @@ const webpackConfigBase = {
         }
       },
     ],
-
     // noParse: /index.less/
   },
   plugins: [
@@ -159,13 +131,13 @@ const webpackConfigBase = {
     new webpack.SourceMapDevToolPlugin(),
     new ProgressBarPlugin()
   ],
-  optimization:{
-    // minimize:true,
+  /* optimization:{
+    minimize:true,
     runtimeChunk: {
       name: "manifest"
     },
     splitChunks: {
-      chunks: 'initial', // 只对入口文件处理
+      chunks: 'all', // 只对入口文件处理 all initial async(default)
       "automaticNameDelimiter": "~",
       cacheGroups: {
           vendor: { // split `node_modules`目录下被打包的代码到 `page/vendor.js && .css` 没找到可打包文件的话，则没有。css需要依赖 `ExtractTextPlugin`
@@ -174,15 +146,16 @@ const webpackConfigBase = {
               priority: 10,
               enforce: true
           },
-          /* commons: { // split `common`和`components`目录下被打包的代码到`page/commons.js && .css`
-              // test: /common\/|components\//,
-              // name: 'page/commons',
-              priority: 10,
-              enforce: true
-          } */
       }
     }
-  }
+  } */
+
+  /* commons: { // split `common`和`components`目录下被打包的代码到`page/commons.js && .css`
+    // test: /common\/|components\//,
+    // name: 'page/commons',
+    priority: 10,
+    enforce: true
+  } */
 }
 
 module.exports = webpackConfigBase

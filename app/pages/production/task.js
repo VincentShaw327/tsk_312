@@ -684,14 +684,13 @@ ProModelID, WorkshopID, keyWord, orderState,
                 width: 50,
             },
             {
-                title: '订单号',
-                dataIndex: 'ID',
+                title: '任务ID',
+                dataIndex: 'strTaskID',
                 type: 'string',
             },
             {
                 title: '产品名称',
-                dataIndex: 'ProductModelName',
-                type: 'string',
+                dataIndex: 'strMaterialID',
                 /* type: 'filter',
                 filters: [
                     {
@@ -710,8 +709,7 @@ ProModelID, WorkshopID, keyWord, orderState,
             },
             {
                 title: '计划产量',
-                dataIndex: 'PlanNumber',
-                type: 'sort',
+                dataIndex: 'nMaterialCount',
             },
             {
                 title: '已排产量',

@@ -27,11 +27,15 @@ export default class TScadaWorkShop_Auto extends Component {
         this.state = {
             // 单台机台数据状态
             // aEquipList: [],
-            aEquipList: props.workCenter.list,
+            // -1 离线, 0 空闲, 1 调机,  2 运行, 3 报警
+            aEquipList: [],
             stateCount: [],
-            onLine: '-',
-            warning: '-',
-            allQuery: '-',
+            offLine: 0,
+            standby: 0,
+            debug: 0,
+            running: 0,
+            warning: 0,
+            // allQuery: 0,
             loading: false,
         }
     }
@@ -40,27 +44,27 @@ export default class TScadaWorkShop_Auto extends Component {
         // this.getWorkcenterList();
         this.props.dispatch( workcenter_list( { num: 12 }, ( respose ) => {
             console.log( 'workcenter  espose===', respose )
-            const InitstateCount = [
-                {
-                    x: '报警',
-                    y: 0,
-                },
-                {
-                    x: '离线',
-                    y: respose.objectlist.length,
-                },
-                {
-                    x: '运行',
-                    y: 0,
-                },
-                {
-                    x: '待机',
-                    y: 0,
-                },
-            ];
+            const init_data = {
+                // nDeviceUUID = 0;  // 机台UUID
+                // strMachineID: 'A00', // 机台编号
+                nStatus: -1, // 机台状态, -1 离线, 0 空闲, 1 调机,  2 运行, 3 报警
+                nError: 0, // 报警状态, 0表示误报警, 其它代表报警代号
+                nTon: 45, // 吨位
+                nSPM: 0, // 冲次, 每分钟冲多少次
+                strJobNo: '-', // 工单号
+                nProductNow: 0, // 当前工单,当前产量
+                nProductPlan: 0, // 当前工单,计划产量
+                nProductTotal: 0, // 当前工单, 累计产量
+                nProductCapacity: 0, // 产能, 每分钟产量
+                uProductUUID: 0, // 产品UUID,用于查询和跳转
+                strMoldNo: '579.744.02', // 模具编号
+                strProductName: '插套', // 产品名称
+                strProductModel: 'NEWT-L', // 产品型号
+            }
+            const datalist = respose.data.list.map( ( item, index ) => ( Object.assign( item, init_data, { key: index } ) ) )
             this.setState( {
-                aEquipList: respose.objectlist,
-                stateCount: InitstateCount,
+                aEquipList: datalist,
+                offLine: datalist.length,
             } )
         } ) )
     }
@@ -78,7 +82,7 @@ export default class TScadaWorkShop_Auto extends Component {
 
     componentWillUnmount() {
         // client.end()
-        clearInterval( this.timer )
+        // clearInterval( this.timer )
     }
 
     /* shouldComponentUpdate(nextprops,nextstate,c){
@@ -167,18 +171,60 @@ export default class TScadaWorkShop_Auto extends Component {
         let renderaEquip = [];
         client.on( 'message', ( topic, payload ) => {
             // 接收到mqtt消息推送数据
-            let mqttData = JSON.parse( payload ),
-                MList = [];
+            const mqttData = JSON.parse( payload );
+            let MList = [];
             // console.log( '接收到MQTT信息', mqttData );
 
-            if ( mqttData.hasOwnProperty( 'nDeviceUUID' ) ) {
+            if ( mqttData.nDeviceUUID ) {
                 MList = this.state.aEquipList.map( ( item, index ) => {
-                    if ( item.nDeviceUUID == mqttData.nDeviceUUID ) {
-                        item = Object.assign( item, mqttData )
+                    let obj = {};
+                    if ( item.uObjectUUID === mqttData.nDeviceUUID ) {
+                        obj = Object.assign( item, mqttData )
                     }
-                    return item;
+                    return obj;
                 } )
-                this.setState( { aEquipList: MList } );
+                this.setState( { aEquipList: MList }, () => {
+                    let u_standby;
+                    let u_offLine;
+                    let u_debug;
+                    let u_running;
+                    let u_warning;
+                    this.state.aEquipList.forEach( ( item ) => {
+                        switch ( item.nStatus ) {
+                            case 0:
+                            case 1:
+                            case 2:
+                                u_standby += 1;
+                               break;
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 7:
+                            case 8:
+                                u_debug += 1;
+                               break;
+                            case 6:
+                                u_running += 1;
+                               break;
+                            case 9:
+                                u_warning += 1;
+                               break;
+                            case -1:
+                                u_offLine += 1;
+                               break;
+                            default:
+                                u_offLine += 1;
+                                break;
+                        }
+                    } );
+                    this.setState( {
+                         standby: u_standby,
+                         offLine: u_offLine,
+                         debug: u_debug,
+                         running: u_running,
+                         warning: u_warning,
+                    } )
+                } );
             }
 
             // 判断消息包内有数据的情况下,把数据更新至组件.
@@ -186,7 +232,7 @@ export default class TScadaWorkShop_Auto extends Component {
                 renderaEquip = this.state.aEquipList.map( ( item, i ) => {
                     // 判断接受消息是哪一台机器
                     mqttData.data.forEach( ( mqttItem, index ) => {
-                        if ( item.UUID == mqttItem.workstation ) {
+                        if ( item.UUID === mqttItem.workstation ) {
                             item.key = i
                             item.Status = mqttItem.run_status
                             item.prod_count = mqttItem.finished // 产量
@@ -244,9 +290,14 @@ export default class TScadaWorkShop_Auto extends Component {
 
     render() {
         // console.log( '工作中心列表:', this.state.aEquipList );
-        // const Dailychart = this.dailychart1;
-        // const Barchart = this.barChart;
-        const { aEquipList } = this.state;
+        const {
+            aEquipList,
+            offLine,
+            standby,
+            debug,
+            running,
+            warning,
+        } = this.state;
         const { Breadcrumb, MockMqttData } = this.props;
         const ListHeader = (
             <Row gutter={16} style={{ fontSize: 16 }}>
@@ -281,14 +332,14 @@ export default class TScadaWorkShop_Auto extends Component {
                 <Col span={5}>
                     <Progress
                       format={
-                            ( percent, successPercent ) => (
+                            () => (
                                 <div>
-                                    <a>3台</a>
+                                    <a>{running}台</a>
                                     <div style={{ marginTop: 12, fontSize: '14px' }}>运行中</div>
                                 </div>
                             )
                         }
-                      percent={62}
+                      percent={running / offLine}
                       type="circle"
                     />
                 </Col>
@@ -297,12 +348,12 @@ export default class TScadaWorkShop_Auto extends Component {
                       format={
                             ( percent, successPercent ) => (
                                 <div>
-                                    <a>0台</a>
+                                    <a>{debug}台</a>
                                 <div style={{ marginTop: 12, fontSize: '14px' }}>调机中</div>
                                 </div>
                             )
                         }
-                      percent={34}
+                      percent={debug / offLine}
                       strokeColor="#1ccde6"
                       type="circle"
                     />
@@ -312,12 +363,12 @@ export default class TScadaWorkShop_Auto extends Component {
                       format={
                             ( percent, successPercent ) => (
                                 <div>
-                                    <a>0台</a>
+                                    <a>{standby}台</a>
                                 <div style={{ marginTop: 12, fontSize: '14px' }}>待机中</div>
                                 </div>
                             )
                         }
-                      percent={34}
+                      percent={standby / offLine}
                       strokeColor="#18c81f"
                       type="circle"
                     />
@@ -327,12 +378,12 @@ export default class TScadaWorkShop_Auto extends Component {
                       format={
                             ( percent, successPercent ) => (
                                 <div>
-                                    <a>0台</a>
+                                    <a>{warning}台</a>
                                 <div style={{ marginTop: 12, fontSize: '14px' }}>告警中</div>
                                 </div>
                             )
                         }
-                      percent={34}
+                      percent={( warning / offLine ) * 100}
                       strokeColor="#f0200c"
                       type="circle"
                     />
@@ -342,12 +393,12 @@ export default class TScadaWorkShop_Auto extends Component {
                       format={
                             ( percent, successPercent ) => (
                                 <div>
-                                    <a>9台</a>
+                                    <a>{offLine}台</a>
                                 <div style={{ marginTop: 12, fontSize: '14px' }}>离线中</div>
                                 </div>
                             )
                         }
-                      percent={34}
+                      percent={( offLine / offLine ) * 100}
                       strokeColor="#6c6c6c"
                       type="circle"
                     />
@@ -361,15 +412,13 @@ export default class TScadaWorkShop_Auto extends Component {
           }, {
           title: '车间监控',
           href: '/',
-          }, {
-          title: '自动化装配车间一',
           }];
         return (
             <PageHeaderLayout
                 // title="车间监控"
               wrapperClassName="pageContent"
               content={devStateView}
-              BreadcrumbList={Breadcrumb.BCList}
+              BreadcrumbList={bcList}
             >
                 <div style={{ marginTop: 15 }}>
                     <Row gutter={16}>
@@ -379,15 +428,24 @@ export default class TScadaWorkShop_Auto extends Component {
                                 // style={{width:'75%'}}
                               header={ListHeader}
                                 // footer={<div>Footer</div>}
-                              loading={this.state.loading}
+                              loading={this.props.workCenter.loading}
                               bordered
-                              dataSource={this.state.aEquipList}
+                              dataSource={aEquipList}
                                 // dataSource={this.props.MockMqttData.List}
                               renderItem={( item ) => {
                                     let stateObj = {};
-                                    if ( item.task_progress && item.task_progress >= 100 ) { stateObj = { text: '已完成', color: 'blue' }; } else if ( item.hasOwnProperty( 'nStatus' ) && item.nStatus == 6 ) { stateObj = { text: '生产中', color: 'rgba(82, 196, 26, 0.84)' }; } else if ( item.hasOwnProperty( 'nStatus' ) && item.nStatus == 9 ) { stateObj = { text: '报警中', color: '#ffc069' }; } else if ( item.hasOwnProperty( 'nStatus' ) && ( item.nStatus == 0 || item.nStatus == 1 || item.nStatus == 2 ) ) { stateObj = { text: '待机中', color: '#4184de' }; } else if ( item.hasOwnProperty( 'nStatus' ) && ( item.nStatus == 3 || item.nStatus == 4 || item.nStatus == 5 || item.nStatus == 7 || item.nStatus == 8 ) ) { stateObj = { text: '调机中', color: '#4184de' }; }
-                                    // else if(item.hasOwnProperty('Status')&&item.Status== -1)
-                                    else { stateObj = { text: '离线中', color: '#bfbfbf' }; }
+                                    if ( item.task_progress && item.task_progress >= 100 ) {
+                                        stateObj = { text: '已完成', color: 'blue' };
+                                    } else if ( item.nStatus && item.nStatus === 6 ) {
+                                        stateObj = { text: '生产中', color: 'rgba(82, 196, 26, 0.84)' };
+                                    } else if ( item.nStatus && item.nStatus === 9 ) {
+                                        stateObj = { text: '报警中', color: '#ffc069' };
+                                    } else if ( item.nStatus && ( item.nStatus === 0 || item.nStatus === 1 || item.nStatus === 2 ) ) {
+                                        stateObj = { text: '待机中', color: '#4184de' };
+                                    } else if ( item.nStatus && ( item.nStatus === 3 || item.nStatus === 4 || item.nStatus === 5 || item.nStatus === 7 || item.nStatus === 8 ) ) {
+                                        stateObj = { text: '调机中', color: '#4184de' };
+                                    } else { stateObj = { text: '离线中', color: '#bfbfbf' }; }
+                                    // else if(item.hasOwnProperty('Status')&&item.Status=== -1)
 
                                     return (
                                             <List.Item>
@@ -402,7 +460,7 @@ export default class TScadaWorkShop_Auto extends Component {
                                                         <div className="gutter-box">
                                                             {/* <p>{item.Name}</p>
                                                             <p>{item.ID}</p> */}
-                                                            <div>编号：{item.strMachineID}</div>
+                                                            <div>编号：{item.strMachineID || item.strCenterName}</div>
                                                             <div>吨位：{item.nTon}</div>
                                                             <div>冲速：{item.nSPM}</div>
                                                         </div>
@@ -441,8 +499,8 @@ export default class TScadaWorkShop_Auto extends Component {
                                                                 // type="dashboard"
                                                                 // width={25}
                                                               status={
-                                                                    item.Status == 1 ? 'active' :
-                                                                    item.Status == 2 ? 'exception' : ''
+                                                                    item.nStatus === 1 ? 'active' :
+                                                                    item.nStatus === 2 ? 'exception' : 'normal'
                                                                 }
                                                                 // percent={parseFloat(((item.prod_count/item.plan )*100|| 0).toFixed(2))}
                                                               percent={parseFloat( ( ( item.nProductNow / item.nProductPlan ) * 100 || 0 ).toFixed( 2 ) )}

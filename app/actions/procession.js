@@ -49,6 +49,7 @@ export const config_list = !gconfig.isDemo_dev ? createAjaxAction(
     createAction( 'request procession config list' ),
     createAction( 'receive procession config list' ),
 )
+
 export const config_add = createAjaxAction(
     procession.config_add,
     null,
@@ -64,5 +65,30 @@ export const config_delete = createAjaxAction(
     null,
     createAction( 'success delete procession config' ),
 )
+
+export const config_route = createAjaxAction(
+    procession.config_list,
+    null,
+    createAction( 'receive procession route config' ),
+)
+export const config_material_in = createAjaxAction(
+    procession.material_in,
+    null,
+    createAction( 'receive procession material_in config' ),
+)
+export const config_material_out = createAjaxAction(
+    procession.material_out,
+    null,
+    createAction( 'receive procession material_out config' ),
+)
+
+export const set_id = createAction( 'set config id' );
+export const update_menukey = createAction( 'update config menu key' );
+export const config_edit = createAction( 'start edit procession config' );
+export const config_edit_end = createAction( 'end edit procession config' );
 /* 工艺配置actions end */
 
+
+/* config action start */
+
+/* config action end */

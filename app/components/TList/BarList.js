@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Button,
-    List
+    List,
 } from 'antd';
 
 export default class SimpleQForm extends Component {
-
-    constructor(props) {
-        super(props)
+    constructor( props ) {
+        super( props )
         this.state = {
 
         }
@@ -16,11 +15,8 @@ export default class SimpleQForm extends Component {
     componentWillMount() {}
 
     render() {
-
         return (
-            <div>
-
-            </div>
+            <div />
         )
     }
 }

@@ -8,7 +8,7 @@ export default (() => {
     // global.linkUrl = 'http://localhost:3000/';
     // global.linkUrl = 'http://dev.mes.top-link.me/';
     if (process.env.NODE_ENV === 'production') { // 生产环境用不同的接口地址
-      global.linkUrl = 'http://localhost:3000';
+      global.linkUrl = 'http://dev.mes.top-link.me/';
     }
     global.isDemo_dev=false;
     // 系统一二级菜单

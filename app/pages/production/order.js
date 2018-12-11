@@ -718,13 +718,13 @@ export default class order extends Component {
         const menu = (
             <Menu>
               <Menu.Item>
-                <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
+                <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">详情</a>
               </Menu.Item>
               <Menu.Item>
-                <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+                <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">删除</a>
               </Menu.Item>
               <Menu.Item>
-                <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">3rd menu item</a>
+                <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">拆分</a>
               </Menu.Item>
             </Menu>
         );
@@ -743,32 +743,30 @@ export default class order extends Component {
                 {
                     title: '订单号',
                     dataIndex: 'strOrderID',
-                    type: 'string',
+                },
+                {
+                    title: '订单类型',
+                    dataIndex: 'strOrderName',
                 },
                 {
                     title: '客户名称',
-                    dataIndex: 'ProductModelName',
-                    type: 'string',
+                    dataIndex: 'strCustomerID',
                 },
                 {
                     title: '下单日期',
                     dataIndex: 'IssuedDateTime',
-                    type: 'string',
                 },
                 {
-                    title: '计划交期',
-                    dataIndex: 'PlanDeliverDate',
-                    type: 'string',
+                    title: '计划开始时间',
+                    dataIndex: 'dtOrderPlanStartTime',
                 },
-                /* {
+                {
                     title: '计划完成时间',
-                    dataIndex: 'PlanFinishDateTime',
-                    type: 'string'
-                }, */
+                    dataIndex: 'dtOrderPlanFinishTime',
+                },
                 {
                     title: '订单状态',
-                    dataIndex: 'Status',
-                    type: 'string',
+                    dataIndex: 'nOrderStage',
                     width: 120,
                     render: ( e1, record ) => {
                     let status = '';
@@ -783,7 +781,6 @@ export default class order extends Component {
                 {
                     title: '操作',
                     dataIndex: 'uMachineUUID',
-                    type: 'operate', // 操作的类型必须为 operate
                     multipleType: 'orderList',
                     width: 120,
                     render: ( e1, record, e3 ) => {
@@ -801,7 +798,7 @@ export default class order extends Component {
                                         okText="确定" cancelText="取消">
                                         <a href="#">完成生产</a>
                                     </Popconfirm> */}
-                                    <a>删除</a>
+                                    <a>编辑</a>
                                     <span className="ant-divider" />
                                     <Dropdown overlay={menu}>
                                         <a className="ant-dropdown-link" href="#">
