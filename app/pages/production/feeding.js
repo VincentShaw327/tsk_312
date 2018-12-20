@@ -294,7 +294,8 @@ export default class feeding extends Component {
           href: '/',
           }, {
           title: '物料类别',
-          }];
+          },
+        ];
 
         const DropQFormItem = [
             {

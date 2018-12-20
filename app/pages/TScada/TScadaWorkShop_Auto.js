@@ -174,7 +174,6 @@ export default class TScadaWorkShop_Auto extends Component {
             const mqttData = JSON.parse( payload );
             let MList = [];
             // console.log( '接收到MQTT信息', mqttData );
-
             if ( mqttData.nDeviceUUID ) {
                 MList = this.state.aEquipList.map( ( item, index ) => {
                     let obj = {};

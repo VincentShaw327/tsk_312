@@ -115,6 +115,7 @@ const initConfigState = {
     routeConfig: [],
     materialInConfig: [],
     materialOutConfig: [],
+    mouldUUID: 0,
 }
 export const processionConfig = handleActions( {
     'request procession config list'( state, action ) {
@@ -239,6 +240,30 @@ export const processionConfig = handleActions( {
         // state.activeKey = action.payload
         return { ...state }
     },
+    'receive procession mould config'( state, action ) {
+        const { req, res } = action.payload
+        const obj = res.data.list[0];
+        const keys = Object.keys( obj );
+        console.log( '接收到模具配置数据', res )
+        state.mouldUUID = obj.uMouldGroupUUID.toString();
+        // state.materialOutConfig = [];
+        // keys.forEach( ( item, index ) => {
+        //     if ( item !== 'uObjectUUID' && item !== 'uObjectParentUUID' && item !== 'uConfigUUID' ) {
+        //         state.materialOutConfig.push( {
+        //             id: obj.uObjectUUID,
+        //             key: index,
+        //             [item]: obj[item],
+        //             name: toName( item ),
+        //             name_en: item,
+        //             value: obj[item],
+        //             editing: false,
+        //         } )
+        //     }
+        // } )
+        // console.log( 'action', state, action )
+        // state.activeKey = action.payload
+        return { ...state }
+    },
     'start edit procession config'( state, action ) {
         const { id, key } = action.payload
         state.routeConfig.forEach( ( item, index ) => {
@@ -263,6 +288,55 @@ export const processionConfig = handleActions( {
         // state.routeConfig[keyname] = recive_data[keyname]
         return { ...state }
     },
+    'start edit material_in config'( state, action ) {
+        const { id, key } = action.payload
+        state.materialInConfig.forEach( ( item, index ) => {
+            if ( item.key === key ) {
+                item.editing = true
+            }
+        } )
+        return { ...state }
+    },
+    'end edit material_in config'( state, action ) {
+        const { id, key, keyname } = action.payload
+        const receive_data = action.payload.data.obj
+        console.log( 'action', action )
+        state.materialInConfig.forEach( ( item, index ) => {
+            if ( item.key === key ) {
+                item.editing = false
+            }
+            if ( item.name_en === keyname ) {
+                item.value = receive_data[keyname]
+            }
+        } )
+        // state.routeConfig[keyname] = recive_data[keyname]
+        return { ...state }
+    },
+    'start edit material_out config'( state, action ) {
+        const { id, key } = action.payload
+        state.materialOutConfig.forEach( ( item, index ) => {
+            if ( item.key === key ) {
+                item.editing = true
+            }
+        } )
+        return { ...state }
+    },
+    'end edit material_out config'( state, action ) {
+        const { id, key, keyname } = action.payload
+        const receive_data = action.payload.data.obj
+        console.log( 'action', action )
+        state.materialOutConfig.forEach( ( item, index ) => {
+            if ( item.key === key ) {
+                item.editing = false
+            }
+            if ( item.name_en === keyname ) {
+                item.value = receive_data[keyname]
+            }
+        } )
+        // state.routeConfig[keyname] = recive_data[keyname]
+        return { ...state }
+    },
+
 
 }, initConfigState )
 /* 工艺配置reducer end */

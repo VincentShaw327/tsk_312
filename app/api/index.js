@@ -19,6 +19,7 @@ import * as quality from './quality'
 import * as warning from './warning'
 import * as wms from './wms'
 import * as work from './work'
+import * as material from './material'
 
 export {
   common,
@@ -41,4 +42,5 @@ export {
   work,
   mtrlloss,
   quality,
+  material,
 }

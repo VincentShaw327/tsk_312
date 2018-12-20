@@ -114,7 +114,8 @@ export default class configuration extends Component {
                   {
                     steps === 0 ?
                       parameter01 :
-                    steps === 1 ? parameter02 : ''
+                    steps === 1 ?
+                      parameter02 : ''
                   }
                 </div>
             </Card>

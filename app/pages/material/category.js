@@ -6,9 +6,8 @@
 // /* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { message, Divider, Popconfirm } from 'antd';
-import { device_type_list, device_type_add, device_type_update, device_type_delete } from 'actions/device'
-import { TPostData } from 'utils/TAjax';
+import { Divider, Popconfirm } from 'antd';
+import { category_list, category_add, category_update, category_delete } from 'actions/material';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
 // import { SimpleQForm, StandardQForm } from 'components/TForm';
@@ -16,13 +15,13 @@ import { fn_mes_trans } from 'functions'
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 @connect( ( state, props ) => ( {
-    deviceType: state.deviceType,
+    materialCategory: state.materialCategory,
 } ) )
-export default class type extends Component {
+export default class category extends Component {
     constructor( props ) {
         super( props )
         this.state = {
-            tableDataList: [],
+            // tableDataList: [],
             updateFromItem: {},
             // total: 0,
             current: 1,
@@ -30,55 +29,14 @@ export default class type extends Component {
             UModalShow: false,
             // loading: true,
         }
-        this.url = '/api/TDevice/device_type';
     }
 
     componentWillMount() {
         // this.getTableList();
         const filter = {
-            // strCategoryName: 'test',
+            strCategoryName: 'test',
         }
-        this.props.dispatch( device_type_list( fn_mes_trans.toFilter( filter ), ( respose ) => {} ) )
-    }
-
-    getTableList( que ) {
-        const { current, pageSize } = this.state;
-        const dat = {
-            PageIndex: current - 1, // 分页：页序号，不分页时设为0
-            PageSize: pageSize, // 分页：每页记录数，不分页时设为-1
-            ParentUUID: -1,
-            // FactoryUUID: -1,    //所属工厂UUID，不作为查询条件时取值设为-1
-            // TypeUUID: que?que.TypeUUID:-1,  //类型UUID，不作为查询条件时取值设为-1
-            KeyWord: que ? que.keyWord : '',
-        }
-
-        TPostData(
-            this.url, 'ListActive', dat,
-            ( res ) => {
-                const list = [];
-                // console.log( '查询到设备类别列表', res );
-                const data_list = res.obj.objectlist || [];
-                const { totalcount } = res.obj;
-                data_list.forEach( ( item, index ) => {
-                    list.push( {
-                        key: index,
-                        Desc: item.Desc,
-                        Name: item.Name,
-                        ID: item.ID,
-                        Note: item.Note,
-                        ParentUUID: item.ParentUUID,
-                        Status: item.Status,
-                        UUID: item.UUID,
-                        UpdateDateTime: item.UpdateDateTime,
-                    } )
-                } );
-
-                this.setState( { tableDataList: list, total: totalcount, loading: false } );
-            },
-            ( error ) => {
-                message.info( error );
-            },
-        )
+        this.props.dispatch( category_list( {}, ( respose ) => {} ) )
     }
 
     handleCreat = ( data ) => {
@@ -88,7 +46,7 @@ export default class type extends Component {
         // console.log( '开始添加', addData );
         this
             .props
-            .dispatch( device_type_add( addData, respose => console.log( '添加成功！', respose ) ) )
+            .dispatch( category_add( addData, respose => console.log( '添加成功！', respose ) ) )
     }
 
     handleDelete = ( data ) => {
@@ -98,7 +56,7 @@ export default class type extends Component {
         // console.log( '开始删除', deleteData );
         this
             .props
-            .dispatch( device_type_delete( deleteData ) )
+            .dispatch( category_delete( deleteData ) )
     }
 
     handleUpdate = ( data ) => {
@@ -107,17 +65,13 @@ export default class type extends Component {
             uuid: item.uObjectUUID,
             cols: fn_mes_trans.toCols( data ),
         }
-        console.log( '开始修改', editData );
         this
             .props
-            .dispatch( device_type_update( editData ) )
+            .dispatch( category_update( editData ) )
     }
 
     handleQuery=( data ) => {
-        console.log( '查询的值是:', data );
-        const { keyWord, TypeUUID } = data;
-        // this.setState({keyWord,TypeUUID});
-        this.getTableList( { keyWord } );
+
     }
 
     handleTableChange=( pagination ) => {
@@ -134,8 +88,6 @@ export default class type extends Component {
 
     render() {
         const {
-            wsTypeList,
-            tableDataList,
             // loading,
             current,
             // total,
@@ -143,7 +95,7 @@ export default class type extends Component {
             updateFromItem,
             UModalShow,
         } = this.state;
-        const { list, total, loading } = this.props.deviceType;
+        const { list, total, loading } = this.props.materialCategory;
         const Data = {
             list: list,
             // list:tableDataList,

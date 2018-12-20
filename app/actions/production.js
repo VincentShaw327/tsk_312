@@ -96,6 +96,34 @@ export const job_delete = createAjaxAction(
     createAction( 'success delete job' ),
 )
 
+/* 派工单管理actions */
+export const requestDistList = createAction( 'request dist list' );
+export const recevieDistList = createAction( 'receive dist list' );
+export const dist_list = !gconfig.isDemo_dev ? createAjaxAction(
+    production.dist_list,
+    requestDistList,
+    recevieDistList,
+) : fakeAjaxAction(
+    production.dist_list,
+    requestDistList,
+    recevieDistList,
+)
+export const dist_add = createAjaxAction(
+    production.dist_add,
+    null,
+    createAction( 'success add dist' ),
+)
+export const dist_update = createAjaxAction(
+    production.dist_update,
+    null,
+    createAction( 'success update dist' ),
+)
+export const dist_delete = createAjaxAction(
+    production.dist_delete,
+    null,
+    createAction( 'success delete dist' ),
+)
+
 
 /* 投料计划 */
 export const fetchFeedingList = !gconfig.isDemo_dev ? createAjaxAction(

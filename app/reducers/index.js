@@ -60,6 +60,7 @@ import {
   productOrder,
   productTask,
   productJob,
+  productDist,
   Feeding,
 } from './production'
 // bom
@@ -84,6 +85,7 @@ import {
   UserAccount,
   UserGroup,
   UserAuth,
+  UserRole,
 } from './user'
 // bom
 import {
@@ -107,6 +109,11 @@ import {
 import {
     Maintain,
 } from './maintain'
+
+import {
+  materialCategory,
+  materialList,
+} from './material'
 
 import { workCenter } from './work'
 
@@ -147,6 +154,7 @@ const rootReducer = combineReducers( {
     productOrder,
     productTask,
     productJob,
+    productDist,
     Feeding,
 
     moldList,
@@ -157,9 +165,12 @@ const rootReducer = combineReducers( {
     productReportRata,
     deviceReportData,
     punchFreq,
+
     UserAccount,
     UserGroup,
     UserAuth,
+    UserRole,
+
     warning_list_data,
     warning_item_data,
     mtrlModel,
@@ -170,6 +181,9 @@ const rootReducer = combineReducers( {
     Inspect,
 
     Maintain,
+
+    materialCategory,
+    materialList,
 } );
 
 export default rootReducer;

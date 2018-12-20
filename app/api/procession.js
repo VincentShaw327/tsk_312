@@ -18,4 +18,12 @@ export const config_update = ajax.fetchJSONByPost( 'api/procession/config/update
 export const config_delete = ajax.fetchJSONByPost( 'api/procession/config/delete' )
 
 export const material_in = ajax.fetchJSONByPost( 'api/procession/material_in/list' )
+export const material_in_update = ajax.fetchJSONByPost( 'api/procession/material_in/update' )
 export const material_out = ajax.fetchJSONByPost( 'api/procession/material_out/list' )
+export const material_out_update = ajax.fetchJSONByPost( 'api/procession/material_out/update' )
+
+export const config_mould = ajax.fetchJSONByPost( 'api/procession/config_mould/list' )
+// export const config_mould_add = ajax.fetchJSONByPost( 'api/procession/config_mould/add' )
+// export const config_mould_update = ajax.fetchJSONByPost( 'api/procession/config_mould/update' )
+// export const config_mould_delete = ajax.fetchJSONByPost( 'api/procession/config_mould/delete' )
+

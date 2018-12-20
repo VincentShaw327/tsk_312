@@ -9,10 +9,10 @@ import { Link, Route, Switch } from 'react-router-dom'
 import {
     Table,
     Icon,
-    Button,
     Badge,
     Popover,
     message,
+    Button,
     Divider,
     Popconfirm,
 } from 'antd';
@@ -275,10 +275,10 @@ export default class processionConfig extends Component {
                 <SimpleTable
                   size="middle"
                   bordered
+                  isHaveSelect={false}
                   loading={loading}
                   data={Data}
                   columns={Tcolumns}
-                  isHaveSelect={false}
                   onChange={this.handleTableChange}
                 />
                 <UpdateModal

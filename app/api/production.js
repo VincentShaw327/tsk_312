@@ -19,3 +19,9 @@ export const job_add = ajax.fetchJSONByPost( 'api/production/job/add' )
 export const job_delete = ajax.fetchJSONByPost( 'api/production/job/delete' )
 export const job_update = ajax.fetchJSONByPost( 'api/production/job/update' )
 export const job_list = ajax.fetchJSONByPost( 'api/production/job/list' )
+
+/* dist api */
+export const dist_add = ajax.fetchJSONByPost( 'api/production/dist/add' )
+export const dist_delete = ajax.fetchJSONByPost( 'api/production/dist/delete' )
+export const dist_update = ajax.fetchJSONByPost( 'api/production/dist/update' )
+export const dist_list = ajax.fetchJSONByPost( 'api/production/dist/list' )

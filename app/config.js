@@ -37,11 +37,11 @@ export default (() => {
           {
             name:'生产任务', key: '/production/task',url:'production/task'
           },
-          /*{
-            name:'生产派工', key: 'task_dispatch',url:'task_dispatch'
-          },*/
           {
             name:'工单管理', key: '/production/job',url:'/production/job'
+          },
+          {
+            name:'派工单管理', key: '/production/dist',url:'/production/dist'
           },
           {
             name:'投料计划', key: '/production/feeding',url:'/production/feeding'
@@ -63,6 +63,9 @@ export default (() => {
           {
             name:'工艺配置', key: '/procession/configlist',url:'/procession/configlist'
           },
+          {
+            name:'工作中心', key: '/work/workCenter',url:'/work/workCenter',
+          },
           /* {
             name:'库存控制', key: 'task_dispatch',url:'task_dispatch'
           }, */
@@ -75,26 +78,26 @@ export default (() => {
         ],
       },
       {
-        name: '品质管理',
-        icon: 'snippets',
+        name: '物料管理',
+        icon: 'shop',
         url: '',
-        key: 'TQualityManagement',
+        key: 'TMtrl',
         children: [
           {
-            name:'品质检验记录', key: '/quality/quality_record',url:'/quality/quality_record',
-          },
-          /*{
-            name:'抽检记录', key: 'crafts',url:'TPM_Procedure',
+            name:'物料类别', key: '/material/category',url:'/material/category',
           },
           {
-            name:'末检记录', key: 'TPM_Route',url:'TPM_Route',
-          },*/
+            name:'物料型号', key: '/material/item',url:'/material/item',
+          },
+          {
+            name:'产品类别', key: '/product/category',url:'/product/category',
+          },
+          {
+            name:'产品列表', key: '/product/model',url:'/product/model',
+          },
           /* {
-            name:'检验图纸', key: 'TPM_Product',url:'TPM_Product',
+            name:'BOM表', key: '/material/bom_list',url:'/material/bom_list',
           }, */
-          {
-            name:'品质异常记录', key: 'TPM_Document',url:'TPM_Document',
-          }
         ],
       },
       {
@@ -162,38 +165,38 @@ export default (() => {
           },*/
         ],
       },
-      {
-        name: '物料管理',
-        icon: 'shop',
-        url: '',
-        key: 'TMtrl',
-        children: [
-          {
-            name:'物料型号', key: '/material/material_model',url:'/material/material_model',
-          },
-          {
-            name:'产品类别', key: '/product/category',url:'/product/category',
-          },
-          {
-            name:'产品列表', key: '/product/model',url:'/product/model',
-          },
-          {
-            name:'BOM表', key: '/material/bom_list',url:'/material/bom_list',
-          },
-        ],
-      },
-      {
+      /* {
         name: '工作中心',
         icon: 'pic-center',
         url: '',
         key: 'TWorkCenter',
         children: [
           {
-            name:'工作中心类型', key: '/work/workCenter_type',url:'/process/workCenter_type',
-          },
-          {
             name:'工作中心', key: '/work/workCenter',url:'/work/workCenter',
           },
+        ],
+      }, */
+      {
+        name: '品质管理',
+        icon: 'snippets',
+        url: '',
+        key: 'TQualityManagement',
+        children: [
+          {
+            name:'品质检验记录', key: '/quality/quality_record',url:'/quality/quality_record',
+          },
+          /*{
+            name:'抽检记录', key: 'crafts',url:'TPM_Procedure',
+          },
+          {
+            name:'末检记录', key: 'TPM_Route',url:'TPM_Route',
+          },*/
+          /* {
+            name:'检验图纸', key: 'TPM_Product',url:'TPM_Product',
+          }, */
+          {
+            name:'品质异常记录', key: 'TPM_Document',url:'TPM_Document',
+          }
         ],
       },
       {
@@ -252,11 +255,14 @@ export default (() => {
         key: 'TSystemSetting',
         children: [
           {
-            name:'用户列表', key: '/setting/user_list',url:'/setting/user_list',
+            name:'角色管理', key: '/setting/role',url:'/setting/role',
           },
           {
-            name:'权限列表', key: '/setting/auth_list',url:'/setting/auth_list',
+            name:'用户列表', key: '/setting/user_list',url:'/setting/user_list',
           },
+          /* {
+            name:'权限列表', key: '/setting/auth_list',url:'/setting/auth_list',
+          }, */
           {
             name:'权限组', key: '/setting/auth_group_list',url:'/setting/auth_group_list',
           },

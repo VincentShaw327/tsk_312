@@ -82,50 +82,6 @@ export default class DeviceList extends Component {
         )
     }
 
-    /* getTableList( que ) {
-        const {
-current, pageSize, keyword, TypeUUID, ModelUUID,
- } = this.state;
-        const dat = {
-            PageIndex: current - 1, // 分页：页序号，不分页时设为0
-            PageSize: pageSize, // 分页：每页记录数，不分页时设为-1
-            ModelUUID: ModelUUID, // 所属车间UUID，不作为查询条件时取值设为-1
-            TypeUUID: TypeUUID, // 类型UUID，不作为查询条件时取值设为-1
-            KeyWord: keyword,
-            // KeyWord : que?que.keyWord:'',
-        }
-
-        TPostData(
- this.url, 'ListActive', dat,
-            ( res ) => {
-                const list = [];
-                // console.log( '查询到设备列表', res );
-                const data_list = res.obj.objectlist || [];
-                const { totalcount } = res.obj;
-                data_list.forEach( ( item, index ) => {
-                    list.push( {
-                        key: index,
-                        UUID: item.UUID,
-                        ModelUUID: item.ModelUUID,
-                        DeviceID: item.ID,
-                        WorkshopUUID: item.WorkshopUUID,
-                        Image: item.ModelImage,
-                        strDeviceName: item.Name,
-                        strDeviceModel: item.ModelName,
-                        strDeviceSN: item.SN,
-                        strDeviceType: item.TypeName,
-                        strLabel: item.Label,
-                        strDesc: item.Desc,
-                    } )
-                } )
-                this.setState( { tableDataList: list, total: totalcount, loading: false } );
-            },
-            ( error ) => {
-                message.info( error );
-            },
-        )
-    } */
-
     handleCreat = ( data ) => {
         const addData = {
             cols: fn_mes_trans.toCols( data ),
@@ -259,8 +215,9 @@ current, pageSize, keyword, TypeUUID, ModelUUID,
             }, {
                 title: '操作',
                 dataIndex: 'UUID',
-                render: ( UUID, record ) => ( <span>
-                        <a onClick={() => {}} onKeyDown={() => this.toggleUModalShow( record )}>编辑</a>
+                render: ( UUID, record ) => (
+                <span>
+                        <a onKeyDown={() => ''} onClick={() => this.toggleUModalShow( record )}>编辑</a>
                         <Divider type="vertical" />
                         <Popconfirm
                           placement="topRight"
@@ -271,7 +228,8 @@ current, pageSize, keyword, TypeUUID, ModelUUID,
                         >
                             <a href="#">删除</a>
                         </Popconfirm>
-                                              </span> ),
+                </span>
+                ),
             },
         ];
         // 更新弹框数据项
@@ -365,7 +323,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID,
                 <div style={{ marginBottom: 15 }}>
                     <CreateModal
                       FormItem={CFormItem}
-                      submit={() => this.handleCreat( )}
+                      submit={this.handleCreat}
                     />
                 </div>
                 <SimpleTable
@@ -381,7 +339,7 @@ current, pageSize, keyword, TypeUUID, ModelUUID,
                   title="编辑"
                   FormItem={UFormItem}
                   updateItem={updateFromItem}
-                  submit={() => this.handleUpdate()}
+                  submit={this.handleUpdate}
                   showModal={UModalShow}
                   hideModal={this.toggleUModalShow}
                 />

@@ -6,18 +6,18 @@ import {
     Radio,
     Row,
     Col,
-    Select,
-    DatePicker,
-    Input,
     message,
-    Form,
     Table,
-    // Switch,
-    Icon,
     Progress,
-    Dropdown,
+    // Select,
+    // DatePicker,
+    // Input,
+    // Form,
+    // Switch,
+    // Icon,
+    // Dropdown,
 } from 'antd';
-import { JobList } from 'actions/production';
+import { dist_list } from 'actions/production';
 import { TPostData, urlBase, TAjax } from 'utils/TAjax';
 import { CModal } from 'components/TModal';
 import { DropDownForm } from 'components/TForm';
@@ -28,22 +28,20 @@ import { fn_mes_trans } from 'functions'
 import TableExport from 'tableexport';
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import Details from './workOrderDetail';
-import styles from './common.less';
+// import styles from './common.less';
 
-const { Option } = Select;
-const FormItem = Form.Item;
+// const { Option } = Select;
+// const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const { Search, TextArea } = Input;
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
+// const { Search, TextArea } = Input;
+// const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
-@connect( ( state, props ) =>
-     ( {
-        Breadcrumb: state.Breadcrumb,
-        productJob: state.productJob,
-    } ) )
-// @Form.create()
-export default class taskMonitor extends Component {
+@connect( ( state, props ) => ( {
+    Breadcrumb: state.Breadcrumb,
+    productDist: state.productDist,
+} ) )
+export default class dist extends Component {
     constructor( props ) {
         super( props )
         this.state = {
@@ -88,7 +86,7 @@ export default class taskMonitor extends Component {
         // this.getProModelList();
         // this.getWorkCenterList();
         // this.getWorkshopList();
-        this.props.dispatch( JobList( { }, ( respose ) => {} ) );
+        // this.props.dispatch( dist_list( { }, ( respose ) => {} ) );
     }
 
     componentDidMount() {
@@ -96,94 +94,16 @@ export default class taskMonitor extends Component {
         /* this.timer=setInterval(()=>{
             this.props.dispatch( TaskList( {}, ( respose ) => {} ))
         },5000) */
-
+        const { list } = this.props.productDist;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( dist_list( {}, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
     componentWillUnmount() {
         // client.end()
         // clearInterval( this.timer )
-    }
-
-    getDispatchLotList() {
-        const {
-            current,
-            pageSize,
-            ProModelID,
-            WorkshopID,
-            keyWord,
-            dispatchLotState,
-        } = this.state;
-
-        // console.log( '查询', keyWord, dispatchLotState );
-
-        const dat = {
-            PageIndex: current - 1, // 分页参数
-            PageSize: pageSize, // 分页参数
-            ProductOrderUUID: -1, // 生产订单UUID
-            ProductModelUUID: ProModelID, // 生产订单产品型号UUID
-            WorkshopUUID: WorkshopID, // 车间UUID
-            WorkstationTypeUUID: -1, // 工作中心类型UUID
-            WorkstationUUID: -1, // 工作中心UUID
-            MoldUUID: -1, // 模具UUID
-            Status: dispatchLotState, // 派工单状态
-            KeyWord: keyWord, // 模糊查询                                                        // 是否插单
-        }
-        // "ListJobTask"
-        TPostData(
-            '/api/tmanufacture/manufacture/taskMonitor', 'ListWorkOrder', dat,
-            ( res ) => {
-                const list = [];
-                const Ui_list = res.obj.objectlist || [];
-                const { totalcount } = res.obj;
-                Ui_list.forEach( ( item, index ) => {
-                    list.push( {
-                        key: index,
-                        UUID: item.UUID, // 加工订单UUID
-                        BomUUID: item.BomUUID,
-                        lotJobID: item.ID,
-                        FinishDateTime: item.FinishDateTime,
-                        FinishNumber: item.FinishNumber,
-                        MoldModelUUID: item.MoldModelUUID,
-                        PlanStartDateTime: item.PlanStartDateTime,
-                        PlanFinishDateTime: item.PlanFinishDateTime,
-                        PlanNumber: item.PlanNumber,
-                        ProductModelID: item.ProductModelID,
-                        ProductModelName: item.ProductModelName,
-                        ProductModelSN: item.ProductModelSN,
-                        ProductModelUUID: item.ProductModelUUID,
-                        RejectNumber: item.RejectNumber,
-                        StartDateTime: item.StartDateTime,
-                        Status: item.Status,
-                        UpdateDateTime: item.UpdateDateTime,
-                        WorkstationID: item.WorkstationID,
-                        WorkstationName: item.WorkstationName,
-                        WorkstationUUID: item.WorkstationUUID,
-                        pro_progress: item.pro_progress,
-                        rej_progress: item.rej_progress,
-                        restTime: item.restTime,
-                    } )
-                } );
-                this.setState( { dispatchLotList: list, total: totalcount, loading: false } );
-                if ( this.state.hasAddBtn === false ) {
-                    const tableDom = document.getElementById( 'dispatchTableWrap' )
-                        .getElementsByClassName( 'ant-table-body' )[0];
-                    const btnWrap = document.getElementById( 'exportDispatchMenu' );
-                    const btn = TableExport( tableDom.children[0] );
-                    const children = btn.selectors[0].children[0];
-                    const childNodes = children.getElementsByTagName( 'button' );
-                    childNodes[0].innerHTML = 'xlsx';
-                    childNodes[1].innerHTML = 'csv';
-                    childNodes[2].innerHTML = 'txt';
-                    console.log( 'btn', children );
-                    console.log( 'childNodes', childNodes );
-                    btnWrap.appendChild( children );
-                }
-                this.setState( { hasAddBtn: true } );
-            },
-            ( error ) => {
-                message.info( error );
-            },
-        )
     }
 
     getProModelList() {
@@ -307,16 +227,6 @@ export default class taskMonitor extends Component {
         const dat = {
             UUID: data.UUID, // 订单UUID
         }
-        TPostData(
-            this.url, 'Dispatch', dat,
-            ( res ) => {
-                message.success( '派工成功！' )
-                this.getDispatchLotList();
-            },
-            ( err ) => {
-                message.error( '派工失败！' )
-            },
-        )
     }
 
     handleCancel( data ) {
@@ -369,72 +279,19 @@ export default class taskMonitor extends Component {
         this.setState( { size: e.target.value } );
     }
 
-    getSubTableData() {
-        const dat = {
-            PageIndex: 0, // 分页参数
-            PageSize: -1, // 分页参数
-            ProductOrderUUID: -1, // 生产订单UUID
-            ProductModelUUID: -1, // 生产订单产品型号UUID
-            WorkshopUUID: -1, // 车间UUID
-            WorkstationTypeUUID: -1, // 工作中心类型UUID
-            WorkstationUUID: -1, // 工作中心UUID
-            MoldUUID: -1, // 模具UUID
-            Status: -1, // 派工单状态
-            KeyWord: '', // 模糊查询
-        }
-        TPostData( this.url, 'ListWorkOrder', dat, ( res ) => {
-            const list = [];
-            const Ui_list = res.obj.objectlist || [];
-            Ui_list.forEach( ( item, index ) => {
-                list.push( {
-                    key: index,
-                    UUID: item.UUID,
-                    LotUUID: item.LotUUID,
-                    bomUUID: item.bomUUID,
-                    lotJobID: item.ID,
-                    FinishDateTime: item.FinishDateTime,
-                    FinishNumber: item.FinishNumber,
-                    MoldModelUUID: item.MoldModelUUID,
-                    PlanFinishDateTime: item.PlanFinishDateTime,
-                    PlanNumber: item.PlanNumber,
-                    PlanStartDateTime: item.PlanStartDateTime,
-                    ProductModelID: item.ProductModelID,
-                    ProductModelName: item.ProductModelName,
-                    ProductModelSN: item.ProductModelSN,
-                    ProductModelUUID: item.ProductModelUUID,
-                    RejectNumber: item.RejectNumber,
-                    StartDateTime: item.StartDateTime,
-                    Status: item.Status,
-                    UpdateDateTime: item.UpdateDateTime,
-                    WorkstationID: item.WorkstationID,
-                    WorkstationName: item.WorkstationName,
-                    WorkstationUUID: item.WorkstationUUID,
-                } )
-            } );
-            this.setState( { dispatchLotList: list } );
-        }, ( error ) => {
-            message.info( error );
-        } )
-    }
-
     renderSubTable=( record ) => {
         // this.setState({loading:true});
-        let list = [];
+        const list = [];
         console.log( 'record', record );
         const subcolumns = [
             {
-                title: 'ID',
-                dataIndex: 'uObjectUUID',
-                width: 50,
-            },
-            {
                 title: '派工单号',
-                dataIndex: 'strDistID',
-            },
-            {
-                title: '产品',
+                dataIndex: 'lotJobID',
+                key: 'lotJobID',
+            }, {
+                title: '产品名称',
                 dataIndex: 'ProductModelName',
-                render: () => ( <span>这是产品</span> ),
+                key: 'BNum',
             },
             /* {
                 title: '产品编码',
@@ -445,86 +302,33 @@ export default class taskMonitor extends Component {
                 title: '产品序列号',
                 dataIndex: 'ProductModelSN',
                 key: 'ProductModelSN'
-            },
+            }, */
             {
                 title: '工作中心',
                 dataIndex: 'WorkstationName',
                 key: 'WorkstationName',
-            }, */
-            {
-              title: '计划开始时间',
-              dataIndex: 'dtJobPlanStartTime',
-            },
-            {
-              title: '计划产量',
-              dataIndex: 'PlanNumber',
-              type: 'sort',
-            },
-            {
-              title: '当前产量',
-              dataIndex: 'FinishNumber',
-              type: 'sort',
-            },
-            {
-              title: '次品数量',
-              dataIndex: 'RejectNumber',
-              type: 'sort',
-            },
-            {
-              title: '次品率',
-              dataIndex: 'rej_progress',
-              type: 'string',
-              render: ( val, record ) => ( <Progress type="circle" percent={val} width={40} /> ),
-            },
-            {
-              title: '派工时间',
-              dataIndex: 'PlanStartDateTime',
-              type: 'string',
-            },
-             {
-              title: '开始时间',
-              dataIndex: 'StartDateTime',
-              type: 'string',
-            },
-            {
-              title: '剩余时间(h)',
-              dataIndex: 'restTime',
-              type: 'string',
-            },
-            {
-              title: '计划完成时间',
-              dataIndex: 'PlanFinishDateTime',
-              type: 'string',
-            },
-             {
-              title: '实际完成',
-              dataIndex: 'FinishDateTime',
-              type: 'string',
-            },
-            {
-              title: '生产进度',
-              dataIndex: 'pro_progress',
-              type: 'string',
-              render: ( val, record ) => ( <Progress percent={val} /> ),
-            },
-            {
-                title: '派工单状态',
-                dataIndex: 'nDistStatus',
+            }, {
+                title: '计划产量',
+                dataIndex: 'PlanNumber',
+                key: 'PlanNumber',
+            }, {
+                title: '工单状态',
+                dataIndex: 'Status',
                 key: 'Status',
-                render: ( e1, record ) => {
+                render: ( e1 ) => {
                     // console.log('任务状态',record);
                     let status = '';
-                    status = e1 === 0 ? ( <span className="orderCancelled">已取消</span> ) :
-                        e1 === 1 ? ( <span className="Unproduced">未生产</span> ) :
-                        e1 === 2 ? ( <span className="Inproduction">生产中</span> ) :
-                        e1 === 3 ? ( <span className="Pausing">已暂停</span> ) :
-                        e1 === 4 ? ( <span className="Submited">已报工</span> ) :
-                        // e1==5?(<span>生产完成(5)</span>):
-                        // e1==6?(<span>生产中(6)</span>):
-                        // e1==9?(<span>生产挂起(9)</span>):
-                        // e1==10?(<span>已完成(10)</span>):
-                        // e1==11?(<span>暂停中(11)</span>):
-                        <span>{e1}</span>
+                    status = e1 === 0
+                        ? ( <span className="orderCancelled">已取消</span> )
+                        : e1 === 1
+                            ? ( <span className="Unproduced">未生产</span> )
+                            : e1 === 2
+                                ? ( <span className="Inproduction">生产中</span> )
+                                : e1 === 3
+                                    ? ( <span className="Pausing">已暂停</span> )
+                                    : e1 === 4
+                                        ? ( <span className="Submited">已报工</span> )
+                                        : <span>{e1}</span>;
                     return status;
                 },
             }, {
@@ -546,20 +350,19 @@ export default class taskMonitor extends Component {
             },
         ];
 
-        const dat = fn_mes_trans.toFilter( { uJobUUID: record.uObjectUUID } )
-        TAjax(
-            'post', 'api/production/dist/list', 'null', dat,
-            ( res ) => {
-                // console.log( '1111', res );
-                list = res.data.list || [];
-                // this.setState({loading:true});
-            },
-            ( res ) => {
-                console.log( '失败', res );
-            },
-            false,
-        );
-            console.log( 'list', list )
+        const dat = {
+            PageIndex: 0, // 分页参数
+            PageSize: -1, // 分页参数
+            ProductOrderUUID: record.UUID, // 生产订单UUID
+            ProductModelUUID: -1, // 生产订单产品型号UUID
+            WorkshopUUID: -1, // 车间UUID
+            WorkstationTypeUUID: -1, // 工作中心类型UUID
+            WorkstationUUID: -1, // 工作中心UUID
+            MoldUUID: -1, // 模具UUID
+            Status: -1, // 派工单状态
+            KeyWord: '', // 模糊查询
+        }
+
         return (
             <div style={{ padding: 8 }}>
                 <Table
@@ -668,7 +471,7 @@ export default class taskMonitor extends Component {
             size: pageSize,
         };
         const searchKey = [
-            'strJobID',
+            'strDistID',
             // 'strMaterialID',
             // 'nTaskFinishCount',
         ];
@@ -680,48 +483,36 @@ export default class taskMonitor extends Component {
         console.log( '查询值是：', queReq )
         this
             .props
-            .dispatch( JobList( queReq, ( respose ) => {} ) )
+            .dispatch( dist_list( queReq, ( respose ) => {} ) )
     }
 
     radioChange=( e ) => {
         if ( e.target.value !== '-1' ) {
-            const obj = fn_mes_trans.toFilter( { nJobStatus: e.target.value } );
-            this.props.dispatch( JobList( obj, ( respose ) => {} ) )
+            const obj = fn_mes_trans.toFilter( { nDistStatus: e.target.value } );
+            this.props.dispatch( dist_list( obj, ( respose ) => {} ) )
             console.log( `radio checked:${e.target.value}` );
         } else {
-            this.props.dispatch( JobList( {}, ( respose ) => {} ) )
+            this.props.dispatch( dist_list( {}, ( respose ) => {} ) )
         }
         this.setState( { radiovalue: e.target.value } )
     }
 
     render() {
         const {
-            dispatchLotList,
             ProModelList,
-            ProModelSList,
             WorkCenterList,
             workshopList,
-            DModalShow,
-            startModalShow,
-            pauseModalShow,
-            stopModalShow,
             submitModalShow,
-            bordered,
+            // bordered,
             size,
             current,
             pageSize,
             finishedNum,
-            scroll,
             // total,
-            ProModelID,
-            WorkshopID,
-            keyWord,
-            dispatchLotState,
-            rejectNum,
         } = this.state;
         const { Breadcrumb, children } = this.props;
-        const { list, total, loading } = this.props.productJob;
-        // const { getFieldDecorator } = form;
+        const { list, total, loading } = this.props.productDist;
+
         const columns = [
             {
                 title: '',
@@ -734,14 +525,9 @@ export default class taskMonitor extends Component {
                 width: 50,
             },
             {
-                title: '工单号',
-                dataIndex: 'strJobID',
+                title: '派工单号',
+                dataIndex: 'strDistID',
             },
-            /* {
-                title: '订单号',
-                dataIndex: 'orderID',
-                key: 'lotJobID'
-            }, */
             {
                 title: '产品',
                 dataIndex: 'ProductModelName',
@@ -776,44 +562,42 @@ export default class taskMonitor extends Component {
               dataIndex: 'FinishNumber',
               type: 'sort',
             },
-            /* {
+            {
               title: '次品数量',
               dataIndex: 'RejectNumber',
-              type: 'sort'
+              type: 'sort',
             },
             {
               title: '次品率',
               dataIndex: 'rej_progress',
               type: 'string',
-              render:(val,record)=>{
-                  return(<Progress type="circle" percent={val} width={40} />)
-              }
-            }, */
-            /* {
+              render: ( val, record ) => ( <Progress type="circle" percent={val} width={40} /> ),
+            },
+            {
               title: '派工时间',
               dataIndex: 'PlanStartDateTime',
-              type: 'string'
-            }, */
-            /* {
+              type: 'string',
+            },
+             {
               title: '开始时间',
               dataIndex: 'StartDateTime',
-              type: 'string'
+              type: 'string',
             },
             {
               title: '剩余时间(h)',
               dataIndex: 'restTime',
-              type: 'string'
+              type: 'string',
             },
             {
               title: '计划完成时间',
               dataIndex: 'PlanFinishDateTime',
-              type: 'string'
-            }, */
-            /* {
+              type: 'string',
+            },
+             {
               title: '实际完成',
               dataIndex: 'FinishDateTime',
-              type: 'string'
-            }, */
+              type: 'string',
+            },
             {
               title: '生产进度',
               dataIndex: 'pro_progress',
@@ -821,8 +605,8 @@ export default class taskMonitor extends Component {
               render: ( val, record ) => ( <Progress percent={val} /> ),
             },
             {
-                title: '工单状态',
-                dataIndex: 'nJobStatus',
+                title: '派工单状态',
+                dataIndex: 'nDistStatus',
                 key: 'Status',
                 render: ( e1, record ) => {
                     // console.log('任务状态',record);
@@ -846,166 +630,12 @@ export default class taskMonitor extends Component {
                 dataIndex: 'uMachineUUID',
                 type: 'operate', // 操作的类型必须为 operate
                 // multipleType: "dispatch",
-                // render: ( item, record ) => {
-                //     const operate = '';
-                //     // return (<a onClick={this.toggleShow}>工单详情</a>)
-                //     // return (<a href="/workorder_detail">工单详情</a>)
-                //     return ( <Link to={`/production/job/job_detail/${record.uObjectUUID}`}>工单详情</Link> )
-                // },
-            },
-        ];
-
-        const DFormItem = [
-            {
-                name: 'Number',
-                label: '派工产量',
-                type: 'string',
-                placeholder: '请输入派工产量',
-                rules: [{ required: true, message: '请输入派工产量' }],
-            },
-            {
-                name: 'WorkstationUUID',
-                label: '工作中心',
-                type: 'select',
-                options: WorkCenterList,
-                /* postJson: {
-                    postUrl: '/api/TManufacture/manufacture',
-                    method: 'ListActive',
-                    dat: {
-                        PageIndex: 0,
-                        PageSize: -1,
-                        TypeUUID: -1,
-                        KeyWord: ""
-                    }
+                render: ( item, record ) => {
+                    const operate = '';
+                    // return (<a onClick={this.toggleShow}>工单详情</a>)
+                    // return (<a href="/workorder_detail">工单详情</a>)
+                    return ( <Link to={`/production/dist/dist_detail/${record.uObjectUUID}`}>派工单详情</Link> )
                 },
-                options: [
-                    {
-                        text: "型号1",
-                        value: '1'
-                    },
-                    {
-                        text: "型号2",
-                        value: '2'
-                    },
-                    {
-                        text: "型号3",
-                        value: '3'
-                    }
-                ], */
-                rules: [{ required: true, message: '请选择工作中心' }],
-            },
-            {
-                name: 'Date',
-                label: '日期',
-                type: 'RangePicker',
-                placeholder: '请输入计划产量',
-            },
-        ];
-
-        const SFormItem = [
-            {
-                name: 'startDate',
-                label: '开始日期',
-                type: 'date',
-                placeholder: '请输入计划产量',
-                rules: [{ required: true, message: '请选择日期' }],
-            },
-        ];
-
-        const PFormItem = [
-            {
-                name: 'FinishNumber',
-                label: '完成产量',
-                type: 'number',
-                placeholder: '请输入完成产量',
-                rules: [
-                    {
-                        required: true,
-                        message: '请输入完成产量',
-                        type: 'number',
-                        min: 1,
-                        max: finishedNum,
-                    },
-                ],
-                help: ( <span>计划数:<span style={{ color: '#f5290d', fontWeight: 'bolder' }}>{finishedNum}</span>,完成数不能超过计划数量不能少于等于0个</span> ),
-            },
-            {
-                name: 'RejectNumber',
-                label: '不良产量',
-                type: 'number',
-                placeholder: '请输入不良产量',
-                rules: [
-                    {
-                        required: true,
-                        message: '请输入完成产量',
-                        type: 'number',
-                        min: 1,
-                        max: finishedNum,
-                    },
-                ],
-                help: ( <span>计划数:<span style={{ color: '#f5290d', fontWeight: 'bolder' }}>{finishedNum}</span>,计划数不能超过计划数量不能少于等于0个</span> ),
-            },
-            {
-                name: 'pauseDate',
-                label: '暂停日期',
-                type: 'date',
-                placeholder: '请选择日期',
-                rules: [
-                    {
-                        required: true,
-                        message: '请选择日期',
-                        // type:'date'
-                    },
-                ],
-            },
-        ];
-
-        const StopFormItem = [
-            {
-                name: 'FinishNumber',
-                label: '完成产量',
-                type: 'number',
-                placeholder: '请输入完成产量',
-                rules: [
-                    {
-                        required: true,
-                        message: '请输入完成产量',
-                        type: 'number',
-                        min: 1,
-                        max: finishedNum,
-                    },
-                ],
-                help: ( <span>计划数:<span style={{ color: '#f5290d', fontWeight: 'bolder' }}>{finishedNum}</span>,完成数不能超过计划数量不能少于等于0个</span> ),
-            },
-            {
-                name: 'RejectNumber',
-                label: '不良产量',
-                type: 'number',
-                placeholder: '请输入不良产量',
-                rules: [
-                    {
-                        required: true,
-                        message: '请输入完成产量',
-                        type: 'number',
-                        min: 1,
-                        max: finishedNum,
-                    },
-                ],
-                help: ( <span>计划数:<span style={{ color: '#f5290d', fontWeight: 'bolder' }}>{finishedNum}</span>,计划数不能超过计划数量不能少于等于0个</span> ),
-            },
-            {
-                name: 'stopDate',
-                label: '停止日期',
-                type: 'date',
-                placeholder: '请输入计划产量',
-                rules: [{ required: true, message: '请选择日期' }],
-            },
-            {
-                name: 'Desc',
-                label: '停止原因',
-                type: 'string',
-                placeholder: '请输入完成产量',
-                rules: [{ required: true, message: '请输入完成产量' }],
             },
         ];
 
@@ -1127,33 +757,15 @@ export default class taskMonitor extends Component {
             title: '首页',
             href: '/',
             }, {
-            title: '生产资料',
+            title: '生产管理',
             href: '/',
             }, {
-            title: '物料类别',
+            title: '派工单管理',
         }];
 
         // className="cardContent"
-        const workOrderList = () => (
-            <div >
-              {/* <Card bordered={false}>
-                <Row>
-                  <Col sm={8} xs={24}>
-                    <Info title="我的待办" value="8个任务" bordered />
-                  </Col>
-                  <Col sm={8} xs={24}>
-                    <Info title="本周任务平均处理时间" value="32分钟" bordered />
-                  </Col>
-                  <Col sm={8} xs={24}>
-                    <Info title="本周完成任务数" value="24个任务" />
-                  </Col>
-                </Row>
-              </Card> */}
-              {/* <div> */}
-                {/* <StandardQForm
-                    FormItem={RFormItem}
-                    submit={this.handleQuery}
-                /> */}
+        const distList = () => (
+            <div>
                 <div style={{ marginBottom: 6, padding: 5 }}>
                     <Row>
                         <Col span={8}>
@@ -1186,43 +798,14 @@ export default class taskMonitor extends Component {
                     </Row>
                 </div>
                 <SimpleTable
-                  ref={te => this._tableExport = te}
                   loading={loading}
                   data={Data}
-                  expandedRowRender={this.renderSubTable}
+                //   expandedRowRender={this.renderSubTable}
                   columns={columns}
                   bordered
                   size={size}
                   onChange={this.handleTableChange}
                 />
-              {/* </div> */}
-              <CModal
-                FormItem={DFormItem}
-                submit={this.handleDispatch}
-                isShow={DModalShow}
-                hideForm={this.toggleModalShow}
-              />
-              <CModal
-                title="开始生产"
-                FormItem={SFormItem}
-                submit={this.StartWorkOrder}
-                isShow={startModalShow}
-                hideForm={this.hideModal}
-              />
-              <CModal
-                title="暂停生产"
-                FormItem={PFormItem}
-                submit={this.PauseWorkOrder}
-                isShow={pauseModalShow}
-                hideForm={this.hideModal}
-              />
-              <CModal
-                title="停止生产"
-                FormItem={StopFormItem}
-                submit={this.StopWorkOrder}
-                isShow={stopModalShow}
-                hideForm={this.hideModal}
-              />
               <CModal
                 title="生产报工"
                 FormItem={SubmitFormItem}
@@ -1241,18 +824,16 @@ export default class taskMonitor extends Component {
 
         return (
             <PageHeaderLayout
-            //   title="生产派工"
+                // title="生产派工"
               action={children ? action : ''}
               wrapperClassName="pageContent"
-              BreadcrumbList={Breadcrumb.BCList}
+            // BreadcrumbList={Breadcrumb.BCList}
+              BreadcrumbList={bcList}
             >
                 <Switch>
-                    <Route path="/production/job/job_detail/:id" component={Details} />
-                    <Route path="/production/job" component={workOrderList} />
+                    <Route path="/production/dist/dist_detail/:id" component={Details} />
+                    <Route path="/production/dist" component={distList} />
                 </Switch>
-                {/* {
-                  children?children:workOrderList
-                } */}
             </PageHeaderLayout>
         )
     }

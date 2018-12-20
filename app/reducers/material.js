@@ -2,11 +2,9 @@ import { handleActions } from 'redux-actions'
 import { hasResponseError } from 'utils'
 import { fn_mes_array } from 'functions'
 import { message } from 'antd'
-
-const Mock = require( 'mockjs' );
+import Mock from 'mockjs'
 
 const { Random } = Mock;
-// import moment from 'moment'
 
 const initCategoryState = {
     list: [],
@@ -15,11 +13,11 @@ const initCategoryState = {
     pageSize: 20,
     totalCount: 0,
 }
-export const productCategory = handleActions( {
-    'request product category list'( state, action ) {
+export const materialCategory = handleActions( {
+    'request material category list'( state, action ) {
         return { ...state, loading: true }
     },
-    'receive product category list'( state, action ) {
+    'receive material category list'( state, action ) {
         const { req, res } = action.payload
         let list = [];
         if ( hasResponseError( res ) ) {
@@ -36,35 +34,42 @@ export const productCategory = handleActions( {
                 total: data.total,
             }
             return {
-                ...state,
-                list,
-                loading: false,
-                ...pagenation,
+                ...state, list, loading: false, ...pagenation,
             }
         }
 
         list = res.objectlist.map( ( item, index ) => ( {
             UUID: item.UUID,
             key: index,
-            TypeUUID: item.TypeUUID,
-            Image: item.Image,
-            Name: `产品_${index}`,
-            Number: `product_${index}`,
-            SN: Mock.mock( '@word' ),
-            Version: 'Version~',
-            Desc: '~',
-            UpdateDateTime: Mock.mock( '@datetime' ),
+            'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
+
+            // FactoryUUID: item.FactoryUUID,
+            // TypeUUID: item.TypeUUID,
+            // Name:item.Name,
+            ID: `devType_${index}`,
+            Number: `ws_${index}`,
+            'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], // 类别名称
+            Desc: '-',
+            Modifier: Mock.mock( '@cname()' ),
+            Founder: Mock.mock( '@cname()' ),
+            CreateTime: Random.datetime(),
+            UpdateDateTime: Random.now(),
+            // Note:item.Note,
+            // TypeID:item.TypeID, //类别编号
         } ) )
+        list = Mock.mock( list );
         res.objectlist = list;
         res.totalcount = Mock.mock( '@natural(0, 65)' );
         return { list: list, total: res.totalcount, loading: false }
     },
-    'success add product category'( state, action ) {
+    'success add material category'( state, action ) {
         const { req, res } = action.payload
+        const list = [];
         if ( hasResponseError( res ) ) {
             message.error( res.msg )
             return { ...state, loading: false }
         }
+
         if ( !gconfig.isDemo_dev ) {
             const { data } = res;
             const newObj = data.obj;
@@ -81,9 +86,9 @@ export const productCategory = handleActions( {
             ...state, loading: false, ...pagenation,
             }
         }
-        return { ...state, loading: false }
+        return { list: list, total: res.totalcount, loading: false }
     },
-    'success update product category'( state, action ) {
+    'success update material category'( state, action ) {
         const { req, res } = action.payload
         const u_item = res.data;
         console.log( '成功更新', res );
@@ -100,7 +105,7 @@ export const productCategory = handleActions( {
         } );
         return { ...state, list, loading: false }
     },
-    'success delete product category'( state, action ) {
+    'success delete material category'( state, action ) {
         const { req, res } = action.payload;
         if ( hasResponseError( res ) ) {
             message.error( res.msg )
@@ -112,7 +117,6 @@ export const productCategory = handleActions( {
         state.list = list;
         return { ...state }
     },
-
 
 }, initCategoryState )
 
@@ -124,11 +128,11 @@ const initListState = {
     pageSize: 20,
     totalCount: 0,
 }
-export const productList = handleActions( {
-    'request product model list'( state, action ) {
+export const materialList = handleActions( {
+    'request material item list'( state, action ) {
         return { ...state, loading: true }
     },
-    'receive product model list'( state, action ) {
+    'receive material item list'( state, action ) {
         const { req, res } = action.payload
         let list = [];
         if ( hasResponseError( res ) ) {
@@ -137,7 +141,7 @@ export const productList = handleActions( {
         }
 
         if ( !gconfig.isDemo_dev ) {
-            const { data } = res;
+            const data = res.data;
             const list = fn_mes_array.addKey( res.data.list, 'key' );
             const pagenation = {
                 page: data.page,
@@ -145,30 +149,47 @@ export const productList = handleActions( {
                 total: data.total,
             }
             return {
-                ...state,
-                list,
-                loading: false,
-                ...pagenation,
+                ...state, list, loading: false, ...pagenation,
             }
         }
-        // console.log( 'resive product list', res );
+
         list = res.objectlist.map( ( item, index ) => ( {
             UUID: item.UUID,
             key: index,
-            TypeUUID: item.TypeUUID,
-            Image: item.Image,
-            Name: `产品_${index}`,
-            Number: `product_${index}`,
-            SN: Mock.mock( '@word' ),
-            Version: 'Version~',
-            Desc: '~',
-            UpdateDateTime: Mock.mock( '@datetime' ),
+            'Name|1': ['注塑设备', '冲压设备', '自动组装设备'],
+
+            // FactoryUUID: item.FactoryUUID,
+            // TypeUUID: item.TypeUUID,
+            // Name:item.Name,
+            ID: `devType_${index}`,
+            Number: `ws_${index}`,
+            'TypeName|1': ['自动组装车间', '注塑车间', '冲压车间'], // 类别名称
+            Desc: '-',
+            Modifier: Mock.mock( '@cname()' ),
+            Founder: Mock.mock( '@cname()' ),
+            CreateTime: Random.datetime(),
+            UpdateDateTime: Random.now(),
+            // Note:item.Note,
+            // TypeID:item.TypeID, //类别编号
         } ) )
+        list = Mock.mock( list );
         res.objectlist = list;
         res.totalcount = Mock.mock( '@natural(0, 65)' );
         return { list: list, total: res.totalcount, loading: false }
     },
-    'success add product model'( state, action ) {
+    'success delete material item'( state, action ) {
+        const { req, res } = action.payload;
+        if ( hasResponseError( res ) ) {
+            message.error( res.msg )
+            return { ...state, loading: false }
+        }
+
+        message.success( '删除成功！' );
+        const list = state.list.filter( item => ( item.uObjectUUID != res.data.uuids[0] ) )
+        state.list = list;
+        return { ...state }
+    },
+    'success add material item'( state, action ) {
         const { req, res } = action.payload
         if ( hasResponseError( res ) ) {
             message.error( res.msg )
@@ -192,7 +213,7 @@ export const productList = handleActions( {
         }
         return { ...state, loading: false }
     },
-    'success update product model'( state, action ) {
+    'success update material item'( state, action ) {
         const { req, res } = action.payload
         const u_item = res.data;
         console.log( '成功更新', res );
@@ -209,18 +230,4 @@ export const productList = handleActions( {
         } );
         return { ...state, list, loading: false }
     },
-    'success delete product model'( state, action ) {
-        const { req, res } = action.payload;
-        if ( hasResponseError( res ) ) {
-            message.error( res.msg )
-            return { ...state, loading: false }
-        }
-        console.log( '删除成功！', res );
-        message.success( '删除成功！' );
-        const list = state.list.filter( item => ( item.uObjectUUID != res.data.uuids[0] ) )
-        state.list = list;
-        return { ...state }
-    },
-
-
 }, initListState )

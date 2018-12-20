@@ -7,18 +7,21 @@ import {
     message,
     Switch,
     Popconfirm,
+    Radio, Button, Progress,
 } from 'antd';
 import { TaskList } from 'actions/production';
 import { TPostData, urlBase, TAjax } from 'utils/TAjax';
 import { CModal } from 'components/TModal';
-import SimpleTable from 'components/TTable/SimpleTable';
+// import SimpleTable from 'components/TTable/SimpleTable';
+import SimpleTable from 'components/TTable/exportData';
 import { DropDownForm } from 'components/TForm';
 import { TableExport } from 'components/Export';
 import { fn_mes_trans } from 'functions'
 import PageHeaderLayout from '../../base/PageHeaderLayout';
 import styles from './common.less';
 // import TableExport from 'tableexport';
-
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @connect( ( state, props ) => ( {
     Breadcrumb: state.Breadcrumb,
@@ -201,54 +204,6 @@ export default class order extends Component {
         } )
     }
 
-    getSubTableData() {
-        const dat = {
-            PageIndex: 0, // 分页参数
-            PageSize: -1, // 分页参数
-            ProductOrderUUID: -1, // 生产订单UUID
-            ProductModelUUID: -1, // 生产订单产品型号UUID
-            WorkshopUUID: -1, // 车间UUID
-            WorkstationTypeUUID: -1, // 工作中心类型UUID
-            WorkstationUUID: -1, // 工作中心UUID
-            MoldUUID: -1, // 模具UUID
-            Status: -1, // 派工单状态
-            KeyWord: '', // 模糊查询
-        }
-        TPostData( this.url, 'ListWorkOrder', dat, ( res ) => {
-            const list = [];
-            const Ui_list = res.obj.objectlist || [];
-            Ui_list.forEach( ( item, index ) => {
-                list.push( {
-                    key: index,
-                    UUID: item.UUID,
-                    LotUUID: item.LotUUID,
-                    bomUUID: item.bomUUID,
-                    lotJobID: item.ID,
-                    FinishDateTime: item.FinishDateTime,
-                    FinishNumber: item.FinishNumber,
-                    MoldModelUUID: item.MoldModelUUID,
-                    PlanFinishDateTime: item.PlanFinishDateTime,
-                    PlanNumber: item.PlanNumber,
-                    PlanStartDateTime: item.PlanStartDateTime,
-                    ProductModelID: item.ProductModelID,
-                    ProductModelName: item.ProductModelName,
-                    ProductModelSN: item.ProductModelSN,
-                    ProductModelUUID: item.ProductModelUUID,
-                    RejectNumber: item.RejectNumber,
-                    StartDateTime: item.StartDateTime,
-                    Status: item.Status,
-                    UpdateDateTime: item.UpdateDateTime,
-                    WorkstationID: item.WorkstationID,
-                    WorkstationName: item.WorkstationName,
-                    WorkstationUUID: item.WorkstationUUID,
-                } )
-            } );
-            this.setState( { dispatchLotList: list } );
-        }, ( error ) => {
-            message.info( error );
-        } )
-    }
-
     getWorkCenterList( record ) {
         const dat = {
             PageIndex: 0,
@@ -315,16 +270,31 @@ export default class order extends Component {
 
     renderSubTable=( record ) => {
         // this.setState({loading:true});
-        const list = [];
+        let list = [];
         const subcolumns = [
             {
-                title: '派工单号',
-                dataIndex: 'lotJobID',
-                key: 'lotJobID',
-            }, {
-                title: '产品名称',
+                title: '',
+                dataIndex: 'key',
+                width: 30,
+            },
+            {
+                title: 'ID',
+                dataIndex: 'uObjectUUID',
+                width: 50,
+            },
+            {
+                title: '工单号',
+                dataIndex: 'strJobID',
+            },
+            /* {
+                title: '订单号',
+                dataIndex: 'orderID',
+                key: 'lotJobID'
+            }, */
+            {
+                title: '产品',
                 dataIndex: 'ProductModelName',
-                key: 'BNum',
+                render: () => ( <span>这是产品</span> ),
             },
             /* {
                 title: '产品编码',
@@ -335,33 +305,88 @@ export default class order extends Component {
                 title: '产品序列号',
                 dataIndex: 'ProductModelSN',
                 key: 'ProductModelSN'
-            }, */
+            },
             {
                 title: '工作中心',
                 dataIndex: 'WorkstationName',
                 key: 'WorkstationName',
-            }, {
-                title: '计划产量',
-                dataIndex: 'PlanNumber',
-                key: 'PlanNumber',
-            }, {
+            }, */
+            {
+              title: '计划开始时间',
+              dataIndex: 'dtJobPlanStartTime',
+            },
+            {
+              title: '计划产量',
+              dataIndex: 'PlanNumber',
+              type: 'sort',
+            },
+            {
+              title: '当前产量',
+              dataIndex: 'FinishNumber',
+              type: 'sort',
+            },
+            /* {
+              title: '次品数量',
+              dataIndex: 'RejectNumber',
+              type: 'sort'
+            },
+            {
+              title: '次品率',
+              dataIndex: 'rej_progress',
+              type: 'string',
+              render:(val,record)=>{
+                  return(<Progress type="circle" percent={val} width={40} />)
+              }
+            }, */
+            /* {
+              title: '派工时间',
+              dataIndex: 'PlanStartDateTime',
+              type: 'string'
+            }, */
+            /* {
+              title: '开始时间',
+              dataIndex: 'StartDateTime',
+              type: 'string'
+            },
+            {
+              title: '剩余时间(h)',
+              dataIndex: 'restTime',
+              type: 'string'
+            },
+            {
+              title: '计划完成时间',
+              dataIndex: 'PlanFinishDateTime',
+              type: 'string'
+            }, */
+            /* {
+              title: '实际完成',
+              dataIndex: 'FinishDateTime',
+              type: 'string'
+            }, */
+            {
+              title: '生产进度',
+              dataIndex: 'pro_progress',
+              type: 'string',
+              render: ( val, record ) => ( <Progress percent={val} /> ),
+            },
+            {
                 title: '工单状态',
-                dataIndex: 'Status',
+                dataIndex: 'nJobStatus',
                 key: 'Status',
                 render: ( e1, record ) => {
                     // console.log('任务状态',record);
                     let status = '';
-                    status = e1 === 0
-                        ? ( <span className="orderCancelled">已取消</span> )
-                        : e1 === 1
-                            ? ( <span className="Unproduced">未生产</span> )
-                            : e1 === 2
-                                ? ( <span className="Inproduction">生产中</span> )
-                                : e1 === 3
-                                    ? ( <span className="Pausing">已暂停</span> )
-                                    : e1 === 4
-                                        ? ( <span className="Submited">已报工</span> )
-                                        : <span>{e1}</span>;
+                    status = e1 === 0 ? ( <span className="orderCancelled">已取消</span> ) :
+                        e1 === 1 ? ( <span className="Unproduced">未生产</span> ) :
+                        e1 === 2 ? ( <span className="Inproduction">生产中</span> ) :
+                        e1 === 3 ? ( <span className="Pausing">已暂停</span> ) :
+                        e1 === 4 ? ( <span className="Submited">已报工</span> ) :
+                        // e1==5?(<span>生产完成(5)</span>):
+                        // e1==6?(<span>生产中(6)</span>):
+                        // e1==9?(<span>生产挂起(9)</span>):
+                        // e1==10?(<span>已完成(10)</span>):
+                        // e1==11?(<span>暂停中(11)</span>):
+                        <span>{e1}</span>
                     return status;
                 },
             }, {
@@ -388,28 +413,33 @@ export default class order extends Component {
             },
         ];
 
-        const dat = {
-            PageIndex: 0, // 分页参数
-            PageSize: -1, // 分页参数
-            ProductOrderUUID: record.UUID, // 生产订单UUID
-            ProductModelUUID: -1, // 生产订单产品型号UUID
-            WorkshopUUID: -1, // 车间UUID
-            WorkstationTypeUUID: -1, // 工作中心类型UUID
-            WorkstationUUID: -1, // 工作中心UUID
-            MoldUUID: -1, // 模具UUID
-            Status: -1, // 派工单状态
-            KeyWord: '', // 模糊查询
-        }
+        const dat = fn_mes_trans.toFilter( { uTaskUUID: record.uObjectUUID } )
+        TAjax(
+            'post', 'api/production/job/list', 'null', dat,
+            ( res ) => {
+                console.log( '1111', res );
+                list = res.data.list || [];
+                // this.setState({loading:true});
+            },
+            ( res ) => {
+                console.log( '失败', res );
+            },
+            false,
+        );
 
-         return ( <Table
-           columns={subcolumns}
-           dataSource={list}
-           bordered={false}
-           pagination={false}
+        return (
+            <div style={{ padding: 8 }}>
+                <Table
+                  columns={subcolumns}
+                  dataSource={list}
+                  bordered={false}
+                  pagination={false}
                     // rowSelection={this.state.isSelection?rowSelection:null}
                     // loading={this.state.loading}
-           size={this.state.size}
-         /> );
+                  size={this.state.size}
+                />
+            </div>
+        );
     }
 
     toggleUModalShow( record ) {
@@ -484,7 +514,7 @@ export default class order extends Component {
 
     handleProfinish( record ) {
         TPostData(
- this.url, 'CloseProductOrder', { UUID: record.UUID },
+            this.url, 'CloseProductOrder', { UUID: record.UUID },
             () => {
                 message.success( '操作成功!' );
                 this.getProductOrder();
@@ -629,17 +659,36 @@ export default class order extends Component {
         } );
     }
 
-    handleQuery=( data ) => {
-        console.log( '查询的值是:', data );
-        // ProModelID,WorkshopID,keyWord,orderState
-        const {
-ProModelID, WorkshopID, keyWord, orderState,
- } = data;
-        this.setState( {
- ProModelID, WorkshopID, keyWord, orderState,
-}, () => {
-            this.getProductOrder();
-        } );
+    handleQuery=( data, type ) => {
+        const { current, pageSize } = this.state;
+        const quePage = {
+            page: current - 1,
+            size: pageSize,
+        };
+        const searchKey = [
+            'strTaskID',
+            'strMaterialID',
+            // 'nTaskFinishCount',
+        ];
+        const options = type === 'filter' ?
+                    fn_mes_trans.toFilter( data ) :
+                    type === 'search' ?
+                    fn_mes_trans.toSearch( data, searchKey ) : '';
+        const queReq = Object.assign( quePage, options );
+        console.log( '查询值是：', queReq )
+        this
+            .props
+            .dispatch( TaskList( queReq, ( respose ) => {} ) )
+    }
+
+    radioChange=( e ) => {
+        if ( e.target.value !== '-1' ) {
+            const obj = fn_mes_trans.toFilter( { nTaskStatus: e.target.value } );
+            this.props.dispatch( TaskList( obj, ( respose ) => {} ) )
+            console.log( `radio checked:${e.target.value}` );
+        } else {
+            this.props.dispatch( TaskList( {}, ( respose ) => {} ) )
+        }
     }
 
     render() {
@@ -684,7 +733,7 @@ ProModelID, WorkshopID, keyWord, orderState,
                 width: 50,
             },
             {
-                title: '任务ID',
+                title: '任务单号',
                 dataIndex: 'strTaskID',
                 type: 'string',
             },
@@ -728,7 +777,7 @@ ProModelID, WorkshopID, keyWord, orderState,
             },
             {
                 title: '订单状态',
-                dataIndex: 'Status',
+                dataIndex: 'nTaskStatus',
                 type: 'string',
                 width: 120,
                 render: ( e1, record ) => {
@@ -1108,42 +1157,60 @@ ProModelID, WorkshopID, keyWord, orderState,
               wrapperClassName="pageContent"
               BreadcrumbList={Breadcrumb.BCList}
             >
-                {/* <Card bordered={false}> */}
-                    <div>
-                        <Row>
-                            <Col span={6} />
-                            <Col span={6} />
-                            <Col span={8}>
-                                <DropDownForm
-                                  FormItem={RFormItem}
-                                />
-                            </Col>
-                            <Col span={1} />
-                            <Col span={3}>
-                                边框：<Switch
-                                  checked={bordered}
-                                  onChange={this.handleToggleBorder}
-                                />
-                            </Col>
-                        </Row>
-                    </div>
-                    <TableExport ref={te => this._tableExport = te}>
-                        <SimpleTable
-                          expandedRowRender={this.renderSubTable}
-                            // rowSelection={rowSelection}
-                          isHaveSelect={false}
-                          loading={loading}
-                          data={Data}
-                          columns={columns}
-                          bordered={bordered}
-                          size={size}
-                          onChange={this.handleTableChange}
-                        />
-                    </TableExport>
-                    <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate} isShow={UModalShow} hideForm={this.toggleUModalShow} />
-                    <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul} isShow={SModalShow} hideForm={this.toggleSModalShow} />
-                    <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul} isShow={BSModalShow} hideForm={this.toggleBSModalShow} />
-                {/* </Card> */}
+                <div style={{ marginBottom: 6, padding: 5 }}>
+                    <Row>
+                        <Col span={8}>
+                            <Button type="primary">审核</Button>
+                            <Button disabled style={{ marginLeft: 6 }}>中断</Button>
+                            <Button disabled style={{ marginLeft: 6 }}>恢复</Button>
+                            <Button style={{ marginLeft: 6 }}>取消</Button>
+                            {/* <Button style={{ marginLeft: 6 }} type="danger">删除</Button> */}
+                        </Col>
+                        <Col span={12}>
+                            <RadioGroup onChange={this.radioChange} defaultValue="-1">
+                                <RadioButton value="-1">全部</RadioButton>
+                                <RadioButton value="1">未审核</RadioButton>
+                                <RadioButton value="2">生产中</RadioButton>
+                                <RadioButton value="3">已取消</RadioButton>
+                                <RadioButton value="4">已中断</RadioButton>
+                                <RadioButton value="5">待确认</RadioButton>
+                                <RadioButton value="6">已完成</RadioButton>
+                            </RadioGroup>
+                        </Col>
+                        <Col span={4}>
+                            <DropDownForm
+                              FormItem={RFormItem}
+                              submit={this.handleQuery}
+                              isHaveSearch
+                            />
+                        </Col>
+                        {/* <Col span={1} />
+                        <Col span={3}>
+                            边框：<Switch
+                            checked={bordered}
+                            onChange={this.handleToggleBorder}
+                            />
+                        </Col> */}
+                    </Row>
+                </div>
+                {/* <TableExport ref={te => this._tableExport = te}> */}
+                    <SimpleTable
+                      ref={te => this._tableExport = te}
+                      expandedRowRender={this.renderSubTable}
+                      selectable
+                        // rowSelection={rowSelection}
+                      isHaveSelect={false}
+                      loading={loading}
+                      data={Data}
+                      columns={columns}
+                      bordered={bordered}
+                      size={size}
+                      onChange={this.handleTableChange}
+                    />
+                {/* </TableExport> */}
+                <CModal FormItem={UFormItem} updateItem={updateFromItem} submit={this.handleUpdate} isShow={UModalShow} hideForm={this.toggleUModalShow} />
+                <CModal title="任务排程" FormItem={SFormItem} updateItem={updateFromItem} submit={this.handleSchedul} isShow={SModalShow} hideForm={this.toggleSModalShow} />
+                <CModal FormItem={BSFormItem} handleType="schedul" updateItem={updateFromItem} submit={this.handleBSchedul} isShow={BSModalShow} hideForm={this.toggleBSModalShow} />
             </PageHeaderLayout>
         )
     }

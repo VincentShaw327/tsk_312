@@ -204,7 +204,7 @@ export function TAjax( method, url, op, obj, scb, fcb, async ) {
         xhr.send( null );
     }
     // 异步调用
-    if ( async == true ) {
+    if ( async === true ) {
         // 监听响应状态
         xhr.onreadystatechange = function () {
             if ( xhr.readyState === 4 ) {

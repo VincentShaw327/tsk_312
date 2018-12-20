@@ -111,7 +111,12 @@ export default class productList extends Component {
             {
                 title: '序号',
                 dataIndex: 'key',
-                type: 'string',
+                width: 50,
+            },
+            {
+                title: 'ID',
+                dataIndex: 'uObjectUUID',
+                width: 80,
             },
             {
                 title: '图片',
@@ -132,15 +137,17 @@ export default class productList extends Component {
             },
             {
                 title: '名称',
-                dataIndex: 'Name',
-                type: 'string',
+                dataIndex: 'strModelName',
             },
             {
-                title: '编号',
-                dataIndex: 'Number',
-                type: 'string',
+                title: '产品编码',
+                dataIndex: 'strModelCode',
             },
             {
+                title: '物料编码',
+                dataIndex: 'strMaterialCode',
+            },
+            /* {
                 title: '序列号',
                 dataIndex: 'SN',
                 type: 'string',
@@ -149,20 +156,15 @@ export default class productList extends Component {
                 title: '版本号',
                 dataIndex: 'Version',
                 type: 'string',
-            },
+            }, */
             {
                 title: '备注',
-                dataIndex: 'Desc',
-                type: 'string',
-            },
-            {
-                title: '更新时间',
-                dataIndex: 'UpdateDateTime',
-                type: 'string',
+                dataIndex: 'strModelNote',
             },
             {
                 title: '操作',
                 dataIndex: 'UUID',
+                width: 120,
                 render: ( UUID, record ) => (
                 <span>
                         <a
@@ -187,37 +189,32 @@ export default class productList extends Component {
         // 更新弹框数据项
         const UFormItem = [
             {
-                name: 'Name',
-                label: '型号名称',
+                name: 'strModelName',
+                label: '名称',
                 type: 'string',
                 placeholder: '请输入型号名称',
                 rules: [{ required: true, message: '名称不能为空' }],
             },
             {
-                name: 'Number',
-                label: '型号编号',
+                name: 'strModelCode',
+                label: '产品编码',
                 type: 'string',
                 placeholder: '请输入型号编号',
                 rules: [{ required: true, message: '编号不能为空' }],
             },
             {
-                name: 'SN',
-                label: '序列号',
+                name: 'strMaterialCode',
+                label: '物料编码',
+                type: 'string',
+                placeholder: '请输入型号编号',
+                rules: [{ required: true, message: '编号不能为空' }],
+            },
+            {
+                name: 'strModelNote',
+                label: '备注',
                 type: 'string',
                 placeholder: '请输入序列号',
                 rules: [{ required: true, message: '序列号不能为空' }],
-            },
-            {
-                name: 'Version',
-                label: '版本号',
-                type: 'string',
-                placeholder: '请输入版本号',
-                rules: [{ required: true, message: '版本号不能为空' }],
-            },
-            {
-                name: 'Desc',
-                label: '备注',
-                type: 'string',
             },
             {
                  name: 'Image',
@@ -229,22 +226,29 @@ export default class productList extends Component {
         // 添加的弹出框菜单
         const CFormItem = [
             {
-                name: 'Name',
-                label: '型号名称',
+                name: 'strModelName',
+                label: '名称',
                 type: 'string',
                 placeholder: '请输入型号名称',
                 rules: [{ required: true, message: '名称不能为空' }],
             },
             {
-                name: 'Number',
-                label: '型号编号',
+                name: 'strModelCode',
+                label: '产品编码',
                 type: 'string',
                 placeholder: '请输入型号编号',
                 rules: [{ required: true, message: '编号不能为空' }],
             },
             {
-                name: 'SN',
-                label: '序列号',
+                name: 'strMaterialCode',
+                label: '物料编码',
+                type: 'string',
+                placeholder: '请输入型号编号',
+                rules: [{ required: true, message: '编号不能为空' }],
+            },
+            {
+                name: 'strModelNote',
+                label: '备注',
                 type: 'string',
                 placeholder: '请输入序列号',
                 rules: [{ required: true, message: '序列号不能为空' }],
@@ -267,22 +271,26 @@ export default class productList extends Component {
         ];
 
         return (
-          <PageHeaderLayout title="产品型号"
+          <PageHeaderLayout
+            // title="产品型号"
             wrapperClassName="pageContent"
             BreadcrumbList={Breadcrumb.BCList}
           >
             <div className="cardContent">
                 {/* <Feature /> */}
-                <SimpleQForm
+                {/* <SimpleQForm
                   FormItem={RFormItem}
                   submit={this.handleQuery}
-                />
-                <CreateModal
-                  FormItem={CFormItem}
-                  submit={this.handleCreat}
-                />
+                /> */}
+                <div style={{ marginBottom: 15 }}>
+                    <CreateModal
+                      FormItem={CFormItem}
+                      submit={this.handleCreat}
+                    />
+                </div>
                 <SimpleTable
                   size="middle"
+                  bordered
                   loading={loading}
                   data={Data}
                   columns={Tcolumns}

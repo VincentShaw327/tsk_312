@@ -17,6 +17,7 @@ export const RackList = {
     path: '/mould/rack_list',
     component: () => import( /* webpackChunkName: "list" */ '../pages/TMould/rack/list' ),
 }
+
 export const RackBin = {
     path: '/mould/rack_bin',
     component: () => import( /* webpackChunkName: "bin" */ '../pages/TMould/rack/bin' ),

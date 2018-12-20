@@ -26,14 +26,14 @@ export const category_add = createAjaxAction(
     createAction( 'success add product category' ),
 );
 export const category_update = createAjaxAction(
-    product.category_add,
+    product.category_update,
     null,
-    createAction( 'success add product category' ),
+    createAction( 'success update product category' ),
 );
 export const category_delete = createAjaxAction(
-    product.category_add,
+    product.category_delete,
     null,
-    createAction( 'success add product category' ),
+    createAction( 'success delete product category' ),
 );
 /* 产品类别 end */
 
@@ -55,12 +55,12 @@ export const model_add = createAjaxAction(
     createAction( 'success add product model' ),
 );
 export const model_update = createAjaxAction(
-    product.model_add,
+    product.model_update,
     null,
-    createAction( 'success add product model' ),
+    createAction( 'success update product model' ),
 );
 export const model_delete = createAjaxAction(
-    product.model_add,
+    product.model_delete,
     null,
-    createAction( 'success add product model' ),
+    createAction( 'success delete product model' ),
 );

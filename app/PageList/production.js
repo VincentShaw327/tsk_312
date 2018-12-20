@@ -20,6 +20,11 @@ export const job = {
     component: () => import( /* webpackChunkName: "job" */ '../pages/production/job' ),
 }
 
+export const dist = {
+    path: '/production/dist',
+    component: () => import( /* webpackChunkName: "dist" */ '../pages/production/dist' ),
+}
+
 export const order_detail = {
     path: '/production/order/workorder_detail',
     component: () => import( /* webpackChunkName: "workOrderDetail" */ '../pages/production/workOrderDetail' ),

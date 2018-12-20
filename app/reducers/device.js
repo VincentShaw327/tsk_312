@@ -275,10 +275,9 @@ export const deviceType = handleActions( {
             message.error( res.msg )
             return { ...state, loading: false }
         }
-
         console.log( '删除成功！', res );
         message.success( '删除成功！' );
-        const data = res.data;
+        // const { data } = res;
         const list = state.list.filter( item => ( item.uObjectUUID != res.data.uuids[0] ) )
         state.list = list;
         return { ...state }

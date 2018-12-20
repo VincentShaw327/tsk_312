@@ -76,16 +76,35 @@ export const config_material_in = createAjaxAction(
     null,
     createAction( 'receive procession material_in config' ),
 )
+export const config_material_in_update = createAjaxAction(
+    procession.material_in_update,
+    null,
+    createAction( 'success update material_in config' ),
+)
 export const config_material_out = createAjaxAction(
     procession.material_out,
     null,
     createAction( 'receive procession material_out config' ),
+)
+export const config_material_out_update = createAjaxAction(
+    procession.material_out_update,
+    null,
+    createAction( 'success update material_out config' ),
+)
+export const config_mold = createAjaxAction(
+    procession.config_mould,
+    null,
+    createAction( 'receive procession mould config' ),
 )
 
 export const set_id = createAction( 'set config id' );
 export const update_menukey = createAction( 'update config menu key' );
 export const config_edit = createAction( 'start edit procession config' );
 export const config_edit_end = createAction( 'end edit procession config' );
+export const config_material_in_edit = createAction( 'start edit material_in config' );
+export const config_material_in_edit_end = createAction( 'end edit material_in config' );
+export const config_material_out_edit = createAction( 'start edit material_out config' );
+export const config_material_out_edit_end = createAction( 'end edit material_out config' );
 /* 工艺配置actions end */
 
 
