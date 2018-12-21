@@ -21,7 +21,7 @@ export default class TWorkCenter extends Component {
             // tableDataList: [],
             updateFromItem: {},
             // total: 0,
-            current: 1,
+            current: 0,
             pageSize: 10,
             WorkshopUUID: -1,
             TypeUUID: -1,
@@ -41,7 +41,13 @@ export default class TWorkCenter extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch( workcenter_list( { }, ( respose ) => {} ) )
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
+        const { list } = this.props.workCenter;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( workcenter_list( page, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
     toggleRender( record ) {
@@ -67,11 +73,13 @@ export default class TWorkCenter extends Component {
     handleDelete = ( data ) => {
     }
 
-    handleTableChange = ( pagination ) => {
-        // console.log('pagination',pagination);
+    handleTableChange=( pagination ) => {
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( { current, pageSize }, () => {
-            this.getTableList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( workcenter_list( page, ( respose ) => {} ) )
         } );
     }
 

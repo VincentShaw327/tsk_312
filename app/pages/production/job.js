@@ -88,7 +88,7 @@ export default class taskMonitor extends Component {
         // this.getProModelList();
         // this.getWorkCenterList();
         // this.getWorkshopList();
-        this.props.dispatch( JobList( { }, ( respose ) => {} ) );
+        // this.props.dispatch( JobList( { }, ( respose ) => {} ) );
     }
 
     componentDidMount() {
@@ -96,7 +96,13 @@ export default class taskMonitor extends Component {
         /* this.timer=setInterval(()=>{
             this.props.dispatch( TaskList( {}, ( respose ) => {} ))
         },5000) */
-
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
+        const { list } = this.props.productJob;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( JobList( page, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
     componentWillUnmount() {
@@ -654,10 +660,12 @@ export default class taskMonitor extends Component {
     }
 
     handleTableChange=( pagination ) => {
-        // console.log('pagination',pagination);
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( { current, pageSize, loading: true }, () => {
-            this.getDispatchLotList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( JobList( page, ( respose ) => {} ) )
         } );
     }
 

@@ -73,10 +73,11 @@ export default class order extends Component {
             bordered: true,
             size: 'small',
             hasAddBtn: false,
-            current: 1,
+            current: 0,
             pageSize: 10,
         }
         this.url = '/api/tmanufacture/manufacture';
+        this.que = {}
     }
 
     componentWillMount() {
@@ -94,14 +95,21 @@ export default class order extends Component {
         /* setTimeout(()=>{
             this._tableExport.export();
         },2000) */
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
         const { list } = this.props.productOrder;
         if ( Array.isArray( list ) && list.length === 0 ) {
-            this.props.dispatch( OrderList( {}, ( respose ) => {} ) )
+            this.props.dispatch( OrderList( page, ( respose ) => {} ) )
             // console.log( '...请求list...' );
         }
     }
 
     // componentwillreceiveprops() {}
+
+    getQuePage=() => {
+        const { pageSize, current } = this.state;
+        return { page: current, size: pageSize }
+    }
 
     getProductOrder() {
         const {
@@ -591,10 +599,12 @@ export default class order extends Component {
     } */
 
     handleTableChange=( pagination ) => {
-        // console.log('pagination',pagination);
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( { current, pageSize, loading: true }, () => {
-            this.getProductOrder();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( OrderList( page, ( respose ) => {} ) )
         } );
     }
 

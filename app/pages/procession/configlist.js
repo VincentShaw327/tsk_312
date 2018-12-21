@@ -36,7 +36,7 @@ export default class processionConfig extends Component {
             tableDataList: [],
             updateFromItem: {},
             total: 0,
-            current: 1,
+            current: 0,
             pageSize: 10,
             UModalShow: false,
             loading: true,
@@ -49,11 +49,12 @@ export default class processionConfig extends Component {
     }
 
     componentDidMount() {
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
         const { list } = this.props.processionConfig;
-        if ( list.length <= 0 ) {
-            this
-                .props
-                .dispatch( config_list( {}, ( respose ) => {} ) )
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( config_list( page, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
         }
     }
 
@@ -73,15 +74,13 @@ export default class processionConfig extends Component {
         } );
     }
 
-    handleTableChange = ( pagination ) => {
-        // console.log('pagination',pagination);
+    handleTableChange=( pagination ) => {
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( {
-            current,
-            pageSize,
-            loading: true,
-        }, () => {
-            this.getTableList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( config_list( page, ( respose ) => {} ) )
         } );
     }
 

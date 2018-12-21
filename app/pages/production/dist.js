@@ -94,9 +94,11 @@ export default class dist extends Component {
         /* this.timer=setInterval(()=>{
             this.props.dispatch( TaskList( {}, ( respose ) => {} ))
         },5000) */
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
         const { list } = this.props.productDist;
         if ( Array.isArray( list ) && list.length === 0 ) {
-            this.props.dispatch( dist_list( {}, ( respose ) => {} ) )
+            this.props.dispatch( dist_list( page, ( respose ) => {} ) )
             // console.log( '...请求list...' );
         }
     }
@@ -457,10 +459,12 @@ export default class dist extends Component {
     }
 
     handleTableChange=( pagination ) => {
-        // console.log('pagination',pagination);
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( { current, pageSize, loading: true }, () => {
-            this.getDispatchLotList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( dist_list( page, ( respose ) => {} ) )
         } );
     }
 

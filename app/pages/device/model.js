@@ -26,7 +26,7 @@ export default class model extends Component {
             DeviceTypeList: [],
             updateFromItem: {},
             // total: 0,
-            current: 1,
+            current: 0,
             pageSize: 10,
             UModalShow: false,
             // loading: true,
@@ -37,7 +37,17 @@ export default class model extends Component {
     componentWillMount() {
         // this.getDevTypelist();
         // this.getTableList();
-        this.props.dispatch( device_model_list( { }, ( respose ) => {} ) )
+        // this.props.dispatch( device_model_list( { }, ( respose ) => {} ) )
+    }
+
+    componentDidMount() {
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
+        const { list } = this.props.deviceModel;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( device_model_list( page, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
     handleCreat = ( data ) => {
@@ -82,10 +92,12 @@ export default class model extends Component {
     }
 
     handleTableChange=( pagination ) => {
-        // console.log('pagination',pagination);
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( { current, pageSize, loading: true }, () => {
-            this.getTableList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( device_model_list( page, ( respose ) => {} ) )
         } );
     }
 

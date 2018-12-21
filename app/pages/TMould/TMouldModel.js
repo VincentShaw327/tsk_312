@@ -42,7 +42,7 @@ export default class MouldModel extends Component {
             tableDataList: [],
             updateFromItem: {},
             total: 0,
-            current: 1,
+            current: 0,
             pageSize: 10,
             UModalShow: false,
             loading: true,
@@ -52,9 +52,19 @@ export default class MouldModel extends Component {
 
     componentWillMount() {
         // this.getTableList();
-        this
-            .props
-            .dispatch( f_mold_model( {}, ( respose ) => {} ) )
+        // this
+        //     .props
+        //     .dispatch( f_mold_model( {}, ( respose ) => {} ) )
+    }
+
+    componentDidMount() {
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
+        const { list } = this.props.moldModel;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( f_mold_model( page, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
     getTableList( que ) {
@@ -156,15 +166,13 @@ export default class MouldModel extends Component {
             .dispatch( f_mold_model( queReq, ( respose ) => {} ) )
     }
 
-    handleTableChange = ( pagination ) => {
-        // console.log('pagination',pagination);
+    handleTableChange=( pagination ) => {
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( {
-            current,
-            pageSize,
-            loading: true,
-        }, () => {
-            this.getTableList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( f_mold_model( page, ( respose ) => {} ) )
         } );
     }
 

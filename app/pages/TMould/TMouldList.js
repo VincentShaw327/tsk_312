@@ -30,10 +30,10 @@ import { TPostData, urlBase } from 'utils/TAjax';
 import SimpleTable from 'components/TTable/SimpleTable';
 import { CreateModal, UpdateModal } from 'components/TModal';
 import { DropDownForm, StandardQForm } from 'components/TForm';
-import PageHeaderLayout from '../../base/PageHeaderLayout';
 import { fn_mes_trans } from 'functions'
 import moldPic from 'images/assets/mold01.jpg'
 import Details from './mouldDetail'
+import PageHeaderLayout from '../../base/PageHeaderLayout';
 
 @connect( ( state, props ) => ( {
         Breadcrumb: state.Breadcrumb,
@@ -48,7 +48,7 @@ export default class MouldList extends Component {
             MoldModelList: [],
             updateFromItem: {},
             total: 0,
-            current: 1,
+            current: 0,
             pageSize: 10,
             UModalShow: false,
             loading: true,
@@ -62,15 +62,19 @@ export default class MouldList extends Component {
     componentWillMount() {
         // this.getMoldModelList(); this.getTableList();
         const reqData = {}
-        this
-            .props
-            .dispatch( f_mold_view( reqData, ( respose ) => {} ) )
+        // this
+        //     .props
+        //     .dispatch( f_mold_view( reqData, ( respose ) => {} ) )
     }
 
     componentDidMount() {
-        /* this
-        .props
-        .dispatch(f_mold_model_foradd({}, (respose) => {})) */
+        const { pageSize, current } = this.state;
+        const page = { page: current, size: pageSize }
+        const { list } = this.props.moldList;
+        if ( Array.isArray( list ) && list.length === 0 ) {
+            this.props.dispatch( f_mold_view( page, ( respose ) => {} ) )
+            // console.log( '...请求list...' );
+        }
     }
 
     getTableList( que ) {
@@ -202,14 +206,13 @@ current, pageSize, ModelUUID, keyWord,
             .dispatch( delete_mold_instance( deleteData ) )
     }
 
-    handleTableChange = ( pagination ) => {
+    handleTableChange=( pagination ) => {
+        // console.log( 'pagination', pagination );
         const { current, pageSize } = pagination;
-        this.setState( {
-            current,
-            pageSize,
-            loading: true,
-        }, () => {
-            this.getTableList();
+        this.setState( { current: current, pageSize, loading: true }, () => {
+            // console.log( '条件', this.state, this.getQuePage() )
+            const page = { page: current - 1, size: pageSize }
+            this.props.dispatch( f_mold_view( page, ( respose ) => {} ) )
         } );
     }
 
