@@ -1,3 +1,4 @@
+@import "~antd/dist/antd.css";
 
 .ant-layout-header{
     /* background: #ffffff */
@@ -59,4 +60,4 @@
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
- } */
+} */

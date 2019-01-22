@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Layout, Menu, Icon, Input, Row,
-     Col, Avatar, Dropdown,AutoComplete,Button  } from 'antd';
+     Col, Avatar, Dropdown, AutoComplete, Button } from 'antd';
 // import LOGO from '../../images/T-3.png';
 // import LOGO from '../../images/_TOP-STAR-LOGO.png';
 // import LOGO from '../../images/_TOP-STAR-LOGO_01.jpg';
@@ -9,6 +9,7 @@ import { Layout, Menu, Icon, Input, Row,
 import LOGO from '../../images/logo.png';
 import styles from './THeader.less';
 import HeaderSearch from '../../components/ant-design-pro/HeaderSearch';
+
 const Option = AutoComplete.Option;
 const { Header } = Layout;
 const Search = Input.Search;
@@ -17,7 +18,7 @@ const userMenu = (
     <Menu className="userlistMenu">
         <Menu.Item>
             <Link to="/setting/user_list">
-                <Icon type="user"/>
+                <Icon type="user" />
                 <span className="itemTxt">个人中心</span>
             </Link>
         </Menu.Item>
@@ -33,20 +34,20 @@ const userMenu = (
 )
 
 
-function getRandomInt(max, min = 0) {
-  return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
+function getRandomInt( max, min = 0 ) {
+  return Math.floor( Math.random() * ( max - min + 1 ) ) + min; // eslint-disable-line no-mixed-operators
 }
 
-function searchResult(query) {
-  return (new Array(getRandomInt(5))).join('.').split('.')
-    .map((item, idx) => ({
+function searchResult( query ) {
+  return ( new Array( getRandomInt( 5 ) ) ).join( '.' ).split( '.' )
+    .map( ( item, idx ) => ( {
       query,
       category: `${query}${idx}`,
-      count: getRandomInt(200, 100),
-    }));
+      count: getRandomInt( 200, 100 ),
+    } ) );
 }
 
-function renderOption(item) {
+function renderOption( item ) {
   return (
     <Option key={item.category} text={item.category}>
       {/* {item.query} 在
@@ -68,93 +69,89 @@ function renderOption(item) {
 export default class THeader extends Component {
     constructor( props ) {
         super( props );
-        this.state={
-            isFullScreen:false,
-            dataSource : [],
-            searchValue:''
+        this.state = {
+            isFullScreen: false,
+            dataSource: [],
+            searchValue: '',
         }
-        this.fullScreen.bind(this);
-        this.exitScreen.bind(this);
+        this.fullScreen.bind( this );
+        this.exitScreen.bind( this );
     }
 
-    fullScreen(ele) {
-        console.log('ele', ele);
-        this.setState({isFullScreen: true});
-        var el = document.documentElement;
-        var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
-        if (typeof rfs != "undefined" && rfs) {
-            rfs.call(el);
-        }
-        else if (typeof window.ActiveXObject != "undefined") {
-            //for IE，这里其实就是模拟了按下键盘的F11，使浏览器全屏
-            var wscript = new ActiveXObject("WScript.Shell");
-            if (wscript != null) {
-                wscript.SendKeys("{F11}");
+    fullScreen( ele ) {
+        console.log( 'ele', ele );
+        this.setState( { isFullScreen: true } );
+        const el = document.documentElement;
+        const rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+        if ( typeof rfs !== 'undefined' && rfs ) {
+            rfs.call( el );
+        } else if ( typeof window.ActiveXObject !== 'undefined' ) {
+            // for IE，这里其实就是模拟了按下键盘的F11，使浏览器全屏
+            const wscript = new ActiveXObject( 'WScript.Shell' );
+            if ( wscript != null ) {
+                wscript.SendKeys( '{F11}' );
             }
         }
     }
-    //退出全屏
-    exitScreen(){
-        this.setState({isFullScreen: false});
-        if (document.exitFullscreen) {
+    // 退出全屏
+    exitScreen() {
+        this.setState( { isFullScreen: false } );
+        if ( document.exitFullscreen ) {
             document.exitFullscreen();
-        }
-        else if (document.mozCancelFullScreen) {
+        } else if ( document.mozCancelFullScreen ) {
             document.mozCancelFullScreen();
-        }
-        else if (document.webkitCancelFullScreen) {
+        } else if ( document.webkitCancelFullScreen ) {
             document.webkitCancelFullScreen();
-        }
-        else if (document.msExitFullscreen) {
+        } else if ( document.msExitFullscreen ) {
             document.msExitFullscreen();
         }
-        if(typeof cfs != "undefined" && cfs) {
-            cfs.call(el);
+        if ( typeof cfs !== 'undefined' && cfs ) {
+            cfs.call( el );
         }
     }
 
-    handleSearch = (value) => {
-        /*this.setState({
+    handleSearch = ( value ) => {
+        /* this.setState({
             // dataSource: value ? searchResult(value) : [],
             dataSource: value
-        });*/
-        this.setState({
+        }); */
+        this.setState( {
             dataSource: !value
                 ? []
                 : [
-                    {value:'TManufactureTask',text:`包含${value}的订单`},
-                    {value:'TManufactureTaskDispatch',text:`包含${value}的派工单`},
-                    {value:'TWorkCenter',text:`包含${value}的工作中心`},
-                    {value:'TUserList',text:`包含${value}的用户`},
+                    { value: 'TManufactureTask', text: `包含${value}的订单` },
+                    { value: 'TManufactureTaskDispatch', text: `包含${value}的派工单` },
+                    { value: 'TWorkCenter', text: `包含${value}的工作中心` },
+                    { value: 'TUserList', text: `包含${value}的用户` },
                 ],
-            searchValue:value
-        });
+            searchValue: value,
+        } );
     }
 
-    onSelect =(value,option)=>{
-        console.log('props',value,option,this.props.handleSearch);
+    onSelect =( value, option ) => {
+        console.log( 'props', value, option, this.props.handleSearch );
         // this.props.TPageOpen( e.key );
-        this.props.handleSearch.TPageOpen(value,this.state.searchValue);
+        this.props.handleSearch.TPageOpen( value, this.state.searchValue );
     }
 
-    renderOptions=()=>{
-        this.dataSource.map(()=>{
+    renderOptions=() => {
+        this.dataSource.map( () => {
 
-        })
+        } )
         return (
           <Option key={item.category} text={item.category}>
             包含{item.category}的结果
-        </Option>)
+          </Option> )
     }
 
-    render(){
+    render() {
         const { dataSource } = this.state;
         // const { handleSearch } =this.props;
-        const searchOptions=[
-            (<Option key={1} value="TManufactureTask">包含<span className="searchtxt">{dataSource}</span>的订单</Option>),
-            (<Option key={2} value="TManufactureTaskDispatch">包含<span className="searchtxt">{dataSource}</span>的派工单</Option>),
-            (<Option key={3} value="TWorkCenter">包含<span className="searchtxt">{dataSource}</span>的工作中心</Option>),
-            (<Option key={4} value="TUserList">包含<span className="searchtxt">{dataSource}</span>的用户</Option>)
+        const searchOptions = [
+            ( <Option key={1} value="TManufactureTask">包含<span className="searchtxt">{dataSource}</span>的订单</Option> ),
+            ( <Option key={2} value="TManufactureTaskDispatch">包含<span className="searchtxt">{dataSource}</span>的派工单</Option> ),
+            ( <Option key={3} value="TWorkCenter">包含<span className="searchtxt">{dataSource}</span>的工作中心</Option> ),
+            ( <Option key={4} value="TUserList">包含<span className="searchtxt">{dataSource}</span>的用户</Option> ),
         ];
 
         return (
@@ -164,12 +161,12 @@ export default class THeader extends Component {
                   <Col span={3}>
                       <div className="header-title">
                             {/* <span>T-MES智能制造执行系统</span> */}
-                            <img src={LOGO} style={{width:'100%',maxWidth:150}}/>
+                            <img src={LOGO} style={{ width: '100%', maxWidth: 150 }} />
                       </div>
                   </Col>
                   <Col span={6}>
                       <div className={styles.header_title}>
-                            <span>智能制造执行系统</span>
+                            <span>看板监控系统</span>
                             {/* <img src={LOGO} style={{width:'100%',maxWidth:150}}/> */}
                       </div>
                   </Col>
@@ -205,11 +202,11 @@ export default class THeader extends Component {
                         </AutoComplete> */}
                       {/* </div> */}
                   </Col>
-                  <Col span={3} style={{border:'solid 0px'}}>
+                  <Col span={3} style={{ border: 'solid 0px' }}>
                       <div className={styles.menu_item}>
                           <Dropdown overlay={userMenu}>
-                            <span style={{color:'#fcfcfc',fontWeight:"bold"}}>
-                            欢迎你,<span style={{color:'#ecb44c'}}>系统管理员!</span>
+                            <span style={{ color: '#fcfcfc', fontWeight: 'bold' }}>
+                            欢迎你,<span style={{ color: '#ecb44c' }}>系统管理员!</span>
                             </span>
                           </Dropdown>
                       </div>
@@ -236,17 +233,19 @@ export default class THeader extends Component {
                   </Col> */}
 
                   <Col span={1}>
-                    <div className='menu-item'>
+                    <div className="menu-item">
                         {
-                            this.state.isFullScreen?
+                            this.state.isFullScreen ?
                             <Icon
-                                onClick={this.exitScreen.bind(this)}
-                                className="header-menu-icon"
-                                type="shrink"/>:
+                              onClick={this.exitScreen.bind( this )}
+                              className="header-menu-icon"
+                              type="shrink"
+                            /> :
                             <Icon
-                                onClick={this.fullScreen.bind(this)}
-                                className="header-menu-icon"
-                                type="arrows-alt"/>
+                              onClick={this.fullScreen.bind( this )}
+                              className="header-menu-icon"
+                              type="arrows-alt"
+                            />
                         }
                     </div>
                   </Col>
@@ -254,7 +253,7 @@ export default class THeader extends Component {
             </Header>
         );
     }
-};
+}
 THeader.propTypes = {
 
 };

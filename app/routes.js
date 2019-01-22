@@ -2,9 +2,10 @@ import React from 'react'
 import { Switch, Route, HashRouter, BrowserRouter } from 'react-router-dom'
 import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
-import App from './base/Entry';
-import Login from './pages/login' // 登录*/
-import Register from './pages/register'// 注册
+import monitor from './pages/TScada/scada_soot';
+// import App from './base/Entry';
+// import Login from './pages/login' // 登录*/
+// import Register from './pages/register'// 注册
 
 
 /* 进入路由的判断 */
@@ -20,9 +21,10 @@ export default () => (
         <HashRouter >
         {/* <BrowserRouter> */}
         <Switch>
-            <Route path="/" onEnter={isLogin} component={App} />
-            <Route path="/login" getComponent={Login} />
-            <Route path="/register" getComponent={Register} />
+            <Route path="/" component={monitor} />
+            {/* <Route path="/" onEnter={isLogin} component={App} /> */}
+            {/* <Route path="/login" getComponent={Login} /> */}
+            {/* <Route path="/register" getComponent={Register} /> */}
         </Switch>
         {/* </BrowserRouter> */}
         </HashRouter>

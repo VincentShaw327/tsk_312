@@ -99,33 +99,18 @@ export default class TIndexPage extends React.Component {
     }
 
     render() {
-        // const { children } = this.props
         return (
             <Layout style={{ height: '100%' }}>
-                <THeader handleSearch={this._child} />
+                {/* <THeader handleSearch={this._child} /> */}
                 <Layout>
-                    <Nav {...this.props} />
-                    {/* <THeader /> */}
-                    <Scrollbars
-                      autoHide
-                      autoHideTimeout={1000}
-                      autoHideDuration={200}
-                      autoHeight
-                      autoHeightMin={500}
-                      // autoHeightMax={560}
-                      autoHeightMax={this.state.maxHeight}
-                      thumbMinSize={30}
-                      universal
-                    >
+                    {/* <Nav {...this.props} /> */}
                         <Layout style={{ border: 'solid 0px' }}>
-                            {/* <Content style={{ margin: '24px 16px 0',border:'solid 0px' }}> */}
                             <Content style={{ margin: '0', border: 'solid 0px' }}>
-                                {/* <div style={{ padding: 24, background: '#fff', minHeight: 360 }}> */}
                                 <div style={{ minHeight: 360 }}>
-                                    <TTabMain
+                                    {/* <TTabMain
                                       ref={child => this._child = child}
                                       {...this.props}
-                                    />
+                                    /> */}
                                     <Switch>
                                         {
                                             Object.values( pageList.default ).map( item => ( <Route
@@ -148,36 +133,18 @@ export default class TIndexPage extends React.Component {
                                         />
                                     </Switch>
                                 </div>
-                                {/* <TFooter /> */}
                             </Content>
-                            <Footer style={{ padding: 0 }}>
+                            {/* <Footer style={{ padding: 0 }}>
                                 <GlobalFooter
                                   className="globalFooter"
-                                /*  links={[{
-                                    key: 'Pro 首页',
-                                    title: 'Pro 首页',
-                                    href: 'http://pro.ant.design',
-                                    blankTarget: true,
-                                  }, {
-                                    key: 'github',
-                                    title: <Icon type="github" />,
-                                    href: 'https://github.com/ant-design/ant-design-pro',
-                                    blankTarget: true,
-                                  }, {
-                                    key: 'Ant Design',
-                                    title: 'Ant Design',
-                                    href: 'http://ant.design',
-                                    blankTarget: true,
-                                  }]} */
                                   copyright={
                                     <Fragment>
                                       Copyright <Icon type="copyright" />广东拓斯达科技股份有限公司
                                     </Fragment>
                                   }
                                 />
-                            </Footer>
+                            </Footer> */}
                         </Layout>
-                    </Scrollbars>
                 </Layout>
             </Layout>
         );
